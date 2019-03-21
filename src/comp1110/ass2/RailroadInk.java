@@ -73,8 +73,10 @@ public class RailroadInk {
     /**
      * Generate a random dice roll as a string of eight characters.
      * Dice A should be rolled three times, dice B should be rolled once.
-     * Each die has faces numbered 0-5.
-     * Each die roll is formed of 'A' or 'B' representing the dice, and '0'-'5' representing the face.
+     * Die A has faces numbered 0-5.
+     * Die B has faces numbered 0-2.
+     * Each die roll is composed of a character 'A' or 'B' representing the dice,
+     * followed by a digit character representing the face.
      *
      * @return a String representing the die roll e.g. A0A4A3B2
      */

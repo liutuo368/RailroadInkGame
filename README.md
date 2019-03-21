@@ -216,8 +216,6 @@ It is essential that you refer to the [deliverables page](https://cs.anu.edu.au/
 **The mark breakdown is described on the
 [deliverables](https://cs.anu.edu.au/courses/comp1110/assessments/deliverables/) page.**
 
-TODO update mark breakdown once we've fully defined the tasks
-
 ### Part One
 
 In the first part of the assignment you will:
