@@ -15,6 +15,26 @@ public class RailroadInk {
      */
     public static boolean isTilePlacementWellFormed(String tilePlacementString) {
         // FIXME Task 2: determine whether a tile placement is well-formed
+        if(tilePlacementString.length() == 5) {
+            if(tilePlacementString.charAt(0) == 'A' || tilePlacementString.charAt(0) == 'B' || tilePlacementString.charAt(0) == 'S') {
+                int tileLength;
+                if(tilePlacementString.charAt(0) == 'A' || tilePlacementString.charAt(0) == 'S') {
+                    tileLength = 6;
+
+                } else {
+                    tileLength = 3;
+                }
+                if(Integer.parseInt(String.valueOf(tilePlacementString.charAt(1))) >= 0 && Integer.parseInt(String.valueOf(tilePlacementString.charAt(1))) < tileLength) {
+                    if(tilePlacementString.charAt(2) >= 'A' && tilePlacementString.charAt(2) <= 'G') {
+                        if(Integer.parseInt(String.valueOf(tilePlacementString.charAt(3))) >= 0 && Integer.parseInt(String.valueOf(tilePlacementString.charAt(3))) <= 6){
+                            if(Integer.parseInt(String.valueOf(tilePlacementString.charAt(4))) >= 0 && Integer.parseInt(String.valueOf(tilePlacementString.charAt(4))) <= 7) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return false;
     }
 
@@ -29,7 +49,31 @@ public class RailroadInk {
      */
     public static boolean isBoardStringWellFormed(String boardString) {
         // FIXME Task 3: determine whether a board string is well-formed
-        return false;
+        boolean isWellFormed = true;
+        if(boardString!=null){
+            if(boardString.length()%5 == 0 && (boardString.length()/5 >= 1 && boardString.length()/5 <= 31 )) {
+                int cntS = 0;
+                for(int i=0; i<boardString.length(); i+=5) {
+                    if(isTilePlacementWellFormed(boardString.substring(i, i+5))) {
+                        if(boardString.charAt(i) == 'S') {
+                            if(++cntS > 3){
+                                isWellFormed = false;
+                                break;
+                            }
+                        }
+                    } else {
+                        isWellFormed = false;
+                        break;
+                    }
+                }
+            } else {
+                isWellFormed = false;
+            }
+        } else {
+            isWellFormed = false;
+        }
+
+        return isWellFormed;
     }
 
 
