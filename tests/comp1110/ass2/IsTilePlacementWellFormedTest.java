@@ -17,7 +17,8 @@ public class IsTilePlacementWellFormedTest {
     private final static char[] VALID_PLACEMENT_CHARACTERS; //numeric 0-5, alpha 6-8
     private final static char[] VALID_LOCATION_CHARACTERS; //numeric 0-6, alpha 7-13
     private final static char[] INVALID_PLACEMENT_ALNUM; // C - G
-    private final static char[] INVALID_PLACEMENT_NUMBER; // 6,7
+    private final static char[] INVALID_FACE_NUMBER_A; // 6,7
+    private final static char[] INVALID_FACE_NUMBER_B; // 3-7
     private final static char[] INVALID_LOCATION_CHARACTERS;
     private static Random r = new Random();
 
@@ -46,14 +47,19 @@ public class IsTilePlacementWellFormedTest {
         }
 
         INVALID_PLACEMENT_ALNUM = Arrays.copyOfRange(VALID_LOCATION_CHARACTERS, 9, VALID_LOCATION_CHARACTERS.length);
-        INVALID_PLACEMENT_NUMBER = new char[]{'6', '7'};
+        INVALID_FACE_NUMBER_A = new char[]{'6', '7', '8'};
+        INVALID_FACE_NUMBER_B = new char[]{'3', '4', '5', '6', '7'};
         INVALID_LOCATION_CHARACTERS = new char[]{'H', '!', 'I', '7', '8'};
     }
 
     private static String validPlacementGenerator() {
         char[] output = new char[5];
         output[0] = VALID_PLACEMENT_CHARACTERS[r.nextInt(3) + 6]; //A,B,S
-        output[1] = VALID_PLACEMENT_CHARACTERS[r.nextInt(6)]; //0-5
+        if (output[0] == 'B') {
+            output[1] = VALID_PLACEMENT_CHARACTERS[r.nextInt(3)]; //0-3
+        } else {
+            output[1] = VALID_PLACEMENT_CHARACTERS[r.nextInt(6)]; //0-5
+        }
         output[2] = VALID_LOCATION_CHARACTERS[r.nextInt(3) + 7]; // A - G
         output[3] = VALID_LOCATION_CHARACTERS[r.nextInt(7)]; //0-6
         output[4] = (char) ('0' + (r.nextInt(8))); //0-7
@@ -108,24 +114,27 @@ public class IsTilePlacementWellFormedTest {
                     //Change a placement and a location character
                     invalidArray = validPlacement.toCharArray();
                     invalidArray[0] = INVALID_PLACEMENT_ALNUM[r.nextInt(INVALID_PLACEMENT_ALNUM.length)];
-                    invalidArray[1] = INVALID_PLACEMENT_NUMBER[r.nextInt(INVALID_PLACEMENT_NUMBER.length)];
+                    invalidArray[1] = INVALID_FACE_NUMBER_A[r.nextInt(INVALID_FACE_NUMBER_A.length)];
                     invalidArray[2] = INVALID_LOCATION_CHARACTERS[r.nextInt(INVALID_LOCATION_CHARACTERS.length)];
                     invalidArray[3] = INVALID_LOCATION_CHARACTERS[r.nextInt(INVALID_LOCATION_CHARACTERS.length)];
-                    assertFalse("Tile type and location characters are invalid.", RailroadInk.isTilePlacementWellFormed(new String(invalidArray)));
+                    assertFalse("Tile type, number and location characters are invalid. Expected placement " + new String(invalidArray) + " to return false, but returned true.", RailroadInk.isTilePlacementWellFormed(new String(invalidArray)));
                     break;
                 case 1:
-                    // Change just a placement character
+                    // Change just a placement number
                     invalidArray = validPlacement.toCharArray();
-                    invalidArray[0] = INVALID_PLACEMENT_ALNUM[r.nextInt(INVALID_PLACEMENT_ALNUM.length)];
-                    invalidArray[1] = INVALID_PLACEMENT_NUMBER[r.nextInt(INVALID_PLACEMENT_NUMBER.length)];
-                    assertFalse("Tile type characters are invalid.", RailroadInk.isTilePlacementWellFormed(new String(invalidArray)));
+                    if (invalidArray[0] == 'B') {
+                        invalidArray[1] = INVALID_FACE_NUMBER_B[r.nextInt(INVALID_FACE_NUMBER_B.length)];
+                    } else {
+                        invalidArray[1] = INVALID_FACE_NUMBER_A[r.nextInt(INVALID_FACE_NUMBER_A.length)];
+                    }
+                    assertFalse("Tile numbers are invalid. Expected placement " + new String(invalidArray) + " to return false, but returned true.", RailroadInk.isTilePlacementWellFormed(new String(invalidArray)));
                     break;
                 case 2:
                     //Change just a location character
                     invalidArray = validPlacement.toCharArray();
                     invalidArray[2] = INVALID_LOCATION_CHARACTERS[r.nextInt(INVALID_LOCATION_CHARACTERS.length)];
                     invalidArray[3] = INVALID_LOCATION_CHARACTERS[r.nextInt(INVALID_LOCATION_CHARACTERS.length)];
-                    assertFalse("Location characters are invalid.", RailroadInk.isTilePlacementWellFormed(new String(invalidArray)));
+                    assertFalse("Location characters are invalid. Expected placement " + new String(invalidArray) + " to return false, but returned true.", RailroadInk.isTilePlacementWellFormed(new String(invalidArray)));
                     break;
                 default:
                     //error
