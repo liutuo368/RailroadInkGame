@@ -172,5 +172,11 @@ public class RailroadInk {
         // FIXME Task 12: compute the total score including bonus points
         return -1;
     }
+
+    //public int getSpecialTileCount(){
+        // return 0;
+    //}
+
 }
+
 
