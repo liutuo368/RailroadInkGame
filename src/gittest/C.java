@@ -3,5 +3,5 @@ package gittest;
 public class C {
 
     @Override
-    public String toString(){"This is class C"}
+    public String toString(){return "This is class C";}
 }
