@@ -88,9 +88,33 @@ public class RailroadInk {
      *
      * @return true if the placements are connected neighbours
      */
+//    public static boolean areConnectedNeighbours(String tilePlacementStringA, String tilePlacementStringB) {
+//        Tiles a = Tiles.valueOf(tilePlacementStringA.substring(0,2));
+//        Tiles b = Tiles.valueOf(tilePlacementStringB.substring(0,2));
+//        a.set_default();
+//        b.set_default();
+//        a.translate(tilePlacementStringA.substring(2,4));
+//        b.translate(tilePlacementStringB.substring(2,4));
+//
+//        a.rotate90(tilePlacementStringA.charAt(4));
+//        b.rotate90(tilePlacementStringB.charAt(4));
+//
+//
+//
+//        return (a.isConnected(b));
+//
+//    }
     public static boolean areConnectedNeighbours(String tilePlacementStringA, String tilePlacementStringB) {
-        // FIXME Task 5: determine whether neighbouring placements are connected
-        return false;
+        Tile a = new Tile(tilePlacementStringA.substring(0,2));
+        Tile b = new Tile(tilePlacementStringB.substring(0,2));
+        a.set_default();
+        b.set_default();
+        a.translate(tilePlacementStringA.substring(2,4));
+        b.translate(tilePlacementStringB.substring(2,4));
+        a.rotate90(tilePlacementStringA.charAt(4));
+        b.rotate90(tilePlacementStringB.charAt(4));
+
+        return (a.isConnected(b));
     }
 
     /**

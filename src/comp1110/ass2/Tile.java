@@ -2,25 +2,16 @@ package comp1110.ass2;
 
 import java.util.Arrays;
 
-public enum Tiles
-{
-    S0(new int[]{1,0,0,0,14,3}),
-    S1(new int[]{2,0,0,0,1,12}),
-    S2(new int[]{3,0,0,0,15,0}),
-    S3(new int[]{4,0,0,0,0,15}),
-    S4(new int[]{5,0,0,0,7,9}),
-    S5(new int[]{6,0,0,0,5,6}),
-    A0(new int[]{7,0,0,0,0,7}),
-    A1(new int[]{8,0,0,0,0,5}),
-    A2(new int[]{9,0,0,0,0,11}),
-    A3(new int[]{10,0,0,0,11,0}),
-    A4(new int[]{11,0,0,0,5,0}),
-    A5(new int[]{12,0,0,0,7,0}),
-    B0(new int[]{13,0,0,0,1,3}),
-    B1(new int[]{14,0,0,0,1,2}),
-    B2(new int[]{15,0,0,0,5,6});
+public class Tile {
+    private String name;
+    private int[] shape;
 
-    public final int[] shape;
+    public Tile(String name)
+    {
+        this.name = name;
+        shape = new int[]{0,0,0,0,0,0};
+    }
+
 
     public void set_default()
     {
@@ -28,88 +19,98 @@ public enum Tiles
         this.shape[2] = 0;
         this.shape[3] = 0;
 
-        if (this.name() == "S0")
+        if (this.name.equals("S0"))
         {
+            this.shape[0] = 1;
             this.shape[4] = 14;
             this.shape[5] = 3;
         }
-        else if (this.name() == "S1")
+        else if (this.name.equals("S1"))
         {
+            this.shape[0] = 2;
             this.shape[4] = 1;
             this.shape[5] = 12;
         }
-        else if (this.name() == "S2")
+        else if (this.name.equals("S2"))
         {
+            this.shape[0] = 3;
             this.shape[4] = 15;
             this.shape[5] = 0;
         }
-        else if (this.name() == "S3")
+        else if (this.name.equals("S3"))
         {
+            this.shape[0] = 4;
             this.shape[4] = 0;
             this.shape[5] = 15;
         }
-        else if (this.name() == "S4")
+        else if (this.name.equals("S4"))
         {
+            this.shape[0] = 5;
             this.shape[4] = 7;
             this.shape[5] = 9;
         }
-        else if (this.name() == "S5")
+        else if (this.name.equals("S5"))
         {
+            this.shape[0] = 6;
             this.shape[4] = 5;
             this.shape[5] = 6;
         }
-        else if (this.name() == "A0")
+        else if (this.name.equals("A0"))
         {
+            this.shape[0] = 7;
             this.shape[4] = 0;
             this.shape[5] = 7;
         }
-        else if (this.name() == "A1")
+        else if (this.name.equals("A1"))
         {
+            this.shape[0] = 8;
             this.shape[4] = 0;
             this.shape[5] = 5;
         }
-        else if (this.name() == "A2")
+        else if (this.name.equals("A2"))
         {
+            this.shape[0] = 9;
             this.shape[4] = 0;
             this.shape[5] = 11;
         }
-        else if (this.name() == "A3")
+        else if (this.name.equals("A3"))
         {
+            this.shape[0] = 10;
             this.shape[4] = 11;
             this.shape[5] = 0;
         }
-        else if (this.name() == "A4")
+        else if (this.name.equals("A4"))
         {
+            this.shape[0] = 11;
             this.shape[4] = 5;
             this.shape[5] = 0;
         }
-        else if (this.name() == "A5")
+        else if (this.name.equals("A5"))
         {
+            this.shape[0] = 12;
             this.shape[4] = 7;
             this.shape[5] = 0;
         }
-        else if (this.name() == "B0")
+        else if (this.name.equals("B0"))
         {
+            this.shape[0] = 13;
             this.shape[4] = 1;
             this.shape[5] = 3;
         }
-        else if (this.name() == "B1")
+        else if (this.name.equals("B1"))
         {
+            this.shape[0] = 14;
             this.shape[4] = 1;
             this.shape[5] = 2;
         }
-        else if (this.name() == "B2")
+        else if (this.name.equals("B2"))
         {
+            this.shape[0] = 15;
             this.shape[4] = 5;
             this.shape[5] = 6;
         }
 
 
-    }
-
-    Tiles(int[] shape)
-    {
-        this.shape = shape;
     }
 
     public int reorient(int x)
@@ -131,7 +132,7 @@ public enum Tiles
         return x;
     }
 
-    public int[] rotate90(char x)
+    public void rotate90(char x)
     {
         int n = Integer.parseInt(Character.toString(x));
         for (int i = 0; i<n;i++)
@@ -140,10 +141,10 @@ public enum Tiles
             this.shape[4] = reorient(this.shape[4]);
             this.shape[5] = reorient(this.shape[5]);
         }
-        return this.shape;
+
     }
 
-    public boolean check_railway_connection(Tiles w, Tiles x)
+    public boolean check_railway_connection(Tile w, Tile x)
     {
         Integer[] left = {4,6,10,7,12,13,14,15};
         Integer[] right = {2,6,8,9,11,12,14,15};
@@ -195,7 +196,7 @@ public enum Tiles
     }
 
 
-    public boolean check_highway_connection(Tiles w, Tiles x)
+    public boolean check_highway_connection(Tile w, Tile x)
     {
         Integer[] left = {4,6,10,7,12,13,14,15};
         Integer[] right = {2,6,8,9,11,12,14,15};
@@ -247,7 +248,7 @@ public enum Tiles
     }
 
 
-    public boolean isConnected(Tiles x)
+    public boolean isConnected(Tile x)
     {
         boolean result = false, result_railway=false, result_highway=false;
         if ((this.shape[4] * x.shape[4] == 0) && (this.shape[5] * x.shape[5] == 0))
@@ -259,12 +260,12 @@ public enum Tiles
         else
         {
             if ((this.shape[4] * x.shape[4] != 0))
-                //highway
+            //highway
             {
                 result_highway = check_highway_connection(this, x);
             }
             if ((this.shape[5] * x.shape[5]) != 0)
-                //railway
+            //railway
             {
                 result_railway = check_railway_connection(this, x);
             }
@@ -273,17 +274,13 @@ public enum Tiles
         return result;
     }
 
-    public int[] translate(String x)
+    public void translate(String x)
     {
         this.shape[1] = ((int)(x.charAt(0))-65);
         this.shape[2] = Integer.parseInt(Character.toString(x.charAt(1)));
 
-        return this.shape;
 
     }
-
-
-
 
 
 }
