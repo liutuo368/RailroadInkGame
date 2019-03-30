@@ -279,8 +279,10 @@ public class Tile {
         this.shape[1] = ((int)(x.charAt(0))-65);
         this.shape[2] = Integer.parseInt(Character.toString(x.charAt(1)));
 
-
     }
+
+
+
 
 
 }

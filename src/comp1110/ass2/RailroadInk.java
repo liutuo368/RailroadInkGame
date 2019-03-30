@@ -135,6 +135,20 @@ public class RailroadInk {
      */
     public static boolean isValidPlacementSequence(String boardString) {
         // FIXME Task 6: determine whether the given placement sequence is valid
+        int numberOfTiles = boardString.length()/5;
+        Tile[] tile_array = new Tile[numberOfTiles];
+        int counter = 0;
+        for (int i = 0;i < boardString.length();i=i+5)
+        {
+            String temp_substring = boardString.substring(i,i+5);
+            tile_array[counter] = new Tile(temp_substring.substring(0,2));
+            tile_array[counter].set_default();
+            tile_array[counter].translate(temp_substring.substring(2,4));
+            tile_array[counter].rotate90(temp_substring.charAt(4));
+            counter++;
+        }
+
+
         return false;
     }
 
