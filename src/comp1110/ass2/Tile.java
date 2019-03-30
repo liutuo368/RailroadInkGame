@@ -282,7 +282,26 @@ public class Tile {
     }
 
 
+    public boolean check_exit_connection()
+    {
+        int x = this.shape[1];
+        int y = this.shape[2];
 
+        if (((x == 0) && (y == 1)) || ((x == 0) && (y == 5)) || ((x == 3) && (y == 0)) || ((x == 3) && (y == 6)) || ((x == 6) && (y == 1)) || ((x == 6) && (y == 5)))
+        {
+            //check highway exit
+            return false;
+        }
+        else if ((((x == 0) && (y == 3)) || ((x == 1) && (y == 0)) || ((x == 1) && (y == 6)) || ((x == 5) && (y == 0)) || ((x == 5) && (y == 6)) || ((x == 6) && (y == 3))))
+        {
+            //check railway exit
+            return false;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
 
 }
