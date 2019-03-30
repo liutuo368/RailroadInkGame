@@ -5,7 +5,7 @@ public class RailroadInk {
      * Determine whether a tile placement string is well-formed:
      * - it consists of exactly 5 characters;
      * - the first character represents a die A or B, or a special tile S
-     * - the second character indicates which tile or face of the die (0-6 for die A and special tiles, or 0-3 for die B)
+     * - the second character indicates which tile or face of the die (0-5 for die A and special tiles, or 0-2 for die B)
      * - the third character represents the placement row A-G
      * - the fourth character represents the placement column 0-6
      * - the fifth character represents the orientation 0-7
@@ -192,7 +192,7 @@ public class RailroadInk {
      * @see RailroadInk#generateDiceRoll()
      */
     public static String generateMove(String boardString, String diceRoll) {
-        // FIXME Task 10: compute the basic score
+        // FIXME Task 10: generate a valid move
         return null;
     }
 
