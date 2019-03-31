@@ -6,7 +6,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
 /**
@@ -19,10 +22,15 @@ public class Viewer extends Application {
     /* board layout */
     private static final int VIEWER_WIDTH = 1024;
     private static final int VIEWER_HEIGHT = 768;
+    private static final double Tile_WIDTH = 70.0;
+    private static final double Tile_START_X = VIEWER_WIDTH / 10 * 3;
+    private static final double Tile_START_Y = 60;
 
     private static final String URI_BASE = "assets/";
 
     private final Group root = new Group();
+    private final Group tiles = new Group();
+    private final Group lines = new Group();
     private final Group controls = new Group();
     TextField textField;
 
@@ -33,6 +41,41 @@ public class Viewer extends Application {
      */
     void makePlacement(String placement) {
         // FIXME Task 4: implement the simple placement viewer
+        tiles.getChildren().clear();
+        for(int i = 0; i < placement.length(); i+=5) {
+            String img = placement.substring(i, i + 2);
+            int row = placement.charAt(i + 2) - 65 + 1;
+            int col = placement.charAt(i + 3) - 48;
+            int orientation = placement.charAt(i + 4) - 48;
+
+            Image image =new Image(Viewer.class.getResource(URI_BASE+img+".png").toString());
+            ImageView imageview = new ImageView();
+            imageview.setImage(image);
+            imageview.setFitWidth(Tile_WIDTH);
+            imageview.setFitHeight(Tile_WIDTH);
+            imageview.setX(Tile_START_X + Tile_WIDTH * col);
+            imageview.setY(Tile_START_Y + Tile_WIDTH * row);
+            imageview.setRotate(orientation * 90);
+            tiles.getChildren().add(imageview);
+        }
+    }
+
+    void makeLines() {
+        for(int i = 0; i <= 7; i++) {
+            Line l_vertical = new Line();
+            l_vertical.setStartX(Tile_START_X + Tile_WIDTH * i);
+            l_vertical.setStartY(Tile_START_Y + Tile_WIDTH);
+            l_vertical.setEndX(Tile_START_X + Tile_WIDTH * i);
+            l_vertical.setEndY(Tile_START_Y + Tile_WIDTH * 8);
+            lines.getChildren().add(l_vertical);
+
+            Line l_horizontal = new Line();
+            l_horizontal.setStartX(Tile_START_X);
+            l_horizontal.setStartY(Tile_START_Y + Tile_WIDTH * (i + 1));
+            l_horizontal.setEndX(Tile_START_X + Tile_WIDTH * 7);
+            l_horizontal.setEndY(Tile_START_Y + Tile_WIDTH * (i + 1));
+            lines.getChildren().add(l_horizontal);
+        }
     }
 
     /**
@@ -53,6 +96,7 @@ public class Viewer extends Application {
         hb.setLayoutX(130);
         hb.setLayoutY(VIEWER_HEIGHT - 50);
         controls.getChildren().add(hb);
+        makeLines();
     }
 
     @Override
@@ -61,6 +105,8 @@ public class Viewer extends Application {
         Scene scene = new Scene(root, VIEWER_WIDTH, VIEWER_HEIGHT);
 
         root.getChildren().add(controls);
+        root.getChildren().add(tiles);
+        root.getChildren().add(lines);
 
         makeControls();
 
