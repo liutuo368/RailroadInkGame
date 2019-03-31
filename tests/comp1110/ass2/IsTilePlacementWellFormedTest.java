@@ -84,7 +84,6 @@ public class IsTilePlacementWellFormedTest {
                 int random_location = r.nextInt(validPlacement.length());
                 String lengthenedPlacement = validPlacement.substring(0, random_location)
                         + validPlacement.substring(random_location + 1);
-                System.out.println(lengthenedPlacement);
                 assertFalse(lengthenedPlacement +
                                 " was said to be valid, but it is of the wrong length",
                         RailroadInk.isTilePlacementWellFormed(lengthenedPlacement));
@@ -94,7 +93,6 @@ public class IsTilePlacementWellFormedTest {
                 String lengthenedPlacement = validPlacement.substring(0, random_location)
                         + VALID_PLACEMENT_CHARACTERS[random_selection_from_valid]
                         + validPlacement.substring(random_location);
-                System.out.println(lengthenedPlacement);
                 assertFalse(lengthenedPlacement +
                                 " was said to be valid, but it is of the wrong length",
                         RailroadInk.isTilePlacementWellFormed(lengthenedPlacement));
