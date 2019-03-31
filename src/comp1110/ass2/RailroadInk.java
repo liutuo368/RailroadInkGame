@@ -104,7 +104,8 @@ public class RailroadInk {
 //        return (a.isConnected(b));
 //
 //    }
-    public static boolean areConnectedNeighbours(String tilePlacementStringA, String tilePlacementStringB) {
+    public static boolean areConnectedNeighbours(String tilePlacementStringA, String tilePlacementStringB)
+    {
         Tile a = new Tile(tilePlacementStringA.substring(0,2));
         Tile b = new Tile(tilePlacementStringB.substring(0,2));
         a.set_default();
@@ -133,10 +134,13 @@ public class RailroadInk {
      * @param boardString a board string representing some placement sequence
      * @return true if placement sequence is valid
      */
-    public static boolean isValidPlacementSequence(String boardString) {
+    public static boolean isValidPlacementSequence(String boardString)
+    {
         // FIXME Task 6: determine whether the given placement sequence is valid
+
         int numberOfTiles = boardString.length()/5;
         Tile[] tile_array = new Tile[numberOfTiles];
+//        boolean[][] board =  new boolean[7][7];
         int counter = 0;
         for (int i = 0;i < boardString.length();i=i+5)
         {
@@ -145,11 +149,45 @@ public class RailroadInk {
             tile_array[counter].set_default();
             tile_array[counter].translate(temp_substring.substring(2,4));
             tile_array[counter].rotate90(temp_substring.charAt(4));
+//            if (board[tile_array[counter].getShape()[1]][tile_array[counter].getShape()[2]])
+//                return false;
+//            else
+//                board[tile_array[counter].getShape()[1]][tile_array[counter].getShape()[2]] = true;
+
             counter++;
         }
 
 
-        return false;
+        boolean[] tile_result = new boolean[numberOfTiles];
+
+        for (int i = 0;i<numberOfTiles;i++)
+        {
+            if (tile_array[i].checkInvalidExitConnection())
+                return false;
+            if ((i==0) && (!tile_array[i].check_exit_connection()))
+                return false;
+            if (tile_array[i].check_exit_connection())
+                tile_result[i] = true;
+
+            for (int j = 0;j<numberOfTiles;j++)
+            {
+                if (i!=j)
+                {
+                    if (tile_array[i].isInvalidConenction(tile_array[j]))
+                        return false;
+                    if (tile_array[i].isConnected(tile_array[j]))
+                        tile_result[i] = true;
+                }
+            }
+        }
+        boolean result = true;
+        for (int i = 0;i<numberOfTiles;i++)
+        {
+            result = result && tile_result[i];
+        }
+
+        return result;
+
     }
 
     /**
@@ -162,6 +200,7 @@ public class RailroadInk {
      *
      * @return a String representing the die roll e.g. A0A4A3B2
      */
+
     public static String generateDiceRoll() {
         // FIXME Task 7: generate a dice roll
         return "";
