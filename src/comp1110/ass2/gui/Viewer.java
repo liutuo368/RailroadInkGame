@@ -34,6 +34,10 @@ public class Viewer extends Application {
     private final Group controls = new Group();
     TextField textField;
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     /**
      * Draw a placement in the window, removing any previously drawn one
      *
