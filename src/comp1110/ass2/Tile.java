@@ -483,28 +483,24 @@ public class Tile {
             if ((w.shape[2] - x.shape[2]) == 1) //if w is on immediate right of x
             {
 
-                if (Arrays.asList(right).contains(x.shape[5]))
+                if ((Arrays.asList(right).contains(x.shape[5])) && (Arrays.asList(left).contains(w.shape[4])))
                 {
-                    if (Arrays.asList(left).contains(w.shape[4]))
-                        return true;
+                    return true;
                 }
-                else if (Arrays.asList(right).contains(x.shape[4]))
+                else if ((Arrays.asList(right).contains(x.shape[4])) && (Arrays.asList(left).contains(w.shape[5])))
                 {
-                    if (Arrays.asList(left).contains(w.shape[5]))
-                        return true;
+                    return true;
                 }
             }
             else if (x.shape[2] - w.shape[2] == 1) //if w is on the immediate left of x
             {
-                if (Arrays.asList(left).contains(x.shape[5]))
+                if ((Arrays.asList(left).contains(x.shape[5])) && (Arrays.asList(right).contains(w.shape[4])))
                 {
-                    if (Arrays.asList(right).contains(w.shape[4]))
-                        return true;
+                    return true;
                 }
-                else if (Arrays.asList(left).contains(x.shape[4]))
+                else if ((Arrays.asList(left).contains(x.shape[4])) && (Arrays.asList(right).contains(w.shape[5])))
                 {
-                    if (Arrays.asList(right).contains(w.shape[5]))
-                        return true;
+                    return true;
                 }
             }
         }
@@ -513,29 +509,24 @@ public class Tile {
             if ((w.shape[1] - x.shape[1]) == 1) //if w is immediately below x
             {
 
-                if (Arrays.asList(down).contains(x.shape[5]))
+                if ((Arrays.asList(down).contains(x.shape[5])) && (Arrays.asList(up).contains(w.shape[4])))
                 {
-
-                    if (Arrays.asList(up).contains(w.shape[4]))
-                        return true;
+                    return true;
                 }
-                else if (Arrays.asList(down).contains(x.shape[4]))
+                else if ((Arrays.asList(down).contains(x.shape[4])) && (Arrays.asList(up).contains(w.shape[5])))
                 {
-                    if (Arrays.asList(up).contains(w.shape[5]))
-                        return true;
+                    return true;
                 }
             }
             else if (x.shape[1] - w.shape[1] == 1) //if w is immediately above x
             {
-                if (Arrays.asList(up).contains(x.shape[5]))
+                if ((Arrays.asList(up).contains(x.shape[5])) && (Arrays.asList(down).contains(w.shape[4])))
                 {
-                    if (Arrays.asList(down).contains(w.shape[4]))
-                        return true;
+                    return true;
                 }
-                else if (Arrays.asList(up).contains(x.shape[4]))
+                else if ((Arrays.asList(up).contains(x.shape[4])) && (Arrays.asList(down).contains(w.shape[5])))
                 {
-                    if (Arrays.asList(down).contains(w.shape[5]))
-                        return true;
+                    return true;
                 }
             }
         }
