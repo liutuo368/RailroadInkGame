@@ -24,11 +24,14 @@ public class RailroadInk {
                 } else {
                     tileLength = 3;
                 }
-                if(Integer.parseInt(String.valueOf(tilePlacementString.charAt(1))) >= 0 && Integer.parseInt(String.valueOf(tilePlacementString.charAt(1))) < tileLength) {
-                    if(tilePlacementString.charAt(2) >= 'A' && tilePlacementString.charAt(2) <= 'G') {
-                        if(Integer.parseInt(String.valueOf(tilePlacementString.charAt(3))) >= 0 && Integer.parseInt(String.valueOf(tilePlacementString.charAt(3))) <= 6){
-                            if(Integer.parseInt(String.valueOf(tilePlacementString.charAt(4))) >= 0 && Integer.parseInt(String.valueOf(tilePlacementString.charAt(4))) <= 7) {
-                                return true;
+                if(Character.isDigit(tilePlacementString.charAt(1)) && Character.isDigit(tilePlacementString.charAt(3)) && Character.isDigit(tilePlacementString.charAt(4))) {
+
+                    if (Integer.parseInt(String.valueOf(tilePlacementString.charAt(1))) >= 0 && Integer.parseInt(String.valueOf(tilePlacementString.charAt(1))) < tileLength) {
+                        if (tilePlacementString.charAt(2) >= 'A' && tilePlacementString.charAt(2) <= 'G') {
+                            if (Integer.parseInt(String.valueOf(tilePlacementString.charAt(3))) >= 0 && Integer.parseInt(String.valueOf(tilePlacementString.charAt(3))) <= 6) {
+                                if (Integer.parseInt(String.valueOf(tilePlacementString.charAt(4))) >= 0 && Integer.parseInt(String.valueOf(tilePlacementString.charAt(4))) <= 7) {
+                                    return true;
+                                }
                             }
                         }
                     }
