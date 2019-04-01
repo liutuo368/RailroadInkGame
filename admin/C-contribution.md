@@ -4,4 +4,4 @@ We declare that the work toward our submission of Stage C was distributed among 
 * u6567008 33.33
 * u6843015 33.33
 
-Signed: Mary Jones (u2345678), Bob Smith (u3456789), and Sue Black (u0234567)
+Signed: Jihirshu Narayan (u6811576), Jingfen Qiao (u6843015), and Tuo Liu (u6567008)
