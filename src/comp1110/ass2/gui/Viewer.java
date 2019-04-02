@@ -12,6 +12,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
+import static comp1110.ass2.RailroadInk.isBoardStringWellFormed;
+
+
 /**
  * A very simple viewer for tile placements in the Railroad Ink game.
  * <p>
@@ -34,6 +37,10 @@ public class Viewer extends Application {
     private final Group controls = new Group();
     TextField textField;
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     /**
      * Draw a placement in the window, removing any previously drawn one
      *
@@ -41,23 +48,26 @@ public class Viewer extends Application {
      */
     void makePlacement(String placement) {
         // FIXME Task 4: implement the simple placement viewer
-        tiles.getChildren().clear();
-        for(int i = 0; i < placement.length(); i+=5) {
-            String img = placement.substring(i, i + 2);
-            int row = placement.charAt(i + 2) - 65 + 1;
-            int col = placement.charAt(i + 3) - 48;
-            int orientation = placement.charAt(i + 4) - 48;
+        if(isBoardStringWellFormed(placement)) {
+            tiles.getChildren().clear();
+            for(int i = 0; i < placement.length(); i+=5) {
+                String img = placement.substring(i, i + 2);
+                int row = placement.charAt(i + 2) - 65 + 1;
+                int col = placement.charAt(i + 3) - 48;
+                int orientation = placement.charAt(i + 4) - 48;
 
-            Image image =new Image(Viewer.class.getResource(URI_BASE+img+".png").toString());
-            ImageView imageview = new ImageView();
-            imageview.setImage(image);
-            imageview.setFitWidth(Tile_WIDTH);
-            imageview.setFitHeight(Tile_WIDTH);
-            imageview.setX(Tile_START_X + Tile_WIDTH * col);
-            imageview.setY(Tile_START_Y + Tile_WIDTH * row);
-            imageview.setRotate(orientation * 90);
-            tiles.getChildren().add(imageview);
+                Image image =new Image(Viewer.class.getResource(URI_BASE+img+".png").toString());
+                ImageView imageview = new ImageView();
+                imageview.setImage(image);
+                imageview.setFitWidth(Tile_WIDTH);
+                imageview.setFitHeight(Tile_WIDTH);
+                imageview.setX(Tile_START_X + Tile_WIDTH * col);
+                imageview.setY(Tile_START_Y + Tile_WIDTH * row);
+                imageview.setRotate(orientation * 90);
+                tiles.getChildren().add(imageview);
+            }
         }
+
     }
 
     void makeLines() {
