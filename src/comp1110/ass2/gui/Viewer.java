@@ -63,7 +63,12 @@ public class Viewer extends Application {
                 imageview.setFitHeight(Tile_WIDTH);
                 imageview.setX(Tile_START_X + Tile_WIDTH * col);
                 imageview.setY(Tile_START_Y + Tile_WIDTH * row);
+
+                if(orientation >=4){
+                    imageview.setScaleX(-1);
+                }
                 imageview.setRotate(orientation * 90);
+
                 tiles.getChildren().add(imageview);
             }
         }
