@@ -1,5 +1,8 @@
 package comp1110.ass2;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public class RailroadInk {
     /**
      * Determine whether a tile placement string is well-formed:
@@ -206,7 +209,25 @@ public class RailroadInk {
 
     public static String generateDiceRoll() {
         // FIXME Task 7: generate a dice roll
-        return "";
+        String dice_roll = "";
+        int temp;
+        Random random = new Random();
+        for (int i=0;i<4;i++)
+        {
+            if (i == 3)
+            {
+                temp = random.nextInt(3);
+                dice_roll = dice_roll + "B" + Integer.toString(temp);
+
+            }
+            else
+            {
+                temp = random.nextInt(6);
+                dice_roll = dice_roll + "A" + Integer.toString(temp);
+            }
+        }
+
+        return dice_roll;
     }
 
     /**
@@ -220,9 +241,91 @@ public class RailroadInk {
      * @param boardString a board string representing a completed game
      * @return integer (positive or negative) for score *not* considering longest rail/highway
      */
-    public static int getBasicScore(String boardString) {
+    public static int getBasicScore(String boardString)
+    {
         // FIXME Task 8: compute the basic score
-        return -1;
+        int basicScore = 0;
+        int b2Counter = 0;
+        for (int i = 0;i < boardString.length();i=i+5)
+        {
+            if (boardString.substring(i,i+2).equals("B2"))          //Piece B2 will be treated as two individual piece on the same location. Counting B2 pieces in boardstring here
+                b2Counter++;
+
+        }
+        ArrayList<Route> routes = new ArrayList<>();
+        
+        int tile_number = (boardString.length())/5;
+        Tile[] tile_array = new Tile[tile_number + b2Counter];      // Adjusting the length of tile_array to accomodate B2 piece copies
+        Board board = new Board();
+        int counter = 0;
+        for (int i = 0;i < boardString.length();i=i+5)
+        {
+            String temp_substring = boardString.substring(i,i+5);
+            tile_array[counter] = new Tile(temp_substring.substring(0,2));
+            tile_array[counter].set_default();
+            tile_array[counter].translate(temp_substring.substring(2,4));
+            tile_array[counter].rotate90(temp_substring.charAt(4));
+            board.place_tile(tile_array[counter].shape);
+            if (tile_array[counter].getName().equals("B2"))
+            {
+                tile_array[counter+1] = new Tile(temp_substring.substring(0,2));
+                tile_array[counter+1].set_default();
+                tile_array[counter+1].translate(temp_substring.substring(2,4));
+                tile_array[counter+1].rotate90(temp_substring.charAt(4));
+                tile_array[counter].shape[5] = 0;
+                tile_array[counter+1].shape[4] = 0;
+                counter++;
+            }
+
+
+            counter++;
+        }
+        Route route = new Route(tile_array[0]);
+        outer:
+        for (int i=1;i<tile_array.length;i++)
+        {
+            if (routes.isEmpty())
+                routes.add(route);
+            inner:
+            for (Route x : routes)
+            {
+                if (x.connected_to_route(tile_array[i]))
+                    continue outer;
+            }
+            routes.add(new Route(tile_array[i]));
+        }
+
+        for (int i = 0;i<routes.size();i++)
+        {
+            for (int j = 0;j<routes.size();j++)
+            {
+                if (i!=j)
+                {
+                    if (routes.get(i).checkRoutesConnected(routes.get(j)))
+                    {
+                        routes.get(i).mergeRoutes(routes.get(j));
+                        routes.remove(j);
+                        i=0;
+                        j=0;
+                    }
+                }
+            }
+        }
+
+        for (Route x : routes)
+        {
+            int exits = x.numberOfExitsConnected();
+            if (exits == 12)
+                basicScore = basicScore + 45;
+            else if (exits > 1)
+                basicScore = basicScore + (4*(exits-1));
+        }
+
+        basicScore = basicScore + board.centreTileScore();
+
+        basicScore = basicScore - board.countErrors();
+
+        return basicScore;
     }
 
     /**
@@ -256,6 +359,11 @@ public class RailroadInk {
     //public int getSpecialTileCount(){
         // return 0;
     //}
+
+    public static void main(String[] args) {
+        int x = getBasicScore("A3A10A3A52A3G10B2F10S1B50A2B61A0C60A1B41B1A35A4A41A2B31A1C30B0D32A2C50A4E10A3D12B2B10A2F01A0G00A4D01B1A27S3B20A4C10A1D50A0F23B2G25A3E30A4E41");
+        System.out.println(x);
+    }
 
 }
 

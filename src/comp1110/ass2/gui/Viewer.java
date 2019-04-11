@@ -12,6 +12,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
+import java.util.concurrent.TimeUnit;
+
 import static comp1110.ass2.RailroadInk.isBoardStringWellFormed;
 
 
@@ -70,6 +72,7 @@ public class Viewer extends Application {
                 imageview.setRotate(orientation * 90);
 
                 tiles.getChildren().add(imageview);
+
             }
         }
 

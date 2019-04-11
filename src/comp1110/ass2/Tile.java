@@ -4,17 +4,34 @@ import java.util.Arrays;
 
 public class Tile {
     private String name;
-    private int[] shape;
+    public int[] shape;
+
+    public Tile (String name, int[] shape)
+    {
+        this.name = name;
+        this.shape = new int[7];
+        for (int i =0;i<7;i++)
+        {
+            this.shape[i] = shape[i];
+        }
+
+    }
 
     public Tile(String name)
     {
         this.name = name;
-        shape = new int[]{0,0,0,0,0,0};
+        shape = new int[]{0,0,0,0,0,0,0};
     }
 
     public String getName()
     {
         return this.name;
+    }
+
+    public String getLocation()
+    {
+        char x = (char)(this.shape[1] + 65);
+        return (Character.toString(x) + Integer.toString(this.shape[2]));
     }
 
     public int[] getShape()
@@ -27,6 +44,7 @@ public class Tile {
         this.shape[1] = 0;
         this.shape[2] = 0;
         this.shape[3] = 0;
+        this.shape[6] = 1;
 
         if (this.name.equals("S0"))
         {
@@ -117,6 +135,7 @@ public class Tile {
             this.shape[0] = 15;
             this.shape[4] = 5;
             this.shape[5] = 6;
+            this.shape[6] = 0;
         }
 
 
@@ -326,6 +345,8 @@ public class Tile {
 
     public boolean isConnected(Tile x)
     {
+        if (x == null)
+            return false;
         boolean result = false, result_railway=false, result_highway=false;
         if ((this.shape[4] * x.shape[4] == 0) && (this.shape[5] * x.shape[5] == 0))
             result = false;
@@ -560,6 +581,15 @@ public class Tile {
             return true;
         else
             return false;
+    }
+
+    @Override
+
+    public String toString()
+    {
+        String output = "";
+        output = output + this.getName() + this.getLocation() + Integer.toString(this.shape[3]);
+        return output;
     }
 
 }
