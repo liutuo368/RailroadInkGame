@@ -1,6 +1,7 @@
 package comp1110.ass2;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class RailroadInk {
@@ -265,7 +266,7 @@ public class RailroadInk {
             tile_array[counter].set_default();
             tile_array[counter].translate(temp_substring.substring(2,4));
             tile_array[counter].rotate90(temp_substring.charAt(4));
-            board.place_tile(tile_array[counter].shape);
+            board.place_tile(tile_array[counter]);
             if (tile_array[counter].getName().equals("B2"))
             {
                 tile_array[counter+1] = new Tile(temp_substring.substring(0,2));
@@ -338,7 +339,52 @@ public class RailroadInk {
      */
     public static String generateMove(String boardString, String diceRoll) {
         // FIXME Task 10: generate a valid move
-        return null;
+        String[] choices = {"","","",""};
+        int tile_number = (boardString.length())/5;
+        Tile[] tile_array = new Tile[tile_number];      // Adjusting the length of tile_array to accomodate B2 piece copies
+        Board board = new Board();
+        int counter = 0;
+
+        for (int i=0;i<boardString.length();i=i+5)
+        {
+            String temp = boardString.substring(i,i+5);
+            tile_array[counter] = new Tile(temp.substring(0,2));
+            tile_array[counter].set_default();
+            tile_array[counter].translate(temp.substring(2,4));
+            tile_array[counter].rotate90(temp.charAt(4));
+            board.place_tile(tile_array[counter]);
+        }
+        int pieceCounter=0;
+        for (int i=0;i<diceRoll.length();i=i+2)
+        {
+                choices[pieceCounter] = diceRoll.substring(i,i+2);
+                pieceCounter++;
+
+
+        }
+
+        String[] result = board.generateMoves(choices);
+
+//        int initial_score = getBasicScore(boardString);
+//
+//        int max = initial_score;
+//        String result_final = "";
+//        for (int i=0;i<result.length;i++)
+//        {
+//            String newBoardString = boardString + result[i];
+//            int currentScore = getBasicScore(newBoardString);
+//            if ( currentScore > max)
+//            {
+//                result_final = result[i];
+//                max = currentScore;
+//            }
+//
+//        }
+
+        return result[0];
+
+
+
     }
 
     /**
@@ -361,7 +407,7 @@ public class RailroadInk {
     //}
 
     public static void main(String[] args) {
-        int x = getBasicScore("A3A10A3A52A3G10B2F10S1B50A2B61A0C60A1B41B1A35A4A41A2B31A1C30B0D32A2C50A4E10A3D12B2B10A2F01A0G00A4D01B1A27S3B20A4C10A1D50A0F23B2G25A3E30A4E41");
+        String x = generateMove("A4A10A1A30A4A50S1B32A1B01A1B61B2B10A1B21S5B50A1B41A4D01A4D61A3D12B0C30A3D50A4C10A4C50A1F01A1F61A4G10B1F12A4G50B1E10A1E21A3E52B1F56S4E31","A1A1A4B0");
         System.out.println(x);
     }
 

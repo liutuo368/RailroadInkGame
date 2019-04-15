@@ -6,6 +6,13 @@ public class Tile {
     private String name;
     public int[] shape;
 
+    public Tile (int x)
+    {
+        String[] names = {" ","S0","S1","S2","S3","S4","S5","A0","A1","A2","A3","A4","A5","B0","B1","B2"};
+        this.name = names[x];
+        this.shape = new int[]{0,0,0,0,0,0,0};
+    }
+
     public Tile (String name, int[] shape)
     {
         this.name = name;
@@ -180,10 +187,61 @@ public class Tile {
         return x;
     }
 
+
+    public void rotate90(int n)
+    {
+        for (int i = this.shape[3]+1; i<=n;i++)
+        {
+            if ((this.name.equals("S4")) || (this.name.equals("A0")) || (this.name.equals("A5")))
+            {
+                if (i == 4) {
+                    if (this.shape[4] != 0)
+                    {
+                        this.shape[4] = reorient(this.shape[4]);
+                    }
+
+                    if (this.shape[5] != 0)
+                    {
+                        this.shape[5] = reorient(this.shape[5]);
+                    }
+                }
+            }
+            else if ((this.name.equals("A2")) || (this.name.equals("A3")))
+            {
+                if (i==4)
+                {
+                    if (this.shape[4] != 0)
+                    {
+                        this.shape[4] = reorient(this.shape[4]);
+                        this.shape[4] = reorient(this.shape[4]);
+                    }
+                    if (this.shape[5] != 0)
+                    {
+                        this.shape[5] = reorient(this.shape[5]);
+                        this.shape[5] = reorient(this.shape[5]);
+                    }
+                }
+            }
+            else if (this.name.equals("B1"))
+            {
+                if (i==4)
+                {
+                    this.shape[5] = reorient(this.shape[5]);
+                    this.shape[5] = reorient(this.shape[5]);
+                }
+            }
+            this.shape[3] = (this.shape[3]+1) % 8;
+            this.shape[4] = reorient(this.shape[4]);
+            this.shape[5] = reorient(this.shape[5]);
+        }
+
+    }
+
+
     public void rotate90(char x)
     {
         int n = Integer.parseInt(Character.toString(x));
-        for (int i = 1; i<=n;i++)
+        for (int i = this.shape[3]+1; i<=n;i++)
         {
             if ((this.name.equals("S4")) || (this.name.equals("A0")) || (this.name.equals("A5")))
             {
@@ -381,6 +439,12 @@ public class Tile {
         this.shape[1] = ((int)(x.charAt(0))-65);
         this.shape[2] = Integer.parseInt(Character.toString(x.charAt(1)));
 
+    }
+
+    public void translate(int x, int y)
+    {
+        this.shape[1] = x;
+        this.shape[2] = y;
     }
 
     public boolean check_highway_exit()
