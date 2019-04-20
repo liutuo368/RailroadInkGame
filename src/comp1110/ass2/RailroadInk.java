@@ -254,7 +254,7 @@ public class RailroadInk {
 
         }
         ArrayList<Route> routes = new ArrayList<>();
-        
+
         int tile_number = (boardString.length())/5;
         Tile[] tile_array = new Tile[tile_number + b2Counter];      // Adjusting the length of tile_array to accomodate B2 piece copies
         Board board = new Board();
@@ -365,23 +365,23 @@ public class RailroadInk {
 
         String[] result = board.generateMoves(choices);
 
-//        int initial_score = getBasicScore(boardString);
-//
-//        int max = initial_score;
-//        String result_final = "";
-//        for (int i=0;i<result.length;i++)
-//        {
-//            String newBoardString = boardString + result[i];
-//            int currentScore = getBasicScore(newBoardString);
-//            if ( currentScore > max)
-//            {
-//                result_final = result[i];
-//                max = currentScore;
-//            }
-//
-//        }
+        int initial_score = getBasicScore(boardString);
 
-        return result[0];
+        int max = initial_score;
+        String result_final = "";
+        for (int i=0;i<result.length;i++)
+        {
+            String newBoardString = boardString + result[i];
+            int currentScore = getBasicScore(newBoardString);
+            if ( currentScore > max)
+            {
+                result_final = result[i];
+                max = currentScore;
+            }
+
+        }
+
+        return result_final;
 
 
 
@@ -405,11 +405,6 @@ public class RailroadInk {
     //public int getSpecialTileCount(){
         // return 0;
     //}
-
-    public static void main(String[] args) {
-        String x = generateMove("A4A10A1A30A4A50S1B32A1B01A1B61B2B10A1B21S5B50A1B41A4D01A4D61A3D12B0C30A3D50A4C10A4C50A1F01A1F61A4G10B1F12A4G50B1E10A1E21A3E52B1F56S4E31","A1A1A4B0");
-        System.out.println(x);
-    }
 
 }
 
