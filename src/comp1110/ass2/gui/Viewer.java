@@ -36,6 +36,7 @@ public class Viewer extends Application {
     private static final double Tile_START_X = VIEWER_WIDTH / 10 * 2;
     private static final double Tile_START_Y = 60;
 
+    protected static String CURRENT_PLACEMENT = "";
     private static final String URI_BASE = "assets/";
 
     private final Group root = new Group();
@@ -54,12 +55,14 @@ public class Viewer extends Application {
         double mouseX, mouseY;
         double startX, startY;
         int orientation;
+        int tileId;
 
         TileImage(Image image, double startX, double startY, int orientation) {
             super(image);
             this.startX = startX;
             this.startY = startY;
             this.orientation = orientation;
+            this.tileId = -1;
             setFitHeight(Tile_WIDTH);
             setFitWidth(Tile_WIDTH);
             setX(startX);
