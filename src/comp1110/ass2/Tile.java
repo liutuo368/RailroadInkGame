@@ -4,20 +4,54 @@ import java.util.Arrays;
 
 public class Tile {
     private String name;
-    private int[] shape;
+    public int[] shape;
+
+    public Tile (int x)
+    {
+        String[] names = {" ","S0","S1","S2","S3","S4","S5","A0","A1","A2","A3","A4","A5","B0","B1","B2"};
+        this.name = names[x];
+        this.shape = new int[]{0,0,0,0,0,0,0};
+    }
+
+    public Tile (String name, int[] shape)
+    {
+        this.name = name;
+        this.shape = new int[7];
+        for (int i =0;i<7;i++)
+        {
+            this.shape[i] = shape[i];
+        }
+
+    }
 
     public Tile(String name)
     {
         this.name = name;
-        shape = new int[]{0,0,0,0,0,0};
+        shape = new int[]{0,0,0,0,0,0,0};
     }
 
+    public String getName()
+    {
+        return this.name;
+    }
+
+    public String getLocation()
+    {
+        char x = (char)(this.shape[1] + 65);
+        return (Character.toString(x) + Integer.toString(this.shape[2]));
+    }
+
+    public int[] getShape()
+    {
+        return this.shape;
+    }
 
     public void set_default()
     {
         this.shape[1] = 0;
         this.shape[2] = 0;
         this.shape[3] = 0;
+        this.shape[6] = 1;
 
         if (this.name.equals("S0"))
         {
@@ -108,8 +142,29 @@ public class Tile {
             this.shape[0] = 15;
             this.shape[4] = 5;
             this.shape[5] = 6;
+            this.shape[6] = 0;
         }
 
+
+    }
+
+    public int reorient_alt(int x)
+    {
+        x = x + 1;
+        if (x==1)
+            x=0;
+        else if (x == 5)
+            x = 1;
+        else if (x == 7)
+            x = 5;
+        else if (x == 11)
+            x = 7;
+        else if (x == 15)
+            x = 11;
+        else if (x==16)
+            x = 15;
+
+        return x;
 
     }
 
@@ -132,11 +187,100 @@ public class Tile {
         return x;
     }
 
+
+    public void rotate90(int n)
+    {
+        for (int i = this.shape[3]+1; i<=n;i++)
+        {
+            if ((this.name.equals("S4")) || (this.name.equals("A0")) || (this.name.equals("A5")))
+            {
+                if (i == 4) {
+                    if (this.shape[4] != 0)
+                    {
+                        this.shape[4] = reorient(this.shape[4]);
+                    }
+
+                    if (this.shape[5] != 0)
+                    {
+                        this.shape[5] = reorient(this.shape[5]);
+                    }
+                }
+            }
+            else if ((this.name.equals("A2")) || (this.name.equals("A3")))
+            {
+                if (i==4)
+                {
+                    if (this.shape[4] != 0)
+                    {
+                        this.shape[4] = reorient(this.shape[4]);
+                        this.shape[4] = reorient(this.shape[4]);
+                    }
+                    if (this.shape[5] != 0)
+                    {
+                        this.shape[5] = reorient(this.shape[5]);
+                        this.shape[5] = reorient(this.shape[5]);
+                    }
+                }
+            }
+            else if (this.name.equals("B1"))
+            {
+                if (i==4)
+                {
+                    this.shape[5] = reorient(this.shape[5]);
+                    this.shape[5] = reorient(this.shape[5]);
+                }
+            }
+            this.shape[3] = (this.shape[3]+1) % 8;
+            this.shape[4] = reorient(this.shape[4]);
+            this.shape[5] = reorient(this.shape[5]);
+        }
+
+    }
+
+
     public void rotate90(char x)
     {
         int n = Integer.parseInt(Character.toString(x));
-        for (int i = 0; i<n;i++)
+        for (int i = this.shape[3]+1; i<=n;i++)
         {
+            if ((this.name.equals("S4")) || (this.name.equals("A0")) || (this.name.equals("A5")))
+            {
+                if (i == 4) {
+                    if (this.shape[4] != 0)
+                    {
+                        this.shape[4] = reorient(this.shape[4]);
+                    }
+
+                    if (this.shape[5] != 0)
+                    {
+                        this.shape[5] = reorient(this.shape[5]);
+                    }
+                }
+            }
+            else if ((this.name.equals("A2")) || (this.name.equals("A3")))
+            {
+                if (i==4)
+                {
+                    if (this.shape[4] != 0)
+                    {
+                        this.shape[4] = reorient(this.shape[4]);
+                        this.shape[4] = reorient(this.shape[4]);
+                    }
+                    if (this.shape[5] != 0)
+                    {
+                        this.shape[5] = reorient(this.shape[5]);
+                        this.shape[5] = reorient(this.shape[5]);
+                    }
+                }
+            }
+            else if (this.name.equals("B1"))
+            {
+                if (i==4)
+                {
+                    this.shape[5] = reorient(this.shape[5]);
+                    this.shape[5] = reorient(this.shape[5]);
+                }
+            }
             this.shape[3] = (this.shape[3]+1) % 8;
             this.shape[4] = reorient(this.shape[4]);
             this.shape[5] = reorient(this.shape[5]);
@@ -247,16 +391,31 @@ public class Tile {
         return false;
     }
 
+    public boolean areNeighbours(Tile x)
+    {
+        if ((Math.abs(this.shape[1] - x.shape[1]) > 1) || (Math.abs(this.shape[2] - x.shape[2]) > 1))
+        return false;
+        else if ((Math.abs(this.shape[1] - x.shape[1]) == 1) && (Math.abs(this.shape[2] - x.shape[2]) == 1))
+        return false;
+        else
+            return true;
+    }
 
     public boolean isConnected(Tile x)
     {
+        if (x == null)
+            return false;
         boolean result = false, result_railway=false, result_highway=false;
         if ((this.shape[4] * x.shape[4] == 0) && (this.shape[5] * x.shape[5] == 0))
             result = false;
-        else if ((Math.abs(this.shape[1] - x.shape[1]) > 1) || (Math.abs(this.shape[2] - x.shape[2]) > 1))
+//        else if ((Math.abs(this.shape[1] - x.shape[1]) > 1) || (Math.abs(this.shape[2] - x.shape[2]) > 1))
+//            result = false;
+//        else if ((Math.abs(this.shape[1] - x.shape[1]) == 1) && (Math.abs(this.shape[2] - x.shape[2]) == 1))
+//            result = false;
+        else if (!areNeighbours(x))
+        {
             result = false;
-        else if ((Math.abs(this.shape[1] - x.shape[1]) == 1) && (Math.abs(this.shape[2] - x.shape[2]) == 1))
-            result = false;
+        }
         else
         {
             if ((this.shape[4] * x.shape[4] != 0))
@@ -276,10 +435,83 @@ public class Tile {
 
     public void translate(String x)
     {
+
         this.shape[1] = ((int)(x.charAt(0))-65);
         this.shape[2] = Integer.parseInt(Character.toString(x.charAt(1)));
 
     }
+
+    public void translate(int x, int y)
+    {
+        this.shape[1] = x;
+        this.shape[2] = y;
+    }
+
+    public boolean check_highway_exit()
+    {
+        int x = this.shape[1];
+        int y = this.shape[2];
+        Integer[] left = {4,6,10,7,12,13,14,15};
+        Integer[] right = {2,6,8,9,11,12,14,15};
+        Integer[] down = {3,5,9,10,11,12,13,15};
+        Integer[] up = {1,5,7,8,11,13,14,15};
+        if (((x == 0) && (y == 1)) || ((x==0) && (y==5)))
+        {
+            if (Arrays.asList(up).contains(this.shape[4]))
+                return true;
+        }
+        else if ((x == 3) && (y == 0))
+        {
+            if (Arrays.asList(left).contains(this.shape[4]))
+                return true;
+        }
+        else if ((x == 3) && (y == 6))
+        {
+            if (Arrays.asList(right).contains(this.shape[4]))
+                return true;
+        }
+        else if (((x == 6) && (y == 1)) || ((x == 6) && (y == 5)))
+        {
+            if (Arrays.asList(down).contains(this.shape[4]))
+                return true;
+        }
+
+        return false;
+    }
+
+
+    public boolean check_railway_exit()
+    {
+        int x = this.shape[1];
+        int y = this.shape[2];
+        Integer[] left = {4,6,10,7,12,13,14,15};
+        Integer[] right = {2,6,8,9,11,12,14,15};
+        Integer[] down = {3,5,9,10,11,12,13,15};
+        Integer[] up = {1,5,7,8,11,13,14,15};
+        if (((x == 1) && (y == 0)) || ((x==5) && (y==0)))
+        {
+            if (Arrays.asList(left).contains(this.shape[5]))
+                return true;
+        }
+        else if ((x == 0) && (y == 3))
+        {
+            if (Arrays.asList(up).contains(this.shape[5]))
+                return true;
+        }
+        else if ((x == 6) && (y == 3))
+        {
+            if (Arrays.asList(down).contains(this.shape[5]))
+                return true;
+        }
+        else if (((x == 1) && (y == 6)) || ((x == 5) && (y == 6)))
+        {
+            if (Arrays.asList(right).contains(this.shape[5]))
+                return true;
+        }
+
+        return false;
+    }
+
 
 
     public boolean check_exit_connection()
@@ -290,12 +522,12 @@ public class Tile {
         if (((x == 0) && (y == 1)) || ((x == 0) && (y == 5)) || ((x == 3) && (y == 0)) || ((x == 3) && (y == 6)) || ((x == 6) && (y == 1)) || ((x == 6) && (y == 5)))
         {
             //check highway exit
-            return false;
+            return check_highway_exit();
         }
         else if ((((x == 0) && (y == 3)) || ((x == 1) && (y == 0)) || ((x == 1) && (y == 6)) || ((x == 5) && (y == 0)) || ((x == 5) && (y == 6)) || ((x == 6) && (y == 3))))
         {
             //check railway exit
-            return false;
+            return check_railway_exit();
         }
         else
         {
@@ -303,5 +535,125 @@ public class Tile {
         }
     }
 
+
+    public boolean isInvalidConenction(Tile x)
+    {
+        int x1 = this.shape[1];
+        int y1 = this.shape[2];
+        int x2 = x.shape[1];
+        int y2 = x.shape[2];
+        // check for invalid exits as well
+        if (((this.shape[4] * x.shape[5]) == 0) && ((this.shape[5] * x.shape[4]) == 0))       //checks if the two tiles are incapable of making a highway railway(invalid) connection
+            return false;
+
+        if (areNeighbours(x))
+        {
+            // do stuff
+            return checkIncompatibleConnection(this, x);
+        }
+        else
+            return false;
+
+
+    }
+
+    public boolean checkIncompatibleConnection(Tile w, Tile x)
+    {
+        Integer[] left = {4,6,10,7,12,13,14,15};
+        Integer[] right = {2,6,8,9,11,12,14,15};
+        Integer[] down = {3,5,9,10,11,12,13,15};
+        Integer[] up = {1,5,7,8,11,13,14,15};
+        if (w.shape[1] == x.shape[1])
+        {
+            if ((w.shape[2] - x.shape[2]) == 1) //if w is on immediate right of x
+            {
+
+                if ((Arrays.asList(right).contains(x.shape[5])) && (Arrays.asList(left).contains(w.shape[4])))
+                {
+                    return true;
+                }
+                else if ((Arrays.asList(right).contains(x.shape[4])) && (Arrays.asList(left).contains(w.shape[5])))
+                {
+                    return true;
+                }
+            }
+            else if (x.shape[2] - w.shape[2] == 1) //if w is on the immediate left of x
+            {
+                if ((Arrays.asList(left).contains(x.shape[5])) && (Arrays.asList(right).contains(w.shape[4])))
+                {
+                    return true;
+                }
+                else if ((Arrays.asList(left).contains(x.shape[4])) && (Arrays.asList(right).contains(w.shape[5])))
+                {
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            if ((w.shape[1] - x.shape[1]) == 1) //if w is immediately below x
+            {
+
+                if ((Arrays.asList(down).contains(x.shape[5])) && (Arrays.asList(up).contains(w.shape[4])))
+                {
+                    return true;
+                }
+                else if ((Arrays.asList(down).contains(x.shape[4])) && (Arrays.asList(up).contains(w.shape[5])))
+                {
+                    return true;
+                }
+            }
+            else if (x.shape[1] - w.shape[1] == 1) //if w is immediately above x
+            {
+                if ((Arrays.asList(up).contains(x.shape[5])) && (Arrays.asList(down).contains(w.shape[4])))
+                {
+                    return true;
+                }
+                else if ((Arrays.asList(up).contains(x.shape[4])) && (Arrays.asList(down).contains(w.shape[5])))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean checkInvalidExitConnection()
+    {
+        int x = this.shape[1];
+        int y = this.shape[2];
+        Integer[] left = {4,6,10,7,12,13,14,15};
+        Integer[] right = {2,6,8,9,11,12,14,15};
+        Integer[] down = {3,5,9,10,11,12,13,15};
+        Integer[] up = {1,5,7,8,11,13,14,15};
+
+        if ((((x==1)&&(y==0)) || ((x==5)&&(y==0))) && (Arrays.asList(left).contains(this.shape[4])))
+            return true;
+        else if ((((x==1)&&(y==6)) || ((x==5)&&(y==6))) && (Arrays.asList(right).contains(this.shape[4])))
+            return true;
+        else if (((x==0)&&(y==3))  && (Arrays.asList(up).contains(this.shape[4])))
+            return true;
+        else if (((x==6)&&(y==3))  && (Arrays.asList(down).contains(this.shape[4])))
+            return true;
+        else if ((((x==0)&&(y==1)) || ((x==0)&&(y==5))) && (Arrays.asList(up).contains(this.shape[5])))
+            return true;
+        else if ((((x==6)&&(y==1)) || ((x==6)&&(y==5))) && (Arrays.asList(down).contains(this.shape[5])))
+            return true;
+        else if (((x==3)&&(y==0))  && (Arrays.asList(left).contains(this.shape[5])))
+            return true;
+        else if (((x==3)&&(y==6))  && (Arrays.asList(right).contains(this.shape[5])))
+            return true;
+        else
+            return false;
+    }
+
+    @Override
+
+    public String toString()
+    {
+        String output = "";
+        output = output + this.getName() + this.getLocation() + Integer.toString(this.shape[3]);
+        return output;
+    }
 
 }
