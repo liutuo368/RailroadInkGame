@@ -1,5 +1,7 @@
 package comp1110.ass2.gui;
 
+import comp1110.ass2.Board;
+import comp1110.ass2.Tile;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -9,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
@@ -78,6 +81,7 @@ public class Viewer extends Application {
 
     }
 
+
     void makeBoard() {
         for(int i = 0; i <= 7; i++) {
             Line l_vertical = new Line();
@@ -94,6 +98,42 @@ public class Viewer extends Application {
             l_horizontal.setEndY(Tile_START_Y + Tile_WIDTH * (i + 1));
             board.getChildren().add(l_horizontal);
         }
+
+        Line sl_vertical1 = new Line();
+        sl_vertical1.setStroke(Color.RED);
+        sl_vertical1.setStrokeWidth(2);
+        sl_vertical1.setStartX(Tile_START_X + Tile_WIDTH * 2);
+        sl_vertical1.setStartY(Tile_START_Y + Tile_WIDTH * 3);
+        sl_vertical1.setEndX(Tile_START_X + Tile_WIDTH * 2);
+        sl_vertical1.setEndY(Tile_START_Y + Tile_WIDTH * 6);
+        board.getChildren().add(sl_vertical1);
+
+        Line sl_vertical2 = new Line();
+        sl_vertical2.setStroke(Color.RED);
+        sl_vertical2.setStrokeWidth(2);
+        sl_vertical2.setStartX(Tile_START_X + Tile_WIDTH * 5);
+        sl_vertical2.setStartY(Tile_START_Y + Tile_WIDTH * 3);
+        sl_vertical2.setEndX(Tile_START_X + Tile_WIDTH * 5);
+        sl_vertical2.setEndY(Tile_START_Y + Tile_WIDTH * 6);
+        board.getChildren().add(sl_vertical2);
+
+        Line sl_horizontal1 = new Line();
+        sl_horizontal1.setStroke(Color.RED);
+        sl_horizontal1.setStrokeWidth(2);
+        sl_horizontal1.setStartX(Tile_START_X + Tile_WIDTH * 2);
+        sl_horizontal1.setStartY(Tile_START_Y + Tile_WIDTH * 3);
+        sl_horizontal1.setEndX(Tile_START_X + Tile_WIDTH * 5);
+        sl_horizontal1.setEndY(Tile_START_X + Tile_WIDTH * -0.5);
+        board.getChildren().add(sl_horizontal1);
+
+        Line sl_horizontal2 = new Line();
+        sl_horizontal2.setStroke(Color.RED);
+        sl_horizontal2.setStrokeWidth(2);
+        sl_horizontal2.setStartX(Tile_START_X + Tile_WIDTH * 2);
+        sl_horizontal2.setStartY(Tile_START_Y + Tile_WIDTH * 6);
+        sl_horizontal2.setEndX(Tile_START_X + Tile_WIDTH * 5);
+        sl_horizontal2.setEndY(Tile_START_X + Tile_WIDTH * 2.5);
+        board.getChildren().add(sl_horizontal2);
 
         Image highExit = new Image(Viewer.class.getResource(URI_BASE + "HighExit.png").toString());
         Image railExit = new Image(Viewer.class.getResource(URI_BASE + "RailExit.png").toString());
