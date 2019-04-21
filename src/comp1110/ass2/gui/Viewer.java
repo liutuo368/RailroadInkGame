@@ -35,7 +35,7 @@ public class Viewer extends Application {
 
     private final Group root = new Group();
     private final Group tiles = new Group();
-    private final Group lines = new Group();
+    private final Group board = new Group();
     private final Group controls = new Group();
     TextField textField;
 
@@ -78,22 +78,107 @@ public class Viewer extends Application {
 
     }
 
-    void makeLines() {
+    void makeBoard() {
         for(int i = 0; i <= 7; i++) {
             Line l_vertical = new Line();
             l_vertical.setStartX(Tile_START_X + Tile_WIDTH * i);
             l_vertical.setStartY(Tile_START_Y + Tile_WIDTH);
             l_vertical.setEndX(Tile_START_X + Tile_WIDTH * i);
             l_vertical.setEndY(Tile_START_Y + Tile_WIDTH * 8);
-            lines.getChildren().add(l_vertical);
+            board.getChildren().add(l_vertical);
 
             Line l_horizontal = new Line();
             l_horizontal.setStartX(Tile_START_X);
             l_horizontal.setStartY(Tile_START_Y + Tile_WIDTH * (i + 1));
             l_horizontal.setEndX(Tile_START_X + Tile_WIDTH * 7);
             l_horizontal.setEndY(Tile_START_Y + Tile_WIDTH * (i + 1));
-            lines.getChildren().add(l_horizontal);
+            board.getChildren().add(l_horizontal);
         }
+
+        Image highExit = new Image(Viewer.class.getResource(URI_BASE + "HighExit.png").toString());
+        Image railExit = new Image(Viewer.class.getResource(URI_BASE + "RailExit.png").toString());
+
+        for(int i = 0; i < 12; i++) {
+            double x = 0.0;
+            double y = 0.0;
+            int orientation = 0;
+            switch (i) {
+                case 0:
+                    x = Tile_START_X + Tile_WIDTH * 1;
+                    y = Tile_START_Y + Tile_WIDTH * 0.5;
+                    orientation = 0;
+                    break;
+                case 1:
+                    x = Tile_START_X + Tile_WIDTH * 3;
+                    y = Tile_START_Y + Tile_WIDTH * 0.5;
+                    orientation = 0;
+                    break;
+                case 2:
+                    x = Tile_START_X + Tile_WIDTH * 5;
+                    y = Tile_START_Y + Tile_WIDTH * 0.5;
+                    orientation = 0;
+                    break;
+                case 3:
+                    x = Tile_START_X + Tile_WIDTH * 6.5;
+                    y = Tile_START_Y + Tile_WIDTH * 2;
+                    orientation = 1;
+                    break;
+                case 4:
+                    x = Tile_START_X + Tile_WIDTH * 6.5;
+                    y = Tile_START_Y + Tile_WIDTH * 4;
+                    orientation = 1;
+                    break;
+                case 5:
+                    x = Tile_START_X + Tile_WIDTH * 6.5;
+                    y = Tile_START_Y + Tile_WIDTH * 6;
+                    orientation = 1;
+                    break;
+                case 6:
+                    x = Tile_START_X + Tile_WIDTH * 5;
+                    y = Tile_START_Y + Tile_WIDTH * 7.5;
+                    orientation = 2;
+                    break;
+                case 7:
+                    x = Tile_START_X + Tile_WIDTH * 3;
+                    y = Tile_START_Y + Tile_WIDTH * 7.5;
+                    orientation = 2;
+                    break;
+                case 8:
+                    x = Tile_START_X + Tile_WIDTH * 1;
+                    y = Tile_START_Y + Tile_WIDTH * 7.5;
+                    orientation = 2;
+                    break;
+                case 9:
+                    x = Tile_START_X + Tile_WIDTH * -0.5;
+                    y = Tile_START_Y + Tile_WIDTH * 6;
+                    orientation = 3;
+                    break;
+                case 10:
+                    x = Tile_START_X + Tile_WIDTH * -0.5;
+                    y = Tile_START_Y + Tile_WIDTH * 4;
+                    orientation = 3;
+                    break;
+                case 11:
+                    x = Tile_START_X + Tile_WIDTH * -0.5;
+                    y = Tile_START_Y + Tile_WIDTH * 2;
+                    orientation = 3;
+                    break;
+            }
+            ImageView exitView = new ImageView();
+            exitView.setFitWidth(Tile_WIDTH);
+            exitView.setFitHeight(Tile_WIDTH);
+            if(i%2 == 0) {
+                exitView.setImage(highExit);
+
+            } else {
+                exitView.setImage(railExit);
+            }
+            exitView.setX(x);
+            exitView.setY(y);
+            exitView.setRotate(orientation * 90);
+            board.getChildren().add(exitView);
+        }
+
     }
 
     /**
@@ -114,7 +199,7 @@ public class Viewer extends Application {
         hb.setLayoutX(130);
         hb.setLayoutY(VIEWER_HEIGHT - 50);
         controls.getChildren().add(hb);
-        makeLines();
+        makeBoard();
     }
 
     @Override
@@ -124,7 +209,7 @@ public class Viewer extends Application {
 
         root.getChildren().add(controls);
         root.getChildren().add(tiles);
-        root.getChildren().add(lines);
+        root.getChildren().add(board);
 
         makeControls();
 
