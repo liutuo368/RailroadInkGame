@@ -13,10 +13,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.util.concurrent.TimeUnit;
 
+import static comp1110.ass2.RailroadInk.generateDiceRoll;
 import static comp1110.ass2.RailroadInk.isBoardStringWellFormed;
 
 
@@ -31,7 +33,7 @@ public class Viewer extends Application {
     private static final int VIEWER_WIDTH = 1024;
     private static final int VIEWER_HEIGHT = 768;
     private static final double Tile_WIDTH = 70.0;
-    private static final double Tile_START_X = VIEWER_WIDTH / 10 * 3;
+    private static final double Tile_START_X = VIEWER_WIDTH / 10 * 2;
     private static final double Tile_START_Y = 60;
 
     private static final String URI_BASE = "assets/";
@@ -40,10 +42,43 @@ public class Viewer extends Application {
     private final Group tiles = new Group();
     private final Group board = new Group();
     private final Group controls = new Group();
+    private final Group diceRolls = new Group();
+    private final Group specialTiles = new Group();
     TextField textField;
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    class TileImage extends ImageView {
+        double mouseX, mouseY;
+        double startX, startY;
+        int orientation;
+
+        TileImage(Image image, double startX, double startY, int orientation) {
+            super(image);
+            this.startX = startX;
+            this.startY = startY;
+            this.orientation = orientation;
+            setFitHeight(Tile_WIDTH);
+            setFitWidth(Tile_WIDTH);
+            setX(startX);
+            setY(startY);
+            setOrientation();
+
+            setOnScroll(event -> {
+                this.orientation = (this.orientation + 1) % 8;
+                setOrientation();
+            });
+
+        }
+
+        void setOrientation() {
+            if(this.orientation >= 4) {
+                setScaleX(-1);
+            }
+            setRotate(this.orientation * 90);
+        }
     }
 
     /**
@@ -62,7 +97,7 @@ public class Viewer extends Application {
                 int orientation = placement.charAt(i + 4) - 48;
 
                 Image image =new Image(Viewer.class.getResource(URI_BASE+img+".png").toString());
-                ImageView imageview = new ImageView();
+                /*ImageView imageview = new ImageView();
                 imageview.setImage(image);
                 imageview.setFitWidth(Tile_WIDTH);
                 imageview.setFitHeight(Tile_WIDTH);
@@ -72,9 +107,11 @@ public class Viewer extends Application {
                 if(orientation >=4){
                     imageview.setScaleX(-1);
                 }
-                imageview.setRotate(orientation * 90);
+                imageview.setRotate(orientation * 90);*/
 
-                tiles.getChildren().add(imageview);
+                TileImage tileImage = new TileImage(image, Tile_START_X + Tile_WIDTH * col, Tile_START_Y + Tile_WIDTH * row, orientation);
+
+                tiles.getChildren().add(tileImage);
 
             }
         }
@@ -123,7 +160,7 @@ public class Viewer extends Application {
         sl_horizontal1.setStartX(Tile_START_X + Tile_WIDTH * 2);
         sl_horizontal1.setStartY(Tile_START_Y + Tile_WIDTH * 3);
         sl_horizontal1.setEndX(Tile_START_X + Tile_WIDTH * 5);
-        sl_horizontal1.setEndY(Tile_START_X + Tile_WIDTH * -0.5);
+        sl_horizontal1.setEndY(Tile_START_Y + Tile_WIDTH * 3);
         board.getChildren().add(sl_horizontal1);
 
         Line sl_horizontal2 = new Line();
@@ -132,7 +169,7 @@ public class Viewer extends Application {
         sl_horizontal2.setStartX(Tile_START_X + Tile_WIDTH * 2);
         sl_horizontal2.setStartY(Tile_START_Y + Tile_WIDTH * 6);
         sl_horizontal2.setEndX(Tile_START_X + Tile_WIDTH * 5);
-        sl_horizontal2.setEndY(Tile_START_X + Tile_WIDTH * 2.5);
+        sl_horizontal2.setEndY(Tile_START_Y + Tile_WIDTH * 6);
         board.getChildren().add(sl_horizontal2);
 
         Image highExit = new Image(Viewer.class.getResource(URI_BASE + "HighExit.png").toString());
@@ -221,10 +258,69 @@ public class Viewer extends Application {
 
     }
 
+    private void makeSpecialTiles() {
+        specialTiles.getChildren().clear();
+        double x = Tile_START_X + Tile_WIDTH;
+        for(int i=0; i<6; i++) {
+            String img = "S" + i;
+            Image image = new Image(Viewer.class.getResource(URI_BASE + img + ".png").toString());
+            /*ImageView imageview = new ImageView();
+            imageview.setImage(image);
+            imageview.setFitWidth(Tile_WIDTH);
+            imageview.setFitHeight(Tile_WIDTH);
+            imageview.setX(x);
+            imageview.setY(Tile_START_Y / 3);*/
+            TileImage tileImage = new TileImage(image, x, Tile_START_Y / 3, 0);
+            x += Tile_WIDTH * 1.5;
+
+            specialTiles.getChildren().add(tileImage);
+        }
+    }
+
+    private void rollDice() {
+        diceRolls.getChildren().clear();
+        String diceRoll = generateDiceRoll();
+        double y = Tile_START_Y + Tile_WIDTH * 1.5;
+        for(int i=0; i<8; i+=2) {
+            String img = diceRoll.substring(i, i+2);
+            Image image =new Image(Viewer.class.getResource(URI_BASE + img + ".png").toString());
+            TileImage tileImage = new TileImage(image, Tile_START_X + Tile_WIDTH * 9, y, 0);
+           /* ImageView imageview = new ImageView();
+            imageview.setImage(image);
+            imageview.setFitWidth(Tile_WIDTH);
+            imageview.setFitHeight(Tile_WIDTH);
+            imageview.setX(Tile_START_X + Tile_WIDTH * 9);
+            imageview.setY(y);*/
+            y += Tile_WIDTH * 1.5;
+
+            diceRolls.getChildren().add(tileImage);
+        }
+    }
+
     /**
      * Create a basic text field for input and a refresh button.
      */
     private void makeControls() {
+
+        Button button1 = new Button("Roll Dice");
+        button1.setOnAction(e -> {
+            rollDice();
+        });
+        button1.setLayoutX(Tile_START_X + Tile_WIDTH * 9);
+        button1.setLayoutY(Tile_START_X + Tile_WIDTH * 6);
+
+        Label label = new Label("Special Tiles:");
+        label.setFont(Font.font("Cambria", 24));
+        label.setLayoutX(Tile_START_X / 5);
+        label.setLayoutY(Tile_START_Y / 2);
+
+        controls.getChildren().addAll(button1, label);
+
+        makeSpecialTiles();
+
+        makeBoard();
+
+        /*
         Label label1 = new Label("Placement:");
         textField = new TextField();
         textField.setPrefWidth(300);
@@ -239,7 +335,8 @@ public class Viewer extends Application {
         hb.setLayoutX(130);
         hb.setLayoutY(VIEWER_HEIGHT - 50);
         controls.getChildren().add(hb);
-        makeBoard();
+        makeBoard(); */
+
     }
 
     @Override
@@ -250,6 +347,8 @@ public class Viewer extends Application {
         root.getChildren().add(controls);
         root.getChildren().add(tiles);
         root.getChildren().add(board);
+        root.getChildren().add(diceRolls);
+        root.getChildren().add(specialTiles);
 
         makeControls();
 
