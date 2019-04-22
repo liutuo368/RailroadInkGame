@@ -31,14 +31,7 @@ public class Board
     }
 
 
-//    public void place_tile(Tile x) {
-//        Integer[] left = {4, 6, 10, 7, 12, 13, 14, 15};
-//        Integer[] right = {2, 6, 8, 9, 11, 12, 14, 15};
-//        Integer[] down = {3, 5, 9, 10, 11, 12, 13, 15};
-//        Integer[] up = {1, 5, 7, 8, 11, 13, 14, 15};
-//        int[] shape = x.getShape();
-//        this.board[shape[1]][shape[2]] = x;
-//    }
+
 
     public void place_tile(Tile x)
     {
@@ -46,30 +39,7 @@ public class Board
         this.board[x.shape[1]][x.shape[2]] = new Tile(x.getName(), x.shape);
     }
 
-//        if (shape[4]!=0)
-//        {
-//            if (Arrays.asList(left).contains(shape[4]))
-//                this.roadDirection[shape[1]][shape[2]].left = "H";
-//            if (Arrays.asList(right).contains(shape[4]))
-//                this.roadDirection[shape[1]][shape[2]].right = "H";
-//            if (Arrays.asList(up).contains(shape[4]))
-//                this.roadDirection[shape[1]][shape[2]].up = "H";
-//            if (Arrays.asList(down).contains(shape[4]))
-//                this.roadDirection[shape[1]][shape[2]].down = "H";
-//        }
-//        if (shape[5]!=0)
-//        {
-//            if (Arrays.asList(left).contains(shape[5]))
-//                this.roadDirection[shape[1]][shape[2]].left = "R";
-//            if (Arrays.asList(right).contains(shape[5]))
-//                this.roadDirection[shape[1]][shape[2]].right = "R";
-//            if (Arrays.asList(up).contains(shape[5]))
-//                this.roadDirection[shape[1]][shape[2]].up = "R";
-//            if (Arrays.asList(down).contains(shape[5]))
-//                this.roadDirection[shape[1]][shape[2]].down = "R";
-//        }
-//
-//    }
+
 
 
     public boolean checkInvalidConnection(Tile x)

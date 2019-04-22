@@ -18,8 +18,7 @@ import javafx.stage.Stage;
 
 import java.util.concurrent.TimeUnit;
 
-import static comp1110.ass2.RailroadInk.generateDiceRoll;
-import static comp1110.ass2.RailroadInk.isBoardStringWellFormed;
+import static comp1110.ass2.RailroadInk.*;
 
 
 /**
@@ -36,6 +35,14 @@ public class Viewer extends Application {
     private static final double Tile_START_X = VIEWER_WIDTH / 10 * 2;
     private static final double Tile_START_Y = 60;
 
+    protected static String CURRENT_PLACEMENT = "";
+    private String ROLL_MEMBERS = "";
+    private String SPECIAL_MEMBERS = "S0S1S2S3S4S5";
+    private int specialCount = 0;
+    private int round = 0;
+    private int tilesLeft = 0;
+    private boolean roundSpecialUsed = false;
+
     private static final String URI_BASE = "assets/";
 
     private final Group root = new Group();
@@ -50,34 +57,193 @@ public class Viewer extends Application {
         launch(args);
     }
 
+    class Grid {
+        private double x;
+        private double y;
+
+        public Grid(double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        public double getX() {
+            return this.x;
+        }
+
+        public double getY() {
+            return this.y;
+        }
+    }
+
+    Grid[][] grids = new Grid[7][7];
+
+    private void initGrids() {
+        for(int i = 0; i < 7; i++) {
+            for(int j = 0; j < 7; j++) {
+                grids[i][j] = new Grid(Tile_START_X + Tile_WIDTH * j, Tile_START_Y + Tile_WIDTH * (i+1));
+            }
+        }
+    }
+
     class TileImage extends ImageView {
         double mouseX, mouseY;
-        double startX, startY;
+        double homeX, homeY;
+        String name;
         int orientation;
+        int row, col;
+        boolean isPlaced, dragable, isSpecial;
 
-        TileImage(Image image, double startX, double startY, int orientation) {
+        TileImage(Image image, String name, double startX, double startY, int orientation) {
             super(image);
-            this.startX = startX;
-            this.startY = startY;
+            this.row = -1;
+            this.col = -1;
+            this.isPlaced = false;
+            this.dragable = true;
+            this.name = name;
             this.orientation = orientation;
+            this.homeX = startX;
+            this.homeY = startY;
+            if(name.charAt(0) == 'S') {
+                this.isSpecial = true;
+            } else {
+                this.isSpecial = false;
+            }
+
             setFitHeight(Tile_WIDTH);
             setFitWidth(Tile_WIDTH);
-            setX(startX);
-            setY(startY);
+            setLayoutX(startX);
+            setLayoutY(startY);
             setOrientation();
 
+            setOnMousePressed(event -> {
+                if(!this.isPlaced) {
+                    mouseX = event.getSceneX();
+                    mouseY = event.getSceneY();
+                }
+            });
+
+            setOnMouseDragged(event -> {
+                if(!this.isPlaced){
+                    toFront();
+                    double movementX = event.getSceneX() - mouseX;
+                    double movementY = event.getSceneY() - mouseY;
+                    setLayoutX(getLayoutX() + movementX);
+                    setLayoutY(getLayoutY() + movementY);
+                    mouseX = event.getSceneX();
+                    mouseY = event.getSceneY();
+                }
+                event.consume();
+            });
+
+            setOnMouseReleased(event -> {
+                if(!this.isPlaced) {
+                    if(!snapToGrid())
+                        snapToHome();
+                }
+            });
+
             setOnScroll(event -> {
-                this.orientation = (this.orientation + 1) % 8;
+                double deltaY = event.getDeltaY();
+                if (deltaY < 0)
+                    this.orientation = (this.orientation - 1) % 8;
+                else
+                    this.orientation = (this.orientation + 1) % 8;
                 setOrientation();
+                if(!this.isPlaced){
+                    this.orientation = (this.orientation + 1) % 8;
+                    setOrientation();
+                }
+                event.consume();
             });
 
         }
 
-        void setOrientation() {
+        @Override
+        public String toString() {
+            return this.name + rowtoString(this.row) + this.col + this.orientation;
+        }
+
+        private void setOrientation() {
             if(this.orientation >= 4) {
                 setScaleX(-1);
             }
             setRotate(this.orientation * 90);
+        }
+
+        private boolean onBoard() {
+            return getLayoutX() > (Tile_START_X - Tile_WIDTH) && (getLayoutX() < (Tile_START_X + Tile_WIDTH * 8))
+                    && getLayoutY() > (Tile_START_Y - Tile_WIDTH) && (getLayoutY() < (Tile_START_Y + Tile_WIDTH * 8));
+        }
+
+        private void snapToHome() {
+                setLayoutX(homeX);
+                setLayoutY(homeY);
+        }
+
+        private String rowtoString(int row) {
+            String value = "";
+            switch (row) {
+                case 0: value = "A"; break;
+                case 1: value =  "B"; break;
+                case 2: value =  "C"; break;
+                case 3: value =  "D"; break;
+                case 4: value =  "E"; break;
+                case 5: value =  "F"; break;
+                case 6: value =  "G"; break;
+            }
+            return value;
+        }
+
+        private boolean snapToGrid() {
+            if(this.isSpecial) {
+                if(specialCount >= 3 || roundSpecialUsed) {
+                    return false;
+                }
+            }
+            for(int i = 0; i < 7; i++) {
+                for(int j = 0; j < 7; j++) {
+                    if((Math.abs(getLayoutX() - grids[i][j].getX()) < (Tile_WIDTH / 4)) && (Math.abs(getLayoutY() - grids[i][j].getY()) < (Tile_WIDTH / 4))) {
+                        if(isValidPlacementSequence(CURRENT_PLACEMENT + this.name + rowtoString(i) + j + this.orientation)){
+                            if(this.isSpecial) {
+                                specialCount += 1;
+                                roundSpecialUsed = true;
+                                specialLabel.setText("Special tiles used: " + specialCount);
+                            } else {
+                                tilesLeft -= 1;
+                            }
+                            setLayoutX(grids[i][j].getX());
+                            setLayoutY(grids[i][j].getY());
+                            this.row = i;
+                            this.col = j;
+                            CURRENT_PLACEMENT += this.toString();
+                            this.isPlaced = true;
+                            tiles.getChildren().add(this);
+                            if(this.isSpecial) {
+                                specialTiles.getChildren().remove(this);
+                                SPECIAL_MEMBERS = SPECIAL_MEMBERS.replaceFirst(this.name, "");
+                            } else {
+                                diceRolls.getChildren().remove(this);
+                                ROLL_MEMBERS = ROLL_MEMBERS.replaceFirst(this.name, "");
+                            }
+                            /*
+                            if(generateMove(CURRENT_PLACEMENT, ROLL_MEMBERS + SPECIAL_MEMBERS) == "") {
+                                gameOver();
+                            }
+                            */
+                            if(tilesLeft == 0) {
+                                if(round < 7) {
+                                    rollDice();
+                                } else {
+                                    gameOver();
+                                }
+                            }
+                            return true;
+                        }
+
+                    }
+                }
+            }
+            return false;
         }
     }
 
@@ -109,7 +275,7 @@ public class Viewer extends Application {
                 }
                 imageview.setRotate(orientation * 90);*/
 
-                TileImage tileImage = new TileImage(image, Tile_START_X + Tile_WIDTH * col, Tile_START_Y + Tile_WIDTH * row, orientation);
+                TileImage tileImage = new TileImage(image, img, Tile_START_X + Tile_WIDTH * col, Tile_START_Y + Tile_WIDTH * row, orientation);
 
                 tiles.getChildren().add(tileImage);
 
@@ -120,6 +286,7 @@ public class Viewer extends Application {
 
 
     void makeBoard() {
+        initGrids();
         for(int i = 0; i <= 7; i++) {
             Line l_vertical = new Line();
             l_vertical.setStartX(Tile_START_X + Tile_WIDTH * i);
@@ -270,7 +437,7 @@ public class Viewer extends Application {
             imageview.setFitHeight(Tile_WIDTH);
             imageview.setX(x);
             imageview.setY(Tile_START_Y / 3);*/
-            TileImage tileImage = new TileImage(image, x, Tile_START_Y / 3, 0);
+            TileImage tileImage = new TileImage(image, img, x, Tile_START_Y / 3, 0);
             x += Tile_WIDTH * 1.5;
 
             specialTiles.getChildren().add(tileImage);
@@ -278,23 +445,36 @@ public class Viewer extends Application {
     }
 
     private void rollDice() {
-        diceRolls.getChildren().clear();
-        String diceRoll = generateDiceRoll();
-        double y = Tile_START_Y + Tile_WIDTH * 1.5;
-        for(int i=0; i<8; i+=2) {
-            String img = diceRoll.substring(i, i+2);
-            Image image =new Image(Viewer.class.getResource(URI_BASE + img + ".png").toString());
-            TileImage tileImage = new TileImage(image, Tile_START_X + Tile_WIDTH * 9, y, 0);
+        if(tilesLeft == 0) {
+            round += 1;
+            roundLabel.setText("Round: " + round);
+            diceRolls.getChildren().clear();
+            String diceRoll = generateDiceRoll();
+            ROLL_MEMBERS = "";
+            double y = Tile_START_Y + Tile_WIDTH * 1.5;
+            for(int i=0; i<8; i+=2) {
+                String img = diceRoll.substring(i, i+2);
+                ROLL_MEMBERS += img;
+                Image image =new Image(Viewer.class.getResource(URI_BASE + img + ".png").toString());
+                TileImage tileImage = new TileImage(image, img, Tile_START_X + Tile_WIDTH * 9, y, 0);
            /* ImageView imageview = new ImageView();
             imageview.setImage(image);
             imageview.setFitWidth(Tile_WIDTH);
             imageview.setFitHeight(Tile_WIDTH);
             imageview.setX(Tile_START_X + Tile_WIDTH * 9);
             imageview.setY(y);*/
-            y += Tile_WIDTH * 1.5;
-
-            diceRolls.getChildren().add(tileImage);
+                y += Tile_WIDTH * 1.5;
+                diceRolls.getChildren().add(tileImage);
+            }
+            tilesLeft = 4;
         }
+    }
+
+    Label roundLabel = new Label("Round: " + round);
+    Label specialLabel = new Label("Special tiles used: " + specialCount);
+
+    private void gameOver() {
+
     }
 
     /**
@@ -302,32 +482,41 @@ public class Viewer extends Application {
      */
     private void makeControls() {
 
-        Button button1 = new Button("Roll Dice");
+        /*Button button1 = new Button("Next Round");
         button1.setOnAction(e -> {
             rollDice();
         });
         button1.setLayoutX(Tile_START_X + Tile_WIDTH * 9);
-        button1.setLayoutY(Tile_START_X + Tile_WIDTH * 6);
+        button1.setLayoutY(Tile_START_X + Tile_WIDTH * 6);*/
 
         Label label = new Label("Special Tiles:");
         label.setFont(Font.font("Cambria", 24));
         label.setLayoutX(Tile_START_X / 5);
         label.setLayoutY(Tile_START_Y / 2);
 
-        controls.getChildren().addAll(button1, label);
+        specialLabel.setFont(Font.font("Cambria", 15));
+        specialLabel.setLayoutX(Tile_START_X / 5);
+        specialLabel.setLayoutY(Tile_START_Y * 1.2);
+
+        roundLabel.setFont(Font.font("Cambria", 20));
+        roundLabel.setLayoutX(Tile_START_X / 5);
+        roundLabel.setLayoutY(Tile_START_Y * 2);
+
+        controls.getChildren().addAll(label, roundLabel, specialLabel);
 
         makeSpecialTiles();
 
         makeBoard();
 
-        /*
+
         Label label1 = new Label("Placement:");
         textField = new TextField();
         textField.setPrefWidth(300);
         Button button = new Button("Refresh");
         button.setOnAction(e -> {
-            makePlacement(textField.getText());
-            textField.clear();
+           /* makePlacement(textField.getText());
+            textField.clear();*/
+           textField.setText(CURRENT_PLACEMENT);
         });
         HBox hb = new HBox();
         hb.getChildren().addAll(label1, textField, button);
@@ -335,7 +524,8 @@ public class Viewer extends Application {
         hb.setLayoutX(130);
         hb.setLayoutY(VIEWER_HEIGHT - 50);
         controls.getChildren().add(hb);
-        makeBoard(); */
+        makeBoard();
+        rollDice();
 
     }
 
