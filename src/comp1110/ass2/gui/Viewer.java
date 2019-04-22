@@ -67,7 +67,11 @@ public class Viewer extends Application {
             setOrientation();
 
             setOnScroll(event -> {
-                this.orientation = (this.orientation + 1) % 8;
+                double deltaY = event.getDeltaY();
+                if (deltaY < 0)
+                    this.orientation = (this.orientation - 1) % 8;
+                else
+                    this.orientation = (this.orientation + 1) % 8;
                 setOrientation();
             });
 
