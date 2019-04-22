@@ -36,6 +36,8 @@ public class Viewer extends Application {
     private static final double Tile_START_Y = 60;
 
     protected static String CURRENT_PLACEMENT = "";
+    private String ROLL_MEMBERS = "";
+    private String SPECIAL_MEMBERS = "S0S1S2S3S4S5";
     private int specialCount = 0;
     private int round = 0;
     private int tilesLeft = 0;
@@ -187,18 +189,22 @@ public class Viewer extends Application {
         }
 
         private boolean snapToGrid() {
+            if(this.isSpecial) {
+                if(specialCount >= 3 || roundSpecialUsed) {
+                    return false;
+                }
+            }
             for(int i = 0; i < 7; i++) {
                 for(int j = 0; j < 7; j++) {
                     if((Math.abs(getLayoutX() - grids[i][j].getX()) < (Tile_WIDTH / 4)) && (Math.abs(getLayoutY() - grids[i][j].getY()) < (Tile_WIDTH / 4))) {
-                        String tmpPlacement = "";
-                            tmpPlacement = CURRENT_PLACEMENT;
-                        if(isValidPlacementSequence(tmpPlacement + this.name + rowtoString(i) + j + this.orientation)){
-                                if(this.isSpecial) {
-                                    specialCount += 1;
-                                    roundSpecialUsed = true;
-                                } else {
-                                    tilesLeft -= 1;
-                                }
+                        if(isValidPlacementSequence(CURRENT_PLACEMENT + this.name + rowtoString(i) + j + this.orientation)){
+                            if(this.isSpecial) {
+                                specialCount += 1;
+                                roundSpecialUsed = true;
+                                specialLabel.setText("Special tiles used: " + specialCount);
+                            } else {
+                                tilesLeft -= 1;
+                            }
                             setLayoutX(grids[i][j].getX());
                             setLayoutY(grids[i][j].getY());
                             this.row = i;
@@ -208,8 +214,22 @@ public class Viewer extends Application {
                             tiles.getChildren().add(this);
                             if(this.isSpecial) {
                                 specialTiles.getChildren().remove(this);
+                                SPECIAL_MEMBERS = SPECIAL_MEMBERS.replaceFirst(this.name, "");
                             } else {
                                 diceRolls.getChildren().remove(this);
+                                ROLL_MEMBERS = ROLL_MEMBERS.replaceFirst(this.name, "");
+                            }
+                            /*
+                            if(generateMove(CURRENT_PLACEMENT, ROLL_MEMBERS + SPECIAL_MEMBERS) == "") {
+                                gameOver();
+                            }
+                            */
+                            if(tilesLeft == 0) {
+                                if(round < 7) {
+                                    rollDice();
+                                } else {
+                                    gameOver();
+                                }
                             }
                             return true;
                         }
@@ -419,24 +439,36 @@ public class Viewer extends Application {
     }
 
     private void rollDice() {
-        diceRolls.getChildren().clear();
-        String diceRoll = generateDiceRoll();
-        double y = Tile_START_Y + Tile_WIDTH * 1.5;
-        for(int i=0; i<8; i+=2) {
-            String img = diceRoll.substring(i, i+2);
-            Image image =new Image(Viewer.class.getResource(URI_BASE + img + ".png").toString());
-            TileImage tileImage = new TileImage(image, img, Tile_START_X + Tile_WIDTH * 9, y, 0);
+        if(tilesLeft == 0) {
+            round += 1;
+            roundLabel.setText("Round: " + round);
+            diceRolls.getChildren().clear();
+            String diceRoll = generateDiceRoll();
+            ROLL_MEMBERS = "";
+            double y = Tile_START_Y + Tile_WIDTH * 1.5;
+            for(int i=0; i<8; i+=2) {
+                String img = diceRoll.substring(i, i+2);
+                ROLL_MEMBERS += img;
+                Image image =new Image(Viewer.class.getResource(URI_BASE + img + ".png").toString());
+                TileImage tileImage = new TileImage(image, img, Tile_START_X + Tile_WIDTH * 9, y, 0);
            /* ImageView imageview = new ImageView();
             imageview.setImage(image);
             imageview.setFitWidth(Tile_WIDTH);
             imageview.setFitHeight(Tile_WIDTH);
             imageview.setX(Tile_START_X + Tile_WIDTH * 9);
             imageview.setY(y);*/
-            y += Tile_WIDTH * 1.5;
-
-            diceRolls.getChildren().add(tileImage);
+                y += Tile_WIDTH * 1.5;
+                diceRolls.getChildren().add(tileImage);
+            }
+            tilesLeft = 4;
         }
-        tilesLeft = 4;
+    }
+
+    Label roundLabel = new Label("Round: " + round);
+    Label specialLabel = new Label("Special tiles used: " + specialCount);
+
+    private void gameOver() {
+
     }
 
     /**
@@ -444,19 +476,27 @@ public class Viewer extends Application {
      */
     private void makeControls() {
 
-        Button button1 = new Button("Next Round");
+        /*Button button1 = new Button("Next Round");
         button1.setOnAction(e -> {
             rollDice();
         });
         button1.setLayoutX(Tile_START_X + Tile_WIDTH * 9);
-        button1.setLayoutY(Tile_START_X + Tile_WIDTH * 6);
+        button1.setLayoutY(Tile_START_X + Tile_WIDTH * 6);*/
 
         Label label = new Label("Special Tiles:");
         label.setFont(Font.font("Cambria", 24));
         label.setLayoutX(Tile_START_X / 5);
         label.setLayoutY(Tile_START_Y / 2);
 
-        controls.getChildren().addAll(button1, label);
+        specialLabel.setFont(Font.font("Cambria", 15));
+        specialLabel.setLayoutX(Tile_START_X / 5);
+        specialLabel.setLayoutY(Tile_START_Y * 1.2);
+
+        roundLabel.setFont(Font.font("Cambria", 20));
+        roundLabel.setLayoutX(Tile_START_X / 5);
+        roundLabel.setLayoutY(Tile_START_Y * 2);
+
+        controls.getChildren().addAll(label, roundLabel, specialLabel);
 
         makeSpecialTiles();
 
