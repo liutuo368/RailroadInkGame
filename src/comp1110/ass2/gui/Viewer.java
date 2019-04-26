@@ -143,17 +143,20 @@ public class Viewer extends Application {
             });
 
             setOnScroll(event -> {
-                double deltaY = event.getDeltaY();
-                if (deltaY < 0)
-                    this.orientation = (this.orientation - 1) % 8;
-                else
-                    this.orientation = (this.orientation + 1) % 8;
-                setOrientation();
-                if(!this.isPlaced){
-                    this.orientation = (this.orientation + 1) % 8;
+                if (!this.isPlaced)
+                {
+                    double deltaY = event.getDeltaY();
+                    if (deltaY < 0)
+                        this.orientation = (this.orientation - 1) % 8;
+                    else
+                        this.orientation = (this.orientation + 1) % 8;
                     setOrientation();
+//                if(!this.isPlaced){
+//                    this.orientation = (this.orientation + 1) % 8;
+//                    setOrientation();
+//                }
+                    event.consume();
                 }
-                event.consume();
             });
 
         }
@@ -225,11 +228,11 @@ public class Viewer extends Application {
                                 diceRolls.getChildren().remove(this);
                                 ROLL_MEMBERS = ROLL_MEMBERS.replaceFirst(this.name, "");
                             }
-                            /*
-                            if(generateMove(CURRENT_PLACEMENT, ROLL_MEMBERS + SPECIAL_MEMBERS) == "") {
-                                gameOver();
-                            }
-                            */
+//                            /*
+//                            if(generateMove(CURRENT_PLACEMENT, ROLL_MEMBERS) == "") {
+//                                gameOver();
+//                            }
+//                            */
                             if(tilesLeft == 0) {
                                 if(round < 7) {
                                     rollDice();
