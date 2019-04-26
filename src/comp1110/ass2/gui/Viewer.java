@@ -8,13 +8,21 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.ImageInput;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.util.concurrent.TimeUnit;
 
@@ -475,6 +483,40 @@ public class Viewer extends Application {
 
     private void gameOver() {
 
+        Image img = new Image(Viewer.class.getResource(URI_BASE+"WOW.png").toString());
+        ImageView imageview = new ImageView(img);
+        imageview.setX(250);
+        imageview.setY(10);
+        imageview.setFitWidth(120);
+        imageview.setFitHeight(120);
+
+        Label label1 = new Label("CONGRATULATIONS... YOU BEAT THE GAME!");
+        label1.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.REGULAR,20));
+        label1.setLayoutX(150);
+        label1.setLayoutY(110);
+
+        Label label2 = new Label("Your Score: ");
+        label2.setFont(Font.font("Abyssinica SIL", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
+        label2.setLayoutX(250);
+        label2.setLayoutY(160);
+
+        Group root = new Group();
+        root.getChildren().addAll(label1,label2,imageview);
+
+       // StackPane layout = new StackPane();
+        //layout.getChildren().addAll(label1,label2);
+
+        Scene scene = new Scene(root, 640, 300);
+
+        //New window
+        Stage gameOverWindow = new Stage();
+        gameOverWindow.setTitle("Game Over");
+        gameOverWindow.setScene(scene);
+
+        gameOverWindow.setX(200);
+        gameOverWindow.setY(100);
+
+        gameOverWindow.show();
     }
 
     /**
@@ -518,12 +560,21 @@ public class Viewer extends Application {
             textField.clear();*/
            textField.setText(CURRENT_PLACEMENT);
         });
+
+        Button button1 = new Button("gameover");
+        button1.setLayoutX(0);
+        button1.setLayoutY(0);
+        button1.setOnAction(e -> {
+           gameOver();
+        });
+
         HBox hb = new HBox();
         hb.getChildren().addAll(label1, textField, button);
         hb.setSpacing(10);
         hb.setLayoutX(130);
         hb.setLayoutY(VIEWER_HEIGHT - 50);
         controls.getChildren().add(hb);
+        controls.getChildren().add(button1);
         makeBoard();
         rollDice();
 
