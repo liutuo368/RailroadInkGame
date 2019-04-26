@@ -153,10 +153,10 @@ public class Viewer extends Application {
             setOnScroll(event -> {
                 if (!this.isPlaced)
                 {
-                    double deltaY = event.getDeltaY();
-                    if (deltaY < 0)
-                        this.orientation = (this.orientation - 1) % 8;
-                    else
+                    //double deltaY = event.getDeltaY();
+                  //  if (deltaY < 0)
+                  //      this.orientation = (this.orientation - 1) % 8;
+                  //  else
                         this.orientation = (this.orientation + 1) % 8;
                     setOrientation();
 //                if(!this.isPlaced){
@@ -494,14 +494,14 @@ public class Viewer extends Application {
         imageview.setFitHeight(120);
 
         Label label1 = new Label("CONGRATULATIONS... YOU BEAT THE GAME!");
-        label1.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.REGULAR,20));
-        label1.setLayoutX(150);
-        label1.setLayoutY(110);
+        label1.setFont(Font.font("family", FontWeight.BLACK.EXTRA_BOLD, FontPosture.REGULAR,20));
+        label1.setLayoutX(120);
+        label1.setLayoutY(130);
 
-        Label label2 = new Label("Your Score: ");
-        label2.setFont(Font.font("Abyssinica SIL", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
+        Label label2 = new Label("Your Score: " + getBasicScore(CURRENT_PLACEMENT));
+        label2.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
         label2.setLayoutX(250);
-        label2.setLayoutY(160);
+        label2.setLayoutY(170);
 
         Group root = new Group();
         root.getChildren().addAll(label1,label2,imageview);
@@ -554,14 +554,14 @@ public class Viewer extends Application {
         makeBoard();
 
 
-        Label label1 = new Label("Placement:");
+        /*Label label1 = new Label("Placement:");
         textField = new TextField();
         textField.setPrefWidth(300);
         Button button = new Button("Refresh");
         button.setOnAction(e -> {
-           /* makePlacement(textField.getText());
-            textField.clear();*/
-           textField.setText(CURRENT_PLACEMENT);
+           makePlacement(textField.getText());
+            textField.clear();
+           //textField.setText(CURRENT_PLACEMENT);
         });
 
         Button button1 = new Button("gameover");
@@ -569,15 +569,15 @@ public class Viewer extends Application {
         button1.setLayoutY(0);
         button1.setOnAction(e -> {
            gameOver();
-        });
+        });*/
 
-        HBox hb = new HBox();
+        /*HBox hb = new HBox();
         hb.getChildren().addAll(label1, textField, button);
         hb.setSpacing(10);
         hb.setLayoutX(130);
         hb.setLayoutY(VIEWER_HEIGHT - 50);
         controls.getChildren().add(hb);
-        controls.getChildren().add(button1);
+        controls.getChildren().add(button1);*/
         makeBoard();
         rollDice();
 
