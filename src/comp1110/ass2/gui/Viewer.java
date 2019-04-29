@@ -177,8 +177,12 @@ public class Viewer extends Application {
         private void setOrientation() {
             if(this.orientation >= 4) {
                 setScaleX(-1);
+                setRotate(this.orientation * 90);
+            } else {
+                setScaleX(1);
+                setRotate(this.orientation * 90);
             }
-            setRotate(this.orientation * 90);
+
         }
 
         private boolean onBoard() {
