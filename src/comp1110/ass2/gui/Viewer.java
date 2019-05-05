@@ -586,6 +586,7 @@ public class Viewer extends Application {
         round = 0;
         tilesLeft = 0;
         roundSpecialUsed = false;
+        currentPlayer = 1;
         makeControls();
         gameOver = false;
     }
