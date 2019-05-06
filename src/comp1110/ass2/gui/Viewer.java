@@ -608,13 +608,43 @@ public class Viewer extends Application {
         label2.setLayoutX(250);
         label2.setLayoutY(170);
 
+        Label label3 = new Label("First player's score: " + getBasicScore(getPlacement(1)));
+        label3.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
+        label3.setLayoutX(250);
+        label3.setLayoutY(170);
+
+        Label label4 = new Label("Second player's score: " + getBasicScore(getPlacement(2)));
+        label4.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
+        label4.setLayoutX(250);
+        label4.setLayoutY(170);
+
+
+        Button restartButton = new Button("Restart Game");
+        restartButton.setOnAction(e -> {
+            restartGame();
+        });
+        restartButton.setLayoutX(250);
+        restartButton.setLayoutY(170);
+
         Group root = new Group();
-        root.getChildren().addAll(label1,label2,imageview);
+        root.getChildren().addAll(label1,label2,imageview,restartButton);
 
-       // StackPane layout = new StackPane();
-        //layout.getChildren().addAll(label1,label2);
+        Group root1 = new Group();
+        root1.getChildren().addAll(label3,label3,imageview,restartButton);
 
-        Scene scene = new Scene(root, 640, 300);
+        Scene scene;
+        if(multiPlayer)
+        {
+            scene = new Scene(root1, 640, 300);
+        }
+
+        else
+        {
+            scene = new Scene(root, 640, 300);
+
+        }
+
+        //Scene scene = new Scene(root, 640, 300);
 
         //New window
         Stage gameOverWindow = new Stage();
