@@ -249,6 +249,9 @@ public class RailroadInk {
         if (!isValidPlacementSequence(boardString))
             return -1;
 
+        if (boardString.isEmpty())
+            return 0;
+
         int basicScore = 0;
         int b2Counter = 0;
         for (int i = 0;i < boardString.length();i=i+5)
@@ -409,6 +412,7 @@ public class RailroadInk {
     //public int getSpecialTileCount(){
         // return 0;
     //}
+
 
 }
 
