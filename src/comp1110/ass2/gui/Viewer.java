@@ -630,7 +630,7 @@ public class Viewer extends Application {
         root.getChildren().addAll(label1,label2,imageview,restartButton);
 
         Group root1 = new Group();
-        root1.getChildren().addAll(label3,label3,imageview,restartButton);
+        root1.getChildren().addAll(label3,label4,imageview,restartButton);
 
         Scene scene;
         if(multiPlayer)
