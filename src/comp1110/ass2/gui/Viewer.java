@@ -45,10 +45,6 @@ public class Viewer extends Application {
     private static final double Tile_START_X = VIEWER_WIDTH / 10 * 2;
     private static final double Tile_START_Y = 60;
 
-    //protected static String CURRENT_PLACEMENT_1 = "";
-    //protected static String CURRENT_PLACEMENT_2 = "";
-    //private String ROLL_MEMBERS = "";
-    //private String SPECIAL_MEMBERS = "S0S1S2S3S4S5";
     private int specialCount1 = 0;
     private int specialCount2 = 0;
     private int round = 0;
@@ -74,12 +70,18 @@ public class Viewer extends Application {
     class Grid {
         private double x;
         private double y;
-        public boolean isEmpty;
+        public boolean isEmpty1;
+        public boolean isEmpty2;
 
         public Grid(double x, double y) {
             this.x = x;
             this.y = y;
-            this.isEmpty = true;
+            this.isEmpty1 = true;
+            this.isEmpty2 = true;
+        }
+
+        public boolean isEmpty(int player) {
+            return currentPlayer == 1 ? this.isEmpty1 : this.isEmpty2;
         }
 
         public double getX() {
@@ -239,7 +241,7 @@ public class Viewer extends Application {
             for(int i = 0; i < 7; i++) {
                 for(int j = 0; j < 7; j++) {
                     if((Math.abs(getLayoutX() - grids[i][j].getX()) < (Tile_WIDTH / 4)) && (Math.abs(getLayoutY() - grids[i][j].getY()) < (Tile_WIDTH / 4))) {
-                        if(grids[i][j].isEmpty) {
+                        if(grids[i][j].isEmpty(currentPlayer)) {
                             if(isValidPlacementSequence((getPlacement(currentPlayer)) + this.name + rowtoString(i) + j + this.orientation)){
                                 if(this.isSpecial) {
                                     if(currentPlayer == 1) {
@@ -264,19 +266,16 @@ public class Viewer extends Application {
                                 tile.setLayoutY(grids[i][j].getY());
                                 tile.row = i;
                                 tile.col = j;
-                            /*if(currentPlayer == 1) {
-                                CURRENT_PLACEMENT_1 += tile.toString();
-                            } else {
-                                CURRENT_PLACEMENT_2 += tile.toString();
-                            }*/
 
                                 tile.isPlaced = true;
                                 tiles.getChildren().add(tile);
-                                grids[i][j].isEmpty = false;
+
                                 if(currentPlayer == 1) {
                                     placement1.add(tile);
+                                    grids[i][j].isEmpty1 = false;
                                 } else {
                                     placement2.add(tile);
+                                    grids[i][j].isEmpty2 = false;
                                 }
 //                            /*
 //                            if(generateMove(CURRENT_PLACEMENT, ROLL_MEMBERS) == "") {
@@ -524,18 +523,6 @@ public class Viewer extends Application {
             }
         }
 
-
-
-        /*
-        double x = Tile_START_X + Tile_WIDTH;
-        for(int i=0; i<6; i++) {
-            String img = "S" + i;
-            Image image = new Image(Viewer.class.getResource(URI_BASE + img + ".png").toString());
-            TileImage tileImage = new TileImage(image, img, x, Tile_START_Y / 3, 0);
-            x += Tile_WIDTH * 1.5;
-
-            specialTiles.getChildren().add(tileImage);
-        }*/
         specialLabel.setText("Special tiles used: " + (currentPlayer == 1 ? specialCount1 : specialCount2));
     }
 
@@ -582,38 +569,18 @@ public class Viewer extends Application {
     }
 
     private void rollDice() {
-        //if(round < 7) {
 
-            //round += 1;
-            //roundLabel.setText("Round: " + round);
             diceTiles.clear();
             String diceRoll = generateDiceRoll();
-            //ROLL_MEMBERS = "";
             double y = Tile_START_Y + Tile_WIDTH * 1.5;
             for(int i=0; i<8; i+=2) {
                 String img = diceRoll.substring(i, i+2);
-                //ROLL_MEMBERS += img;
                 Image image =new Image(Viewer.class.getResource(URI_BASE + img + ".png").toString());
                 TileImage tileImage = new TileImage(image, img, Tile_START_X + Tile_WIDTH * 9, y, 0);
-           /* ImageView imageview = new ImageView();
-            imageview.setImage(image);
-            imageview.setFitWidth(Tile_WIDTH);
-            imageview.setFitHeight(Tile_WIDTH);
-            imageview.setX(Tile_START_X + Tile_WIDTH * 9);
-            imageview.setY(y);*/
                 y += Tile_WIDTH * 1.5;
                 diceTiles.add(tileImage);
             }
             tilesLeft = 4;
-            //roundSpecialUsed = false;
-
-           // if(round > 1 && multiPlayer) {
-           //     currentPlayer = (currentPlayer == 1 ? 2 : 1);
-           //     makeSpecialTiles();
-           //     playerLabel.setText("Player: " + currentPlayer);
-           // }
-
-        //}
     }
 
     Label roundLabel = new Label("Round: " + round);
