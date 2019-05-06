@@ -465,6 +465,8 @@ public class Viewer extends Application {
             Image image = new Image(Viewer.class.getResource(URI_BASE + img + ".png").toString());
             specialTiles1.add(new TileImage(image, img, x,Tile_START_Y / 3,0));
             specialTiles2.add(new TileImage(image, img, x,Tile_START_Y / 3,0));
+            specialTiles1.get(i).isSpecial = true;
+            specialTiles2.get(i).isSpecial = true;
             x += Tile_WIDTH * 1.5;
         }
     }
