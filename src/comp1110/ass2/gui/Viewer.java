@@ -1,32 +1,22 @@
 package comp1110.ass2.gui;
 
-import comp1110.ass2.Board;
-import comp1110.ass2.Tile;
+
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.ImageInput;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static comp1110.ass2.RailroadInk.*;
 
@@ -80,7 +70,7 @@ public class Viewer extends Application {
             this.isEmpty2 = true;
         }
 
-        public boolean isEmpty(int player) {
+        public boolean isEmpty() {
             return currentPlayer == 1 ? this.isEmpty1 : this.isEmpty2;
         }
 
@@ -169,16 +159,8 @@ public class Viewer extends Application {
             setOnScroll(event -> {
                 if (!this.isPlaced && !gameOver)
                 {
-                    //double deltaY = event.getDeltaY();
-                  //  if (deltaY < 0)
-                  //      this.orientation = (this.orientation - 1) % 8;
-                  //  else
-                        this.orientation = (this.orientation + 1) % 8;
+                    this.orientation = (this.orientation + 1) % 8;
                     setOrientation();
-//                if(!this.isPlaced){
-//                    this.orientation = (this.orientation + 1) % 8;
-//                    setOrientation();
-//                }
                     event.consume();
                 }
             });
@@ -241,7 +223,7 @@ public class Viewer extends Application {
             for(int i = 0; i < 7; i++) {
                 for(int j = 0; j < 7; j++) {
                     if((Math.abs(getLayoutX() - grids[i][j].getX()) < (Tile_WIDTH / 4)) && (Math.abs(getLayoutY() - grids[i][j].getY()) < (Tile_WIDTH / 4))) {
-                        if(grids[i][j].isEmpty(currentPlayer)) {
+                        if(grids[i][j].isEmpty()) {
                             if(isValidPlacementSequence((getPlacement(currentPlayer)) + this.name + rowtoString(i) + j + this.orientation)){
                                 if(this.isSpecial) {
                                     if(currentPlayer == 1) {
@@ -553,6 +535,10 @@ public class Viewer extends Application {
                 makePlacement();
                 makeSpecialTiles();
             } else {
+                if(round == 7) {
+                    gameOver();
+                    return;
+                }
                 round ++;
                 roundLabel.setText("Round: " + round);
                 rollDice();
@@ -598,10 +584,23 @@ public class Viewer extends Application {
         imageview.setFitWidth(120);
         imageview.setFitHeight(120);
 
+        ImageView imageview2 = new ImageView(img);
+        imageview2.setX(250);
+        imageview2.setY(10);
+        imageview2.setFitWidth(120);
+        imageview2.setFitHeight(120);
+
+
         Label label1 = new Label("CONGRATULATIONS... YOU BEAT THE GAME!");
         label1.setFont(Font.font("family", FontWeight.BLACK.EXTRA_BOLD, FontPosture.REGULAR,20));
         label1.setLayoutX(120);
         label1.setLayoutY(130);
+
+        Label label5 = new Label("CONGRATULATIONS... YOU BEAT THE GAME!");
+        label5.setFont(Font.font("family", FontWeight.BLACK.EXTRA_BOLD, FontPosture.REGULAR,20));
+        label5.setLayoutX(120);
+        label5.setLayoutY(130);
+
 
         Label label2 = new Label("Your Score: " + getBasicScore(getPlacement(1)));
         label2.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
@@ -610,38 +609,29 @@ public class Viewer extends Application {
 
         Label label3 = new Label("First player's score: " + getBasicScore(getPlacement(1)));
         label3.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
-        label3.setLayoutX(250);
+        label3.setLayoutX(220);
         label3.setLayoutY(170);
 
         Label label4 = new Label("Second player's score: " + getBasicScore(getPlacement(2)));
         label4.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
-        label4.setLayoutX(250);
-        label4.setLayoutY(170);
+        label4.setLayoutX(220);
+        label4.setLayoutY(220);
 
+        Group rootOne = new Group();
+        rootOne.getChildren().addAll(label1,label2,imageview);
 
-        Button restartButton = new Button("Restart Game");
-        restartButton.setOnAction(e -> {
-            restartGame();
-        });
-        restartButton.setLayoutX(250);
-        restartButton.setLayoutY(170);
-
-        Group root = new Group();
-        root.getChildren().addAll(label1,label2,imageview,restartButton);
-
-        Group root1 = new Group();
-        root1.getChildren().addAll(label3,label4,imageview,restartButton);
+        Group rootMulti = new Group();
+        rootMulti.getChildren().addAll(label5,label3,label4,imageview2);
 
         Scene scene;
         if(multiPlayer)
         {
-            scene = new Scene(root1, 640, 300);
+            scene = new Scene(rootMulti, 640, 300);
         }
 
         else
         {
-            scene = new Scene(root, 640, 300);
-
+            scene = new Scene(rootOne, 640, 300);
         }
 
         //Scene scene = new Scene(root, 640, 300);
@@ -654,6 +644,7 @@ public class Viewer extends Application {
         gameOverWindow.setX(200);
         gameOverWindow.setY(100);
 
+        gameOverWindow.setAlwaysOnTop(true);
         gameOverWindow.show();
     }
 
@@ -668,12 +659,9 @@ public class Viewer extends Application {
         diceTiles.clear();
         placement1.clear();
         placement2.clear();
-        //CURRENT_PLACEMENT_1 = "";
-        //CURRENT_PLACEMENT_2 = "";
         specialCount1 = 0;
         specialCount2 = 0;
         round = 0;
-        //tilesLeft = 4;
         roundSpecialUsed = false;
         currentPlayer = 1;
         makeControls();
@@ -723,33 +711,6 @@ public class Viewer extends Application {
         initSpecialTiles();
         makeSpecialTiles();
 
-        makeBoard();
-
-
-        /*Label label1 = new Label("Placement:");
-        textField = new TextField();
-        textField.setPrefWidth(300);
-        Button button = new Button("Refresh");
-        button.setOnAction(e -> {
-           makePlacement(textField.getText());
-            textField.clear();
-           //textField.setText(CURRENT_PLACEMENT);
-        });
-
-        Button button1 = new Button("gameover");
-        button1.setLayoutX(0);
-        button1.setLayoutY(0);
-        button1.setOnAction(e -> {
-           gameOver();
-        });*/
-
-        /*HBox hb = new HBox();
-        hb.getChildren().addAll(label1, textField, button);
-        hb.setSpacing(10);
-        hb.setLayoutX(130);
-        hb.setLayoutY(VIEWER_HEIGHT - 50);
-        controls.getChildren().add(hb);
-        controls.getChildren().add(button1);*/
         makeBoard();
         rollDice();
         makeDiceTiles();
