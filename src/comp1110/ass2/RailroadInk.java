@@ -247,7 +247,7 @@ public class RailroadInk {
         // FIXME Task 8: compute the basic score
 
         if (!isValidPlacementSequence(boardString))
-            return -1;
+            return -9999;
 
         if (boardString.isEmpty())
             return 0;
