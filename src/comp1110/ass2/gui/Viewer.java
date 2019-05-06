@@ -8,14 +8,24 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.ImageInput;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static comp1110.ass2.RailroadInk.*;
@@ -38,10 +48,14 @@ public class Viewer extends Application {
     protected static String CURRENT_PLACEMENT = "";
     private String ROLL_MEMBERS = "";
     private String SPECIAL_MEMBERS = "S0S1S2S3S4S5";
-    private int specialCount = 0;
+    private int specialCount1 = 0;
+    private int specialCount2 = 0;
     private int round = 0;
     private int tilesLeft = 0;
     private boolean roundSpecialUsed = false;
+    private boolean gameOver = false;
+    private boolean multiPlayer = false;
+    private int currentPlayer = 1;
 
     private static final String URI_BASE = "assets/";
 
@@ -51,7 +65,6 @@ public class Viewer extends Application {
     private final Group controls = new Group();
     private final Group diceRolls = new Group();
     private final Group specialTiles = new Group();
-    TextField textField;
 
     public static void main(String[] args) {
         launch(args);
@@ -85,6 +98,9 @@ public class Viewer extends Application {
         }
     }
 
+    List<TileImage> specialTiles1 = new ArrayList<>();
+    List<TileImage> specialTiles2 = new ArrayList<>();
+
     class TileImage extends ImageView {
         double mouseX, mouseY;
         double homeX, homeY;
@@ -116,14 +132,14 @@ public class Viewer extends Application {
             setOrientation();
 
             setOnMousePressed(event -> {
-                if(!this.isPlaced) {
+                if(!this.isPlaced && !gameOver) {
                     mouseX = event.getSceneX();
                     mouseY = event.getSceneY();
                 }
             });
 
             setOnMouseDragged(event -> {
-                if(!this.isPlaced){
+                if(!this.isPlaced && !gameOver){
                     toFront();
                     double movementX = event.getSceneX() - mouseX;
                     double movementY = event.getSceneY() - mouseY;
@@ -136,24 +152,27 @@ public class Viewer extends Application {
             });
 
             setOnMouseReleased(event -> {
-                if(!this.isPlaced) {
+                if(!this.isPlaced && !gameOver) {
                     if(!snapToGrid())
                         snapToHome();
                 }
             });
 
             setOnScroll(event -> {
-                double deltaY = event.getDeltaY();
-                if (deltaY < 0)
-                    this.orientation = (this.orientation - 1) % 8;
-                else
-                    this.orientation = (this.orientation + 1) % 8;
-                setOrientation();
-                if(!this.isPlaced){
-                    this.orientation = (this.orientation + 1) % 8;
+                if (!this.isPlaced && !gameOver)
+                {
+                    //double deltaY = event.getDeltaY();
+                  //  if (deltaY < 0)
+                  //      this.orientation = (this.orientation - 1) % 8;
+                  //  else
+                        this.orientation = (this.orientation + 1) % 8;
                     setOrientation();
+//                if(!this.isPlaced){
+//                    this.orientation = (this.orientation + 1) % 8;
+//                    setOrientation();
+//                }
+                    event.consume();
                 }
-                event.consume();
             });
 
         }
@@ -166,14 +185,14 @@ public class Viewer extends Application {
         private void setOrientation() {
             if(this.orientation >= 4) {
                 setScaleX(-1);
+                setRotate(this.orientation * 90);
+            } else {
+                setScaleX(1);
+                setRotate(this.orientation * 90);
             }
-            setRotate(this.orientation * 90);
+
         }
 
-        private boolean onBoard() {
-            return getLayoutX() > (Tile_START_X - Tile_WIDTH) && (getLayoutX() < (Tile_START_X + Tile_WIDTH * 8))
-                    && getLayoutY() > (Tile_START_Y - Tile_WIDTH) && (getLayoutY() < (Tile_START_Y + Tile_WIDTH * 8));
-        }
 
         private void snapToHome() {
                 setLayoutX(homeX);
@@ -196,18 +215,32 @@ public class Viewer extends Application {
 
         private boolean snapToGrid() {
             if(this.isSpecial) {
-                if(specialCount >= 3 || roundSpecialUsed) {
-                    return false;
+                if(currentPlayer == 1) {
+                    if(specialCount1 >= 3 || roundSpecialUsed) {
+                        return false;
+                    }
+                } else {
+                    if(specialCount2 >= 3 || roundSpecialUsed) {
+                        return false;
+                    }
                 }
+
             }
             for(int i = 0; i < 7; i++) {
                 for(int j = 0; j < 7; j++) {
                     if((Math.abs(getLayoutX() - grids[i][j].getX()) < (Tile_WIDTH / 4)) && (Math.abs(getLayoutY() - grids[i][j].getY()) < (Tile_WIDTH / 4))) {
                         if(isValidPlacementSequence(CURRENT_PLACEMENT + this.name + rowtoString(i) + j + this.orientation)){
                             if(this.isSpecial) {
-                                specialCount += 1;
+                                if(currentPlayer == 1) {
+                                    specialCount1 += 1;
+                                    specialTiles1.remove(this);
+                                } else {
+                                    specialCount2 += 1;
+                                    specialTiles2.remove(this);
+                                }
+
                                 roundSpecialUsed = true;
-                                specialLabel.setText("Special tiles used: " + specialCount);
+                                specialLabel.setText("Special tiles used: " + (currentPlayer == 1 ? specialCount1 : specialCount2));
                             } else {
                                 tilesLeft -= 1;
                             }
@@ -225,11 +258,11 @@ public class Viewer extends Application {
                                 diceRolls.getChildren().remove(this);
                                 ROLL_MEMBERS = ROLL_MEMBERS.replaceFirst(this.name, "");
                             }
-                            /*
-                            if(generateMove(CURRENT_PLACEMENT, ROLL_MEMBERS + SPECIAL_MEMBERS) == "") {
-                                gameOver();
-                            }
-                            */
+//                            /*
+//                            if(generateMove(CURRENT_PLACEMENT, ROLL_MEMBERS) == "") {
+//                                gameOver();
+//                            }
+//                            */
                             if(tilesLeft == 0) {
                                 if(round < 7) {
                                     rollDice();
@@ -425,27 +458,46 @@ public class Viewer extends Application {
 
     }
 
-    private void makeSpecialTiles() {
+    private void initSpecialTiles() {
+        double x = Tile_START_X + Tile_WIDTH;
+        for(int i = 0; i < 6; i++) {
+            String img = "S" + i;
+            Image image = new Image(Viewer.class.getResource(URI_BASE + img + ".png").toString());
+            specialTiles1.add(new TileImage(image, img, x,Tile_START_Y / 3,0));
+            specialTiles2.add(new TileImage(image, img, x,Tile_START_Y / 3,0));
+            x += Tile_WIDTH * 1.5;
+        }
+    }
+
+    private void makeSpecialTiles(int player) {
         specialTiles.getChildren().clear();
+        if(currentPlayer == 1) {
+            for(int i = 0; i < specialTiles1.size(); i++) {
+                specialTiles.getChildren().add(specialTiles1.get(i));
+            }
+        } else {
+            for(int i = 0; i < specialTiles2.size(); i++) {
+                specialTiles.getChildren().add(specialTiles2.get(i));
+            }
+        }
+
+
+
+        /*
         double x = Tile_START_X + Tile_WIDTH;
         for(int i=0; i<6; i++) {
             String img = "S" + i;
             Image image = new Image(Viewer.class.getResource(URI_BASE + img + ".png").toString());
-            /*ImageView imageview = new ImageView();
-            imageview.setImage(image);
-            imageview.setFitWidth(Tile_WIDTH);
-            imageview.setFitHeight(Tile_WIDTH);
-            imageview.setX(x);
-            imageview.setY(Tile_START_Y / 3);*/
             TileImage tileImage = new TileImage(image, img, x, Tile_START_Y / 3, 0);
             x += Tile_WIDTH * 1.5;
 
             specialTiles.getChildren().add(tileImage);
-        }
+        }*/
+        specialLabel.setText("Special tiles used: " + (currentPlayer == 1 ? specialCount1 : specialCount2));
     }
 
     private void rollDice() {
-        if(tilesLeft == 0) {
+        if(round < 7) {
             round += 1;
             roundLabel.setText("Round: " + round);
             diceRolls.getChildren().clear();
@@ -467,14 +519,76 @@ public class Viewer extends Application {
                 diceRolls.getChildren().add(tileImage);
             }
             tilesLeft = 4;
+            roundSpecialUsed = false;
+
+            if(round > 1 && multiPlayer) {
+                currentPlayer = (currentPlayer == 1 ? 2 : 1);
+                makeSpecialTiles(currentPlayer);
+                playerLabel.setText("Player: " + currentPlayer);
+            }
+
         }
     }
 
     Label roundLabel = new Label("Round: " + round);
-    Label specialLabel = new Label("Special tiles used: " + specialCount);
+    Label playerLabel = new Label("Player: " + currentPlayer);
+    Label specialLabel = new Label("Special tiles used: " + (currentPlayer == 1 ? specialCount1 : specialCount2));
 
     private void gameOver() {
 
+        gameOver = true;
+
+        Image img = new Image(Viewer.class.getResource(URI_BASE+"WOW.png").toString());
+        ImageView imageview = new ImageView(img);
+        imageview.setX(250);
+        imageview.setY(10);
+        imageview.setFitWidth(120);
+        imageview.setFitHeight(120);
+
+        Label label1 = new Label("CONGRATULATIONS... YOU BEAT THE GAME!");
+        label1.setFont(Font.font("family", FontWeight.BLACK.EXTRA_BOLD, FontPosture.REGULAR,20));
+        label1.setLayoutX(120);
+        label1.setLayoutY(130);
+
+        Label label2 = new Label("Your Score: " + getBasicScore(CURRENT_PLACEMENT));
+        label2.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
+        label2.setLayoutX(250);
+        label2.setLayoutY(170);
+
+        Group root = new Group();
+        root.getChildren().addAll(label1,label2,imageview);
+
+       // StackPane layout = new StackPane();
+        //layout.getChildren().addAll(label1,label2);
+
+        Scene scene = new Scene(root, 640, 300);
+
+        //New window
+        Stage gameOverWindow = new Stage();
+        gameOverWindow.setTitle("Game Over");
+        gameOverWindow.setScene(scene);
+
+        gameOverWindow.setX(200);
+        gameOverWindow.setY(100);
+
+        gameOverWindow.show();
+    }
+
+    private void restartGame() {
+        controls.getChildren().clear();
+        board.getChildren().clear();
+        specialTiles.getChildren().clear();
+        diceRolls.getChildren().clear();;
+        tiles.getChildren().clear();
+        CURRENT_PLACEMENT = "";
+        specialCount1 = 0;
+        specialCount2 = 0;
+        round = 0;
+        tilesLeft = 0;
+        roundSpecialUsed = false;
+        currentPlayer = 1;
+        makeControls();
+        gameOver = false;
     }
 
     /**
@@ -482,12 +596,12 @@ public class Viewer extends Application {
      */
     private void makeControls() {
 
-        /*Button button1 = new Button("Next Round");
-        button1.setOnAction(e -> {
+        Button nextRoundButton = new Button("Next Round");
+        nextRoundButton.setOnAction(e -> {
             rollDice();
         });
-        button1.setLayoutX(Tile_START_X + Tile_WIDTH * 9);
-        button1.setLayoutY(Tile_START_X + Tile_WIDTH * 6);*/
+        nextRoundButton.setLayoutX(Tile_START_X + Tile_WIDTH * 9);
+        nextRoundButton.setLayoutY(Tile_START_X + Tile_WIDTH * 6);
 
         Label label = new Label("Special Tiles:");
         label.setFont(Font.font("Cambria", 24));
@@ -502,35 +616,61 @@ public class Viewer extends Application {
         roundLabel.setLayoutX(Tile_START_X / 5);
         roundLabel.setLayoutY(Tile_START_Y * 2);
 
-        controls.getChildren().addAll(label, roundLabel, specialLabel);
+        playerLabel.setFont(Font.font("Cambria", 20));
+        playerLabel.setLayoutX(Tile_START_X / 5);
+        playerLabel.setLayoutY(Tile_START_Y * 2.5);
 
-        makeSpecialTiles();
+        Button newGameButton = new Button("Restart Game");
+        newGameButton.setOnAction(e -> {
+            restartGame();
+        });
+        newGameButton.setLayoutX(Tile_START_X / 5);
+        newGameButton.setLayoutY(Tile_START_Y * 3.5);
+
+
+        controls.getChildren().addAll(label, roundLabel, specialLabel, playerLabel, nextRoundButton, newGameButton);
+
+        initSpecialTiles();
+        makeSpecialTiles(1);
 
         makeBoard();
 
 
-        Label label1 = new Label("Placement:");
+        /*Label label1 = new Label("Placement:");
         textField = new TextField();
         textField.setPrefWidth(300);
         Button button = new Button("Refresh");
         button.setOnAction(e -> {
-           /* makePlacement(textField.getText());
-            textField.clear();*/
-           textField.setText(CURRENT_PLACEMENT);
+           makePlacement(textField.getText());
+            textField.clear();
+           //textField.setText(CURRENT_PLACEMENT);
         });
-        HBox hb = new HBox();
+
+        Button button1 = new Button("gameover");
+        button1.setLayoutX(0);
+        button1.setLayoutY(0);
+        button1.setOnAction(e -> {
+           gameOver();
+        });*/
+
+        /*HBox hb = new HBox();
         hb.getChildren().addAll(label1, textField, button);
         hb.setSpacing(10);
         hb.setLayoutX(130);
         hb.setLayoutY(VIEWER_HEIGHT - 50);
         controls.getChildren().add(hb);
+        controls.getChildren().add(button1);*/
         makeBoard();
         rollDice();
 
     }
 
+
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+
+
         primaryStage.setTitle("StepsGame Viewer");
         Scene scene = new Scene(root, VIEWER_WIDTH, VIEWER_HEIGHT);
 
@@ -543,6 +683,44 @@ public class Viewer extends Application {
         makeControls();
 
         primaryStage.setScene(scene);
-        primaryStage.show();
+        primaryStage.setResizable(false);
+
+
+        //choose mode
+        Group modeChoosingGroup = new Group();
+        Scene modeChoosingScene = new Scene(modeChoosingGroup, 400, 150);
+
+        Label label1 = new Label("Please choose game mode: ");
+        label1.setFont(Font.font("family", FontWeight.BLACK.EXTRA_BOLD, FontPosture.REGULAR,20));
+        label1.setLayoutX(50);
+        label1.setLayoutY(30);
+
+        Stage modeChoosingWindow = new Stage();
+        Button singleButton = new Button("Single player");
+        singleButton.setOnAction(e -> {
+            multiPlayer = false;
+            primaryStage.show();
+            modeChoosingWindow.close();
+        });
+        singleButton.setLayoutX(80);
+        singleButton.setLayoutY(80);
+
+        Button multiButton = new Button("Multi player");
+        multiButton.setOnAction(e -> {
+            multiPlayer = true;
+            primaryStage.show();
+            modeChoosingWindow.close();
+        });
+        multiButton.setLayoutX(200);
+        multiButton.setLayoutY(80);
+
+        modeChoosingGroup.getChildren().addAll(label1, singleButton, multiButton);
+        modeChoosingWindow.setTitle("Mode Choosing");
+        modeChoosingWindow.setScene(modeChoosingScene);
+        modeChoosingWindow.setAlwaysOnTop(true);
+        modeChoosingWindow.setResizable(false);
+
+        modeChoosingWindow.show();
+
     }
 }
