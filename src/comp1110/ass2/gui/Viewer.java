@@ -641,12 +641,12 @@ public class Viewer extends Application {
         label2.setLayoutX(250);
         label2.setLayoutY(170);
 
-        Label label3 = new Label("First player's score: " + getBasicScore(CURRENT_PLACEMENT));
+        Label label3 = new Label("First player's score: " + getBasicScore(getPlacement(1)));
         label3.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
         label3.setLayoutX(250);
         label3.setLayoutY(170);
 
-        Label label4 = new Label("Second player's score: " + getBasicScore(CURRENT_PLACEMENT));
+        Label label4 = new Label("Second player's score: " + getBasicScore(getPlacement(2)));
         label4.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
         label4.setLayoutX(250);
         label4.setLayoutY(170);
