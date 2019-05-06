@@ -139,7 +139,6 @@ public class Board
         }
 
         return errors;
-
     }
 
     public int countSpecialTiles()
