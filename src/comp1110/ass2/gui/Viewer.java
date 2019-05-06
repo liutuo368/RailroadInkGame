@@ -469,7 +469,7 @@ public class Viewer extends Application {
         }
     }
 
-    private void makeSpecialTiles(int player) {
+    private void makeSpecialTiles() {
         specialTiles.getChildren().clear();
         if(currentPlayer == 1) {
             for(int i = 0; i < specialTiles1.size(); i++) {
@@ -523,7 +523,7 @@ public class Viewer extends Application {
 
             if(round > 1 && multiPlayer) {
                 currentPlayer = (currentPlayer == 1 ? 2 : 1);
-                makeSpecialTiles(currentPlayer);
+                makeSpecialTiles();
                 playerLabel.setText("Player: " + currentPlayer);
             }
 
@@ -631,7 +631,7 @@ public class Viewer extends Application {
         controls.getChildren().addAll(label, roundLabel, specialLabel, playerLabel, nextRoundButton, newGameButton);
 
         initSpecialTiles();
-        makeSpecialTiles(1);
+        makeSpecialTiles();
 
         makeBoard();
 
