@@ -74,10 +74,12 @@ public class Viewer extends Application {
     class Grid {
         private double x;
         private double y;
+        public boolean isEmpty;
 
         public Grid(double x, double y) {
             this.x = x;
             this.y = y;
+            this.isEmpty = true;
         }
 
         public double getX() {
@@ -237,54 +239,56 @@ public class Viewer extends Application {
             for(int i = 0; i < 7; i++) {
                 for(int j = 0; j < 7; j++) {
                     if((Math.abs(getLayoutX() - grids[i][j].getX()) < (Tile_WIDTH / 4)) && (Math.abs(getLayoutY() - grids[i][j].getY()) < (Tile_WIDTH / 4))) {
-                        if(isValidPlacementSequence((getPlacement(currentPlayer)) + this.name + rowtoString(i) + j + this.orientation)){
-                            if(this.isSpecial) {
-                                if(currentPlayer == 1) {
-                                    specialCount1 += 1;
-                                    specialTiles1.remove(this);
+                        if(grids[i][j].isEmpty) {
+                            if(isValidPlacementSequence((getPlacement(currentPlayer)) + this.name + rowtoString(i) + j + this.orientation)){
+                                if(this.isSpecial) {
+                                    if(currentPlayer == 1) {
+                                        specialCount1 += 1;
+                                        specialTiles1.remove(this);
+                                    } else {
+                                        specialCount2 += 1;
+                                        specialTiles2.remove(this);
+                                    }
+                                    specialTiles.getChildren().remove(this);
+                                    roundSpecialUsed = true;
+                                    specialLabel.setText("Special tiles used: " + (currentPlayer == 1 ? specialCount1 : specialCount2));
                                 } else {
-                                    specialCount2 += 1;
-                                    specialTiles2.remove(this);
+                                    diceRolls.getChildren().remove(this);
+                                    tilesLeft -= 1;
                                 }
-                                specialTiles.getChildren().remove(this);
-                                roundSpecialUsed = true;
-                                specialLabel.setText("Special tiles used: " + (currentPlayer == 1 ? specialCount1 : specialCount2));
-                            } else {
-                                diceRolls.getChildren().remove(this);
-                                tilesLeft -= 1;
-                            }
 
-                            TileImage tile = clone();
-                            setLayoutX(homeX);
-                            setLayoutY(homeY);
-                            tile.setLayoutX(grids[i][j].getX());
-                            tile.setLayoutY(grids[i][j].getY());
-                            tile.row = i;
-                            tile.col = j;
+                                TileImage tile = clone();
+                                setLayoutX(homeX);
+                                setLayoutY(homeY);
+                                tile.setLayoutX(grids[i][j].getX());
+                                tile.setLayoutY(grids[i][j].getY());
+                                tile.row = i;
+                                tile.col = j;
                             /*if(currentPlayer == 1) {
                                 CURRENT_PLACEMENT_1 += tile.toString();
                             } else {
                                 CURRENT_PLACEMENT_2 += tile.toString();
                             }*/
 
-                            tile.isPlaced = true;
-                            tiles.getChildren().add(tile);
-                            if(currentPlayer == 1) {
-                                placement1.add(tile);
-                            } else {
-                                placement2.add(tile);
-                            }
+                                tile.isPlaced = true;
+                                tiles.getChildren().add(tile);
+                                grids[i][j].isEmpty = false;
+                                if(currentPlayer == 1) {
+                                    placement1.add(tile);
+                                } else {
+                                    placement2.add(tile);
+                                }
 //                            /*
 //                            if(generateMove(CURRENT_PLACEMENT, ROLL_MEMBERS) == "") {
 //                                gameOver();
 //                            }
 //                            */
-                            if(tilesLeft == 0) {
-                                nextRound();
+                                if(tilesLeft == 0) {
+                                    nextRound();
+                                }
+                                return true;
                             }
-                            return true;
                         }
-
                     }
                 }
             }
@@ -718,6 +722,7 @@ public class Viewer extends Application {
 
         controls.getChildren().addAll(label, roundLabel, specialLabel, playerLabel, nextRoundButton, newGameButton);
 
+        initGrids();
         initSpecialTiles();
         makeSpecialTiles();
 
