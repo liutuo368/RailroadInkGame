@@ -245,6 +245,10 @@ public class RailroadInk {
     public static int getBasicScore(String boardString)
     {
         // FIXME Task 8: compute the basic score
+
+        if (!isValidPlacementSequence(boardString))
+            return -1;
+
         int basicScore = 0;
         int b2Counter = 0;
         for (int i = 0;i < boardString.length();i=i+5)
