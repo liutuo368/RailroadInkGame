@@ -45,9 +45,10 @@ public class Viewer extends Application {
     private static final double Tile_START_X = VIEWER_WIDTH / 10 * 2;
     private static final double Tile_START_Y = 60;
 
-    protected static String CURRENT_PLACEMENT = "";
-    private String ROLL_MEMBERS = "";
-    private String SPECIAL_MEMBERS = "S0S1S2S3S4S5";
+    //protected static String CURRENT_PLACEMENT_1 = "";
+    //protected static String CURRENT_PLACEMENT_2 = "";
+    //private String ROLL_MEMBERS = "";
+    //private String SPECIAL_MEMBERS = "S0S1S2S3S4S5";
     private int specialCount1 = 0;
     private int specialCount2 = 0;
     private int round = 0;
@@ -100,6 +101,9 @@ public class Viewer extends Application {
 
     List<TileImage> specialTiles1 = new ArrayList<>();
     List<TileImage> specialTiles2 = new ArrayList<>();
+    List<TileImage> placement1 = new ArrayList<>();
+    List<TileImage> placement2 = new ArrayList<>();
+    List<TileImage> diceTiles = new ArrayList<>();
 
     class TileImage extends ImageView {
         double mouseX, mouseY;
@@ -177,6 +181,10 @@ public class Viewer extends Application {
 
         }
 
+        public TileImage clone() {
+            return new TileImage(this.getImage(), this.name, this.homeX, this.homeY, this.orientation);
+        }
+
         @Override
         public String toString() {
             return this.name + rowtoString(this.row) + this.col + this.orientation;
@@ -229,7 +237,7 @@ public class Viewer extends Application {
             for(int i = 0; i < 7; i++) {
                 for(int j = 0; j < 7; j++) {
                     if((Math.abs(getLayoutX() - grids[i][j].getX()) < (Tile_WIDTH / 4)) && (Math.abs(getLayoutY() - grids[i][j].getY()) < (Tile_WIDTH / 4))) {
-                        if(isValidPlacementSequence(CURRENT_PLACEMENT + this.name + rowtoString(i) + j + this.orientation)){
+                        if(isValidPlacementSequence((getPlacement(currentPlayer)) + this.name + rowtoString(i) + j + this.orientation)){
                             if(this.isSpecial) {
                                 if(currentPlayer == 1) {
                                     specialCount1 += 1;
@@ -238,25 +246,33 @@ public class Viewer extends Application {
                                     specialCount2 += 1;
                                     specialTiles2.remove(this);
                                 }
-
+                                specialTiles.getChildren().remove(this);
                                 roundSpecialUsed = true;
                                 specialLabel.setText("Special tiles used: " + (currentPlayer == 1 ? specialCount1 : specialCount2));
                             } else {
+                                diceRolls.getChildren().remove(this);
                                 tilesLeft -= 1;
                             }
-                            setLayoutX(grids[i][j].getX());
-                            setLayoutY(grids[i][j].getY());
-                            this.row = i;
-                            this.col = j;
-                            CURRENT_PLACEMENT += this.toString();
-                            this.isPlaced = true;
-                            tiles.getChildren().add(this);
-                            if(this.isSpecial) {
-                                specialTiles.getChildren().remove(this);
-                                SPECIAL_MEMBERS = SPECIAL_MEMBERS.replaceFirst(this.name, "");
+
+                            TileImage tile = clone();
+                            setLayoutX(homeX);
+                            setLayoutY(homeY);
+                            tile.setLayoutX(grids[i][j].getX());
+                            tile.setLayoutY(grids[i][j].getY());
+                            tile.row = i;
+                            tile.col = j;
+                            /*if(currentPlayer == 1) {
+                                CURRENT_PLACEMENT_1 += tile.toString();
                             } else {
-                                diceRolls.getChildren().remove(this);
-                                ROLL_MEMBERS = ROLL_MEMBERS.replaceFirst(this.name, "");
+                                CURRENT_PLACEMENT_2 += tile.toString();
+                            }*/
+
+                            tile.isPlaced = true;
+                            tiles.getChildren().add(tile);
+                            if(currentPlayer == 1) {
+                                placement1.add(tile);
+                            } else {
+                                placement2.add(tile);
                             }
 //                            /*
 //                            if(generateMove(CURRENT_PLACEMENT, ROLL_MEMBERS) == "") {
@@ -264,11 +280,7 @@ public class Viewer extends Application {
 //                            }
 //                            */
                             if(tilesLeft == 0) {
-                                if(round < 7) {
-                                    rollDice();
-                                } else {
-                                    gameOver();
-                                }
+                                nextRound();
                             }
                             return true;
                         }
@@ -285,9 +297,21 @@ public class Viewer extends Application {
      *
      * @param placement A valid placement string
      */
-    void makePlacement(String placement) {
+    void makePlacement() {
+        tiles.getChildren().clear();
+        if(currentPlayer == 1) {
+            for(int i = 0; i < placement1.size(); i++) {
+                tiles.getChildren().add(placement1.get(i));
+            }
+        } else {
+            for(int i = 0; i < placement2.size(); i++) {
+                tiles.getChildren().add(placement2.get(i));
+            }
+        }
+
+
         // FIXME Task 4: implement the simple placement viewer
-        if(isBoardStringWellFormed(placement)) {
+        /*if(isBoardStringWellFormed(placement)) {
             tiles.getChildren().clear();
             for(int i = 0; i < placement.length(); i+=5) {
                 String img = placement.substring(i, i + 2);
@@ -306,17 +330,30 @@ public class Viewer extends Application {
                 if(orientation >=4){
                     imageview.setScaleX(-1);
                 }
-                imageview.setRotate(orientation * 90);*/
+                imageview.setRotate(orientation * 90);
 
                 TileImage tileImage = new TileImage(image, img, Tile_START_X + Tile_WIDTH * col, Tile_START_Y + Tile_WIDTH * row, orientation);
 
                 tiles.getChildren().add(tileImage);
 
             }
-        }
+        }*/
 
     }
 
+    public String getPlacement(int player) {
+        String placement = "";
+        if(player == 1) {
+            for(int i = 0; i < placement1.size(); i++) {
+                placement += placement1.get(i).toString();
+            }
+        } else {
+            for(int i = 0; i < placement2.size(); i++) {
+                placement += placement2.get(i).toString();
+            }
+        }
+        return placement;
+    }
 
     void makeBoard() {
         initGrids();
@@ -498,17 +535,60 @@ public class Viewer extends Application {
         specialLabel.setText("Special tiles used: " + (currentPlayer == 1 ? specialCount1 : specialCount2));
     }
 
+    private void makeDiceTiles() {
+        diceRolls.getChildren().clear();
+        for(int i = 0; i < diceTiles.size(); i++) {
+            diceRolls.getChildren().add(diceTiles.get(i));
+        }
+    }
+
+    private void nextRound() {
+        if(round <= 7) {
+            if(multiPlayer == true) {
+                if(currentPlayer == 2) {
+                    if(round == 7) {
+                        gameOver();
+                        return;
+                    }
+                    currentPlayer = 1;
+                    round ++;
+                    roundLabel.setText("Round: " + round);
+                    rollDice();
+
+                } else {
+                    currentPlayer = 2;
+                }
+                makeDiceTiles();
+                makePlacement();
+                makeSpecialTiles();
+            } else {
+                round ++;
+                roundLabel.setText("Round: " + round);
+                rollDice();
+                makeDiceTiles();
+                makePlacement();
+            }
+
+        } else {
+            gameOver();
+        }
+        playerLabel.setText("Player: " + currentPlayer);
+        roundSpecialUsed = false;
+        tilesLeft = 4;
+    }
+
     private void rollDice() {
-        if(round < 7) {
-            round += 1;
-            roundLabel.setText("Round: " + round);
-            diceRolls.getChildren().clear();
+        //if(round < 7) {
+
+            //round += 1;
+            //roundLabel.setText("Round: " + round);
+            diceTiles.clear();
             String diceRoll = generateDiceRoll();
-            ROLL_MEMBERS = "";
+            //ROLL_MEMBERS = "";
             double y = Tile_START_Y + Tile_WIDTH * 1.5;
             for(int i=0; i<8; i+=2) {
                 String img = diceRoll.substring(i, i+2);
-                ROLL_MEMBERS += img;
+                //ROLL_MEMBERS += img;
                 Image image =new Image(Viewer.class.getResource(URI_BASE + img + ".png").toString());
                 TileImage tileImage = new TileImage(image, img, Tile_START_X + Tile_WIDTH * 9, y, 0);
            /* ImageView imageview = new ImageView();
@@ -518,18 +598,18 @@ public class Viewer extends Application {
             imageview.setX(Tile_START_X + Tile_WIDTH * 9);
             imageview.setY(y);*/
                 y += Tile_WIDTH * 1.5;
-                diceRolls.getChildren().add(tileImage);
+                diceTiles.add(tileImage);
             }
             tilesLeft = 4;
-            roundSpecialUsed = false;
+            //roundSpecialUsed = false;
 
-            if(round > 1 && multiPlayer) {
-                currentPlayer = (currentPlayer == 1 ? 2 : 1);
-                makeSpecialTiles();
-                playerLabel.setText("Player: " + currentPlayer);
-            }
+           // if(round > 1 && multiPlayer) {
+           //     currentPlayer = (currentPlayer == 1 ? 2 : 1);
+           //     makeSpecialTiles();
+           //     playerLabel.setText("Player: " + currentPlayer);
+           // }
 
-        }
+        //}
     }
 
     Label roundLabel = new Label("Round: " + round);
@@ -552,7 +632,7 @@ public class Viewer extends Application {
         label1.setLayoutX(120);
         label1.setLayoutY(130);
 
-        Label label2 = new Label("Your Score: " + getBasicScore(CURRENT_PLACEMENT));
+        Label label2 = new Label("Your Score: " + getBasicScore(getPlacement(1)));
         label2.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
         label2.setLayoutX(250);
         label2.setLayoutY(170);
@@ -580,13 +660,19 @@ public class Viewer extends Application {
         controls.getChildren().clear();
         board.getChildren().clear();
         specialTiles.getChildren().clear();
-        diceRolls.getChildren().clear();;
+        diceRolls.getChildren().clear();
         tiles.getChildren().clear();
-        CURRENT_PLACEMENT = "";
+        specialTiles1.clear();
+        specialTiles2.clear();
+        diceTiles.clear();
+        placement1.clear();
+        placement2.clear();
+        //CURRENT_PLACEMENT_1 = "";
+        //CURRENT_PLACEMENT_2 = "";
         specialCount1 = 0;
         specialCount2 = 0;
         round = 0;
-        tilesLeft = 0;
+        //tilesLeft = 4;
         roundSpecialUsed = false;
         currentPlayer = 1;
         makeControls();
@@ -600,7 +686,7 @@ public class Viewer extends Application {
 
         Button nextRoundButton = new Button("Next Round");
         nextRoundButton.setOnAction(e -> {
-            rollDice();
+            nextRound();
         });
         nextRoundButton.setLayoutX(Tile_START_X + Tile_WIDTH * 9);
         nextRoundButton.setLayoutY(Tile_START_X + Tile_WIDTH * 6);
@@ -664,7 +750,10 @@ public class Viewer extends Application {
         controls.getChildren().add(button1);*/
         makeBoard();
         rollDice();
-
+        makeDiceTiles();
+        round = 1;
+        roundLabel.setText("Round: " + round);
+        playerLabel.setText("Player: " + currentPlayer);
     }
 
 
@@ -719,7 +808,6 @@ public class Viewer extends Application {
         modeChoosingGroup.getChildren().addAll(label1, singleButton, multiButton);
         modeChoosingWindow.setTitle("Mode Choosing");
         modeChoosingWindow.setScene(modeChoosingScene);
-        modeChoosingWindow.setAlwaysOnTop(true);
         modeChoosingWindow.setResizable(false);
 
         modeChoosingWindow.show();
