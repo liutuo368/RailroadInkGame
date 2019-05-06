@@ -30,7 +30,7 @@ public class testInvalidStringGetBasicScore {
         for(int i = 0; i < inValidBoardStrings.length; i++)
         {
             int score = RailroadInk.getBasicScore(inValidBoardStrings[i]);
-            assertTrue("Score for invalid string should be -1", score == -1);
+            assertTrue("Score for invalid string should be -9999", score == -1);
         }
     }
 
