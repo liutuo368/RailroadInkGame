@@ -25,15 +25,18 @@ public class testInvalidStringGetBasicScore {
     @Rule
     public Timeout globalTimeOut = Timeout.millis(2000);
 
+
+   // test the invalid strings
     @Test
     public void testGetBasicScore() {
         for(int i = 0; i < inValidBoardStrings.length; i++)
         {
             int score = RailroadInk.getBasicScore(inValidBoardStrings[i]);
-            assertTrue("Score for invalid string should be -9999", score == -1);
+            assertTrue("Score for invalid string should be -9999", score == -9999);
         }
     }
 
+    //test the empty strings
     @Test
     public void testEmptyStringGetBasicScore() {
 
