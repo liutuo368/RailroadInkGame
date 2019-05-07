@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 
 public class TileToStringTest {
 
+    // Written by Tuo Liu
     @Test
     public void testToString() {
         Tile x = new Tile("S0", new int[]{1,0,3,5,11,4,1});

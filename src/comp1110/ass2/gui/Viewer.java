@@ -57,6 +57,7 @@ public class Viewer extends Application {
         launch(args);
     }
 
+    // Written by Tuo Liu
     class Grid {
         private double x;
         private double y;
@@ -93,12 +94,14 @@ public class Viewer extends Application {
         }
     }
 
+    // Created by Tuo Liu
     List<TileImage> specialTiles1 = new ArrayList<>();
     List<TileImage> specialTiles2 = new ArrayList<>();
     List<TileImage> placement1 = new ArrayList<>();
     List<TileImage> placement2 = new ArrayList<>();
     List<TileImage> diceTiles = new ArrayList<>();
 
+    // This class is written by Tuo Liu
     class TileImage extends ImageView {
         double mouseX, mouseY;
         double homeX, homeY;
@@ -282,6 +285,7 @@ public class Viewer extends Application {
      *
      * @param placement A valid placement string
      */
+    // Written by Tuo Liu
     void makePlacement() {
         tiles.getChildren().clear();
         if(currentPlayer == 1) {
@@ -326,6 +330,7 @@ public class Viewer extends Application {
 
     }
 
+    // Written by Tuo Liu
     public String getPlacement(int player) {
         String placement = "";
         if(player == 1) {
@@ -340,6 +345,7 @@ public class Viewer extends Application {
         return placement;
     }
 
+    // Written by Tuo Liu
     void makeBoard() {
         initGrids();
         for(int i = 0; i <= 7; i++) {
@@ -480,6 +486,7 @@ public class Viewer extends Application {
 
     }
 
+    // Written by Tuo Liu
     private void initSpecialTiles() {
         double x = Tile_START_X + Tile_WIDTH;
         for(int i = 0; i < 6; i++) {
@@ -493,6 +500,7 @@ public class Viewer extends Application {
         }
     }
 
+    // Written by Tuo Liu
     private void makeSpecialTiles() {
         specialTiles.getChildren().clear();
         if(currentPlayer == 1) {
@@ -508,6 +516,7 @@ public class Viewer extends Application {
         specialLabel.setText("Special tiles used: " + (currentPlayer == 1 ? specialCount1 : specialCount2));
     }
 
+    // Written by Tuo Liu
     private void makeDiceTiles() {
         diceRolls.getChildren().clear();
         for(int i = 0; i < diceTiles.size(); i++) {
@@ -515,6 +524,7 @@ public class Viewer extends Application {
         }
     }
 
+    // Written by Tuo Liu
     private void nextRound() {
         if(round <= 7) {
             if(multiPlayer == true) {
@@ -554,6 +564,7 @@ public class Viewer extends Application {
         tilesLeft = 4;
     }
 
+    // Written by Tuo Liu
     private void rollDice() {
 
             diceTiles.clear();
@@ -573,6 +584,8 @@ public class Viewer extends Application {
     Label playerLabel = new Label("Player: " + currentPlayer);
     Label specialLabel = new Label("Special tiles used: " + (currentPlayer == 1 ? specialCount1 : specialCount2));
 
+
+    // Written by Jingfen Qiao
     private void gameOver() {
 
         gameOver = true;
@@ -648,6 +661,8 @@ public class Viewer extends Application {
         gameOverWindow.show();
     }
 
+
+    // Written by Tuo Liu
     private void restartGame() {
         controls.getChildren().clear();
         board.getChildren().clear();
@@ -671,6 +686,7 @@ public class Viewer extends Application {
     /**
      * Create a basic text field for input and a refresh button.
      */
+    // Written by Tuo Liu
     private void makeControls() {
 
         Button nextRoundButton = new Button("Next Round");
@@ -720,6 +736,7 @@ public class Viewer extends Application {
     }
 
 
+    // Written by Tuo Liu
     @Override
     public void start(Stage primaryStage) throws Exception {
 
