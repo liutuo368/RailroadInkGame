@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 
 public class GenerateDiceRollTest {
 
-    private static int BASE_ITERATIONS = 100;
+    private static int BASE_ITERATIONS = 10000;
 
     @Rule
     public Timeout globalTimeout = Timeout.millis(2000);
@@ -66,40 +66,69 @@ public class GenerateDiceRollTest {
 
     @Test
     public void testDieFaces() {
-        int zero = 0;
-        int one = 0;
-        int two = 0;
-        int three = 0;
-        int four = 0;
-        int five = 0;
-
+        int[] countsA = new int[6];
+        int[] countsB = new int[3];
         for (int i = 0; i < BASE_ITERATIONS; i++) {
             String roll = RailroadInk.generateDiceRoll();
-            for (int j = 1; j < roll.length(); j += 2) {
+            for (int j = 1; j < 6; j += 2) {
                 int face = Character.getNumericValue(roll.charAt(j));
                 switch (face) {
                     case 0:
-                        zero++;
+                        countsA[0]++;
+                        break;
                     case 1:
-                        one++;
+                        countsA[1]++;
+                        break;
                     case 2:
-                        two++;
+                        countsA[2]++;
+                        break;
                     case 3:
-                        three++;
+                        countsA[3]++;
+                        break;
                     case 4:
-                        four++;
+                        countsA[4]++;
+                        break;
                     case 5:
-                        five++;
+                        countsA[5]++;
+                        break;
                 }
                 assertFalse("Expected a number between 0 and 5, but you rolled: " + face, face < 0 || face > 5);
             }
+            for (int j = 7; j < 8; j += 2) {
+                int face = Character.getNumericValue(roll.charAt(j));
+                switch (face) {
+                    case 0:
+                        countsB[0]++;
+                        break;
+                    case 1:
+                        countsB[1]++;
+                        break;
+                    case 2:
+                        countsB[2]++;
+                        break;
+                }
+                assertFalse("Expected a number between 0 and 2, but you rolled: " + face, face < 0 || face > 2);
+            }
         }
-        assertTrue("Expected numbers 0 - 5 in 100 rolls, but you didn't roll '0'", zero > 0);
-        assertTrue("Expected numbers 0 - 5 in 100 rolls, but you didn't roll '1'", one > 0);
-        assertTrue("Expected numbers 0 - 5 in 100 rolls, but you didn't roll '2'", two > 0);
-        assertTrue("Expected numbers 0 - 5 in 100 rolls, but you didn't roll '3'", three > 0);
-        assertTrue("Expected numbers 0 - 5 in 100 rolls, but you didn't roll '4'", four > 0);
-        assertTrue("Expected numbers 0 - 5 in 100 rolls, but you didn't roll '5'", five > 0);
+        assertTrue("Expected your dice A to roll at least one of each value from 0-5 but missed a value", Arrays.stream(countsA).min().getAsInt() > 0);
+        assertTrue("Expected your dice B to roll at least one of each value from 0-2 but missed a value", Arrays.stream(countsB).min().getAsInt() > 0);
+        double[] probsA = new double[]{1.0 / 6.0, 1.0 / 6.0, 1.0 / 6.0, 1.0 / 6.0, 1.0 / 6.0, 1.0 / 6.0};
+        double[] probsB = new double[]{1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0};
+        int samples = BASE_ITERATIONS;
+        double chiA = chiSquared(probsA, samples * 3, countsA);
+        double chiB = chiSquared(probsB, samples, countsB);
+        assertTrue("Distribution of A rolls don't appear to be uniform (chi squared value of " + chiA + ")", chiA < 14.45);
+        assertTrue("Distribution of B rolls don't appear to be uniform (chi squared value of " + chiB + ")", chiB < 9.35);
+    }
+
+
+    private static double chiSquared(double[] expectedProbs, int samples, int[] counts) {
+        double total = 0;
+        for (int i = 0; i < expectedProbs.length; i++) {
+            double mi = ((double) samples) * expectedProbs[i];
+            total += ((double) counts[i] - mi) * ((double) counts[i] - mi) / mi;
+        }
+        return total;
     }
 
 }
