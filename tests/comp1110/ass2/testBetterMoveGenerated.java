@@ -27,7 +27,7 @@ public class testBetterMoveGenerated
             "A1A1A4B0"};
 
     @Rule
-    public Timeout globalTimeOut = Timeout.millis(6000);
+    public Timeout globalTimeOut = Timeout.millis(7000);
 
 
     @Test

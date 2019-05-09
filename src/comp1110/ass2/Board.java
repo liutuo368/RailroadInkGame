@@ -2,16 +2,21 @@ package comp1110.ass2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import comp1110.ass2.Tile;
 
 
 public class Board
 {
     private Object[][] board;
     private ArrayList<String> specialTiles = new ArrayList<>(Arrays.asList("S0","S1","S2","S3","S4","S5"));
+    private boolean[][] highwayConnections;
+    private boolean[][] railwayConnections;
+
     public Board()
     {
         this.board = new Object[7][7];
-
+        this.highwayConnections = new boolean[7][7];
+        this.railwayConnections = new boolean[7][7];
     }
 
     public Board(Board board)
@@ -305,6 +310,111 @@ public class Board
 
         String[] result = results.toArray(new String[results.size()]);
         return result;
+    }
+
+
+
+    public boolean checkHighwayConnection(Tile x)
+    {
+        if (x.check_highway_exit())
+            return true;
+        try
+        {
+            if (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]]))
+                return true;
+        }
+        catch (Exception e)
+        {
+
+        }
+        try
+        {
+            if (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]]))
+                return true;
+        }
+        catch (Exception e)
+        {
+
+        }
+        try
+        {
+            if (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1]))
+                return true;
+        }
+        catch (Exception e)
+        {
+
+        }
+        try
+        {
+            if (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1]))
+                return true;
+        }
+        catch (Exception e)
+        {
+
+        }
+        return false;
+    }
+
+
+    public boolean checkRailwayConnection(Tile x)
+    {
+        if (x.check_railway_exit())
+            return true;
+        try
+        {
+            if (x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]]))
+                return true;
+        }
+        catch (Exception e)
+        {
+
+        }
+        try
+        {
+            if (x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]]))
+                return true;
+        }
+        catch (Exception e)
+        {
+
+        }
+        try
+        {
+            if (x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1]))
+                return true;
+        }
+        catch (Exception e)
+        {
+
+        }
+        try
+        {
+            if (x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1]))
+                return true;
+        }
+        catch (Exception e)
+        {
+
+        }
+        return false;
+    }
+
+    public void generateHighwayConnections()
+    {
+        for (int i=0;i<7;i++)
+        {
+            for (int j=0;j<7;j++)
+            {
+                if (this.board[i][j] != null)
+                {
+                    Tile x = (Tile) board[i][j];
+                    this.highwayConnections[i][j] = checkHighwayConnection(x);
+                    this.railwayConnections[i][j] = checkRailwayConnection(x);
+                }
+            }
+        }
     }
 
 }
