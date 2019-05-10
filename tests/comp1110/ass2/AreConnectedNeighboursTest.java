@@ -61,7 +61,11 @@ public class AreConnectedNeighboursTest {
             {"A2B42", "S4C43"},
             {"S4C43", "S3C51"},
             {"S2D40", "S5E46"},
-            {"S5E46", "A4F42"}
+            {"S5E46", "A4F42"},
+            {"A0C30", "A0C24"},
+            {"A3A12", "A5A02"},
+            {"A3G10", "B1G23"},
+            {"A3G16", "B1G27"}
     };
 
     static final String[][] INVALID = {
@@ -75,7 +79,8 @@ public class AreConnectedNeighboursTest {
             {"B1C33", "S0B35"},
             {"S1F32", "S5E36"},
             {"A2E36", "B0E47"},
-            {"B2B42", "A1C42"}
+            {"B2B42", "A1C42"},
+            {"A3G10", "B1G22"}
     };
 
     static final String[][] DISCONNECTED = {
@@ -87,7 +92,9 @@ public class AreConnectedNeighboursTest {
             {"A2B30", "A0A34"},
             {"S1F32", "B0E33"},
             {"A2E36", "B0E44"},
-            {"B2B42", "A0C42"}
+            {"B2B42", "A0C42"},
+            {"A3A12", "A5A06"},
+            {"A3G10", "B1G25"}
     };
 
     static final String[][] NOT_NEIGHBOURS = {

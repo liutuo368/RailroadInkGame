@@ -1,32 +1,22 @@
 package comp1110.ass2.gui;
 
-import comp1110.ass2.Board;
-import comp1110.ass2.Tile;
+
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.ImageInput;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static comp1110.ass2.RailroadInk.*;
 
@@ -45,10 +35,6 @@ public class Viewer extends Application {
     private static final double Tile_START_X = VIEWER_WIDTH / 10 * 2;
     private static final double Tile_START_Y = 60;
 
-    //protected static String CURRENT_PLACEMENT_1 = "";
-    //protected static String CURRENT_PLACEMENT_2 = "";
-    //private String ROLL_MEMBERS = "";
-    //private String SPECIAL_MEMBERS = "S0S1S2S3S4S5";
     private int specialCount1 = 0;
     private int specialCount2 = 0;
     private int round = 0;
@@ -71,15 +57,22 @@ public class Viewer extends Application {
         launch(args);
     }
 
+    // Written by Tuo Liu
     class Grid {
         private double x;
         private double y;
-        public boolean isEmpty;
+        public boolean isEmpty1;
+        public boolean isEmpty2;
 
         public Grid(double x, double y) {
             this.x = x;
             this.y = y;
-            this.isEmpty = true;
+            this.isEmpty1 = true;
+            this.isEmpty2 = true;
+        }
+
+        public boolean isEmpty() {
+            return currentPlayer == 1 ? this.isEmpty1 : this.isEmpty2;
         }
 
         public double getX() {
@@ -101,12 +94,14 @@ public class Viewer extends Application {
         }
     }
 
+    // Created by Tuo Liu
     List<TileImage> specialTiles1 = new ArrayList<>();
     List<TileImage> specialTiles2 = new ArrayList<>();
     List<TileImage> placement1 = new ArrayList<>();
     List<TileImage> placement2 = new ArrayList<>();
     List<TileImage> diceTiles = new ArrayList<>();
 
+    // This class is written by Tuo Liu
     class TileImage extends ImageView {
         double mouseX, mouseY;
         double homeX, homeY;
@@ -167,16 +162,8 @@ public class Viewer extends Application {
             setOnScroll(event -> {
                 if (!this.isPlaced && !gameOver)
                 {
-                    //double deltaY = event.getDeltaY();
-                  //  if (deltaY < 0)
-                  //      this.orientation = (this.orientation - 1) % 8;
-                  //  else
-                        this.orientation = (this.orientation + 1) % 8;
+                    this.orientation = (this.orientation + 1) % 8;
                     setOrientation();
-//                if(!this.isPlaced){
-//                    this.orientation = (this.orientation + 1) % 8;
-//                    setOrientation();
-//                }
                     event.consume();
                 }
             });
@@ -239,7 +226,7 @@ public class Viewer extends Application {
             for(int i = 0; i < 7; i++) {
                 for(int j = 0; j < 7; j++) {
                     if((Math.abs(getLayoutX() - grids[i][j].getX()) < (Tile_WIDTH / 4)) && (Math.abs(getLayoutY() - grids[i][j].getY()) < (Tile_WIDTH / 4))) {
-                        if(grids[i][j].isEmpty) {
+                        if(grids[i][j].isEmpty()) {
                             if(isValidPlacementSequence((getPlacement(currentPlayer)) + this.name + rowtoString(i) + j + this.orientation)){
                                 if(this.isSpecial) {
                                     if(currentPlayer == 1) {
@@ -264,19 +251,16 @@ public class Viewer extends Application {
                                 tile.setLayoutY(grids[i][j].getY());
                                 tile.row = i;
                                 tile.col = j;
-                            /*if(currentPlayer == 1) {
-                                CURRENT_PLACEMENT_1 += tile.toString();
-                            } else {
-                                CURRENT_PLACEMENT_2 += tile.toString();
-                            }*/
 
                                 tile.isPlaced = true;
                                 tiles.getChildren().add(tile);
-                                grids[i][j].isEmpty = false;
+
                                 if(currentPlayer == 1) {
                                     placement1.add(tile);
+                                    grids[i][j].isEmpty1 = false;
                                 } else {
                                     placement2.add(tile);
+                                    grids[i][j].isEmpty2 = false;
                                 }
 //                            /*
 //                            if(generateMove(CURRENT_PLACEMENT, ROLL_MEMBERS) == "") {
@@ -301,6 +285,7 @@ public class Viewer extends Application {
      *
      * @param placement A valid placement string
      */
+    // Written by Tuo Liu
     void makePlacement() {
         tiles.getChildren().clear();
         if(currentPlayer == 1) {
@@ -345,36 +330,7 @@ public class Viewer extends Application {
 
     }
 
-    void testPlacement(String placement)
-    {
-        //if(isBoardStringWellFormed(placement)) {
-        tiles.getChildren().clear();
-        for(int i = 0; i < placement.length(); i+=5) {
-            String img = placement.substring(i, i + 2);
-            int row = placement.charAt(i + 2) - 65 + 1;
-            int col = placement.charAt(i + 3) - 48;
-            int orientation = placement.charAt(i + 4) - 48;
-
-            Image image =new Image(Viewer.class.getResource(URI_BASE+img+".png").toString());
-                ImageView imageview = new ImageView();
-                imageview.setImage(image);
-                imageview.setFitWidth(Tile_WIDTH);
-                imageview.setFitHeight(Tile_WIDTH);
-                imageview.setX(Tile_START_X + Tile_WIDTH * col);
-                imageview.setY(Tile_START_Y + Tile_WIDTH * row);
-
-                if(orientation >=4){
-                    imageview.setScaleX(-1);
-                }
-                imageview.setRotate(orientation * 90);
-
-                TileImage tileImage = new TileImage(image, img, Tile_START_X + Tile_WIDTH * col, Tile_START_Y + Tile_WIDTH * row, orientation);
-
-                tiles.getChildren().add(tileImage);
-
-            }
-        //}
-    }
+    // Written by Tuo Liu
     public String getPlacement(int player) {
         String placement = "";
         if(player == 1) {
@@ -389,6 +345,7 @@ public class Viewer extends Application {
         return placement;
     }
 
+    // Written by Tuo Liu
     void makeBoard() {
         initGrids();
         for(int i = 0; i <= 7; i++) {
@@ -529,6 +486,7 @@ public class Viewer extends Application {
 
     }
 
+    // Written by Tuo Liu
     private void initSpecialTiles() {
         double x = Tile_START_X + Tile_WIDTH;
         for(int i = 0; i < 6; i++) {
@@ -542,6 +500,7 @@ public class Viewer extends Application {
         }
     }
 
+    // Written by Tuo Liu
     private void makeSpecialTiles() {
         specialTiles.getChildren().clear();
         if(currentPlayer == 1) {
@@ -554,21 +513,10 @@ public class Viewer extends Application {
             }
         }
 
-
-
-        /*
-        double x = Tile_START_X + Tile_WIDTH;
-        for(int i=0; i<6; i++) {
-            String img = "S" + i;
-            Image image = new Image(Viewer.class.getResource(URI_BASE + img + ".png").toString());
-            TileImage tileImage = new TileImage(image, img, x, Tile_START_Y / 3, 0);
-            x += Tile_WIDTH * 1.5;
-
-            specialTiles.getChildren().add(tileImage);
-        }*/
         specialLabel.setText("Special tiles used: " + (currentPlayer == 1 ? specialCount1 : specialCount2));
     }
 
+    // Written by Tuo Liu
     private void makeDiceTiles() {
         diceRolls.getChildren().clear();
         for(int i = 0; i < diceTiles.size(); i++) {
@@ -576,6 +524,7 @@ public class Viewer extends Application {
         }
     }
 
+    // Written by Tuo Liu
     private void nextRound() {
         if(round <= 7) {
             if(multiPlayer == true) {
@@ -596,6 +545,10 @@ public class Viewer extends Application {
                 makePlacement();
                 makeSpecialTiles();
             } else {
+                if(round == 7) {
+                    gameOver();
+                    return;
+                }
                 round ++;
                 roundLabel.setText("Round: " + round);
                 rollDice();
@@ -611,45 +564,28 @@ public class Viewer extends Application {
         tilesLeft = 4;
     }
 
+    // Written by Tuo Liu
     private void rollDice() {
-        //if(round < 7) {
 
-            //round += 1;
-            //roundLabel.setText("Round: " + round);
             diceTiles.clear();
             String diceRoll = generateDiceRoll();
-            //ROLL_MEMBERS = "";
             double y = Tile_START_Y + Tile_WIDTH * 1.5;
             for(int i=0; i<8; i+=2) {
                 String img = diceRoll.substring(i, i+2);
-                //ROLL_MEMBERS += img;
                 Image image =new Image(Viewer.class.getResource(URI_BASE + img + ".png").toString());
                 TileImage tileImage = new TileImage(image, img, Tile_START_X + Tile_WIDTH * 9, y, 0);
-           /* ImageView imageview = new ImageView();
-            imageview.setImage(image);
-            imageview.setFitWidth(Tile_WIDTH);
-            imageview.setFitHeight(Tile_WIDTH);
-            imageview.setX(Tile_START_X + Tile_WIDTH * 9);
-            imageview.setY(y);*/
                 y += Tile_WIDTH * 1.5;
                 diceTiles.add(tileImage);
             }
             tilesLeft = 4;
-            //roundSpecialUsed = false;
-
-           // if(round > 1 && multiPlayer) {
-           //     currentPlayer = (currentPlayer == 1 ? 2 : 1);
-           //     makeSpecialTiles();
-           //     playerLabel.setText("Player: " + currentPlayer);
-           // }
-
-        //}
     }
 
     Label roundLabel = new Label("Round: " + round);
     Label playerLabel = new Label("Player: " + currentPlayer);
     Label specialLabel = new Label("Special tiles used: " + (currentPlayer == 1 ? specialCount1 : specialCount2));
 
+
+    // Written by Jingfen Qiao
     private void gameOver() {
 
         gameOver = true;
@@ -661,23 +597,57 @@ public class Viewer extends Application {
         imageview.setFitWidth(120);
         imageview.setFitHeight(120);
 
+        ImageView imageview2 = new ImageView(img);
+        imageview2.setX(250);
+        imageview2.setY(10);
+        imageview2.setFitWidth(120);
+        imageview2.setFitHeight(120);
+
+
         Label label1 = new Label("CONGRATULATIONS... YOU BEAT THE GAME!");
         label1.setFont(Font.font("family", FontWeight.BLACK.EXTRA_BOLD, FontPosture.REGULAR,20));
         label1.setLayoutX(120);
         label1.setLayoutY(130);
+
+        Label label5 = new Label("CONGRATULATIONS... YOU BEAT THE GAME!");
+        label5.setFont(Font.font("family", FontWeight.BLACK.EXTRA_BOLD, FontPosture.REGULAR,20));
+        label5.setLayoutX(120);
+        label5.setLayoutY(130);
+
 
         Label label2 = new Label("Your Score: " + getBasicScore(getPlacement(1)));
         label2.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
         label2.setLayoutX(250);
         label2.setLayoutY(170);
 
-        Group root = new Group();
-        root.getChildren().addAll(label1,label2,imageview);
+        Label label3 = new Label("First player's score: " + getBasicScore(getPlacement(1)));
+        label3.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
+        label3.setLayoutX(220);
+        label3.setLayoutY(170);
 
-       // StackPane layout = new StackPane();
-        //layout.getChildren().addAll(label1,label2);
+        Label label4 = new Label("Second player's score: " + getBasicScore(getPlacement(2)));
+        label4.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
+        label4.setLayoutX(220);
+        label4.setLayoutY(220);
 
-        Scene scene = new Scene(root, 640, 300);
+        Group rootOne = new Group();
+        rootOne.getChildren().addAll(label1,label2,imageview);
+
+        Group rootMulti = new Group();
+        rootMulti.getChildren().addAll(label5,label3,label4,imageview2);
+
+        Scene scene;
+        if(multiPlayer)
+        {
+            scene = new Scene(rootMulti, 640, 300);
+        }
+
+        else
+        {
+            scene = new Scene(rootOne, 640, 300);
+        }
+
+        //Scene scene = new Scene(root, 640, 300);
 
         //New window
         Stage gameOverWindow = new Stage();
@@ -687,9 +657,12 @@ public class Viewer extends Application {
         gameOverWindow.setX(200);
         gameOverWindow.setY(100);
 
+        gameOverWindow.setAlwaysOnTop(true);
         gameOverWindow.show();
     }
 
+
+    // Written by Tuo Liu
     private void restartGame() {
         controls.getChildren().clear();
         board.getChildren().clear();
@@ -701,12 +674,9 @@ public class Viewer extends Application {
         diceTiles.clear();
         placement1.clear();
         placement2.clear();
-        //CURRENT_PLACEMENT_1 = "";
-        //CURRENT_PLACEMENT_2 = "";
         specialCount1 = 0;
         specialCount2 = 0;
         round = 0;
-        //tilesLeft = 4;
         roundSpecialUsed = false;
         currentPlayer = 1;
         makeControls();
@@ -716,6 +686,7 @@ public class Viewer extends Application {
     /**
      * Create a basic text field for input and a refresh button.
      */
+    // Written by Tuo Liu
     private void makeControls() {
 
         Button nextRoundButton = new Button("Next Round");
@@ -757,31 +728,6 @@ public class Viewer extends Application {
         makeSpecialTiles();
 
         makeBoard();
-
-        TextField textField;
-        Label label1 = new Label("Placement:");
-        textField = new TextField();
-        textField.setPrefWidth(300);
-        Button button = new Button("Refresh");
-        button.setOnAction(e -> {
-           testPlacement(textField.getText());
-        });
-
-        Button button1 = new Button("gameover");
-        button1.setLayoutX(0);
-        button1.setLayoutY(0);
-        button1.setOnAction(e -> {
-           gameOver();
-        });
-
-        HBox hb = new HBox();
-        hb.getChildren().addAll(label1, textField, button);
-        hb.setSpacing(10);
-        hb.setLayoutX(130);
-        hb.setLayoutY(VIEWER_HEIGHT - 50);
-        controls.getChildren().add(hb);
-        controls.getChildren().add(button1);
-        makeBoard();
         rollDice();
         makeDiceTiles();
         round = 1;
@@ -790,6 +736,7 @@ public class Viewer extends Application {
     }
 
 
+    // Written by Tuo Liu
     @Override
     public void start(Stage primaryStage) throws Exception {
 

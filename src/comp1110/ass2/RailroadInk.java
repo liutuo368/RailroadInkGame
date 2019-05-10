@@ -180,6 +180,8 @@ public class RailroadInk {
             {
                 if (i!=j)
                 {
+                    if (tile_array[i].getLocation().equals(tile_array[j].getLocation()))
+                        return false;
                     if (tile_array[i].isInvalidConenction(tile_array[j]))
                         return false;
                     if (tile_array[i].isConnected(tile_array[j]))
@@ -404,8 +406,12 @@ public class RailroadInk {
      * @param boardString a board string representing a completed game
      * @return integer (positive or negative) for final score (not counting expansion packs)
      */
-    public static int getAdvancedScore(String boardString) {
+    public static int getAdvancedScore(String boardString)
+    {
         // FIXME Task 12: compute the total score including bonus points
+
+
+
         return -1;
     }
 

@@ -288,12 +288,13 @@ public class Tile {
 
     }
 
-    public boolean check_railway_connection(Tile w, Tile x)
+    public boolean check_railway_connection(Tile x)
     {
         Integer[] left = {4,6,10,7,12,13,14,15};
         Integer[] right = {2,6,8,9,11,12,14,15};
         Integer[] down = {3,5,9,10,11,12,13,15};
         Integer[] up = {1,5,7,8,11,13,14,15};
+        Tile w = this;
         if (w.shape[1] == x.shape[1])
         {
             if ((w.shape[2] - x.shape[2]) == 1) //if w is on immediate right of x
@@ -340,12 +341,13 @@ public class Tile {
     }
 
 
-    public boolean check_highway_connection(Tile w, Tile x)
+    public boolean check_highway_connection(Tile x)
     {
         Integer[] left = {4,6,10,7,12,13,14,15};
         Integer[] right = {2,6,8,9,11,12,14,15};
         Integer[] down = {3,5,9,10,11,12,13,15};
         Integer[] up = {1,5,7,8,11,13,14,15};
+        Tile w = this;
         if (w.shape[1] == x.shape[1])
         {
             if ((w.shape[2] - x.shape[2]) == 1) //if w is on immediate right of x
@@ -421,12 +423,12 @@ public class Tile {
             if ((this.shape[4] * x.shape[4] != 0))
             //highway
             {
-                result_highway = check_highway_connection(this, x);
+                result_highway = this.check_highway_connection(x);
             }
             if ((this.shape[5] * x.shape[5]) != 0)
             //railway
             {
-                result_railway = check_railway_connection(this, x);
+                result_railway = this.check_railway_connection(x);
             }
         }
         result = result_highway || result_railway;
