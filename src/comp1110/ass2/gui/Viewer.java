@@ -6,8 +6,10 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
@@ -328,6 +330,34 @@ public class Viewer extends Application {
             }
         }*/
 
+    }
+
+    void testPlacement(String placement) {
+            tiles.getChildren().clear();
+            for(int i = 0; i < placement.length(); i+=5) {
+                String img = placement.substring(i, i + 2);
+                int row = placement.charAt(i + 2) - 65 + 1;
+                int col = placement.charAt(i + 3) - 48;
+                int orientation = placement.charAt(i + 4) - 48;
+
+                Image image =new Image(Viewer.class.getResource(URI_BASE+img+".png").toString());
+                ImageView imageview = new ImageView();
+                imageview.setImage(image);
+                imageview.setFitWidth(Tile_WIDTH);
+                imageview.setFitHeight(Tile_WIDTH);
+                imageview.setX(Tile_START_X + Tile_WIDTH * col);
+                imageview.setY(Tile_START_Y + Tile_WIDTH * row);
+
+                if(orientation >=4){
+                    imageview.setScaleX(-1);
+                }
+                imageview.setRotate(orientation * 90);
+
+                TileImage tileImage = new TileImage(image, img, Tile_START_X + Tile_WIDTH * col, Tile_START_Y + Tile_WIDTH * row, orientation);
+
+                tiles.getChildren().add(tileImage);
+
+            }
     }
 
     // Written by Tuo Liu
@@ -720,8 +750,21 @@ public class Viewer extends Application {
         newGameButton.setLayoutX(Tile_START_X / 5);
         newGameButton.setLayoutY(Tile_START_Y * 3.5);
 
+        TextField textField = new TextField();
+        Button testButton = new Button("Refresh");
+        testButton.setOnAction(e -> {
+                    testPlacement(textField.getText());
+                }
 
-        controls.getChildren().addAll(label, roundLabel, specialLabel, playerLabel, nextRoundButton, newGameButton);
+        );
+        HBox hBox = new HBox();
+        hBox.setLayoutX(20);
+        hBox.setLayoutY(700);
+        hBox.getChildren().addAll(textField, testButton);
+
+
+
+        controls.getChildren().addAll(label, roundLabel, specialLabel, playerLabel, nextRoundButton, newGameButton, hBox);
 
         initGrids();
         initSpecialTiles();
