@@ -498,23 +498,12 @@ public class RailroadInk {
 
         basicScore = basicScore - board.countErrors();
 
+        board.generateConnections();
+        board.getLongestHighwayCount();
+        board.getLongestRailwayCount();
 
-        int highwayscore = 0;
-        int railwayscore = 0;
 
-        for (Route x : routes)
-        {
-            x.highWayRoutes();
-            x.railwayRoutes();
-            x.countLongestHighway();
-            x.countLongestRailway();
-            if (x.longestrailway > railwayscore)
-                railwayscore = x.longestrailway;
-            if (x.longesthighway > highwayscore)
-                highwayscore = x.longesthighway;
-        }
-
-        return basicScore + highwayscore + railwayscore;
+        return basicScore + board.longestRailway + board.longestHighway;
 
 
 
@@ -522,7 +511,7 @@ public class RailroadInk {
     }
 
     public static void main(String[] args) {
-        int ascore = getAdvancedScore("A4A12B2B16A1B01A1B23S1B32A1A32B1B44B2A44A4C16A3D15A4D01A5D23A4E20B1F24A2F17A1F01B0G16A5C34A4C43A5C53A3D50A4D61S4E50A0F51A1F67S2E46B1E31A1F30A2G36A1G41B1G52");
+        int ascore = getAdvancedScore("A3A10A3A52A3G10B2F10S1B50A2B61A0C60A1B41B1A35A4A41A2B31A1C30B0D32A2C50A4E10A3D12B2B10A2F01A0G00A4D01B1A27S3B20A4C10A1D50A0F23B2G25A3E30A4E41");
         System.out.println(ascore);
     }
 

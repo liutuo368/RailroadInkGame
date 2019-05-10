@@ -177,6 +177,7 @@ public class Route
                     else
                     {
                         this.highwayRoute[currentTileCounter] = 0;
+                        counter = 1;
                     }
                     currentTileCounter = i;
                 }
@@ -206,6 +207,7 @@ public class Route
                     else
                     {
                         this.railwayRoute[currentTileCounter] = 0;
+                        counter = 1;
                     }
                     currentTileCounter = i;
                 }
