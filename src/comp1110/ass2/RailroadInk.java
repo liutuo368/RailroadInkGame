@@ -336,6 +336,8 @@ public class RailroadInk {
         basicScore = basicScore - board.countErrors();
 
         return basicScore;
+
+
     }
 
     /**
@@ -409,16 +411,120 @@ public class RailroadInk {
     public static int getAdvancedScore(String boardString)
     {
         // FIXME Task 12: compute the total score including bonus points
+        if (!isValidPlacementSequence(boardString))
+            return -9999;
+
+        if (boardString.isEmpty())
+            return 0;
+
+        int basicScore = 0;
+        int b2Counter = 0;
+        for (int i = 0;i < boardString.length();i=i+5)
+        {
+            if (boardString.substring(i,i+2).equals("B2"))          //Piece B2 will be treated as two individual piece on the same location. Counting B2 pieces in boardstring here
+                b2Counter++;
+
+        }
+        ArrayList<Route> routes = new ArrayList<>();
+
+        int tile_number = (boardString.length())/5;
+        Tile[] tile_array = new Tile[tile_number + b2Counter];      // Adjusting the length of tile_array to accomodate B2 piece copies
+        Board board = new Board();
+        int counter = 0;
+        for (int i = 0;i < boardString.length();i=i+5)
+        {
+            String temp_substring = boardString.substring(i,i+5);
+            tile_array[counter] = new Tile(temp_substring.substring(0,2));
+            tile_array[counter].set_default();
+            tile_array[counter].translate(temp_substring.substring(2,4));
+            tile_array[counter].rotate90(temp_substring.charAt(4));
+            board.place_tile(tile_array[counter]);
+            if (tile_array[counter].getName().equals("B2"))
+            {
+                tile_array[counter+1] = new Tile(temp_substring.substring(0,2));
+                tile_array[counter+1].set_default();
+                tile_array[counter+1].translate(temp_substring.substring(2,4));
+                tile_array[counter+1].rotate90(temp_substring.charAt(4));
+                tile_array[counter].shape[5] = 0;
+                tile_array[counter+1].shape[4] = 0;
+                counter++;
+            }
+
+
+            counter++;
+        }
+        Route route = new Route(tile_array[0]);
+        outer:
+        for (int i=1;i<tile_array.length;i++)
+        {
+            if (routes.isEmpty())
+                routes.add(route);
+            inner:
+            for (Route x : routes)
+            {
+                if (x.connected_to_route(tile_array[i]))
+                    continue outer;
+            }
+            routes.add(new Route(tile_array[i]));
+        }
+
+        for (int i = 0;i<routes.size();i++)
+        {
+            for (int j = 0;j<routes.size();j++)
+            {
+                if (i!=j)
+                {
+                    if (routes.get(i).checkRoutesConnected(routes.get(j)))
+                    {
+                        routes.get(i).mergeRoutes(routes.get(j));
+                        routes.remove(j);
+                        i=0;
+                        j=0;
+                    }
+                }
+            }
+        }
+
+        for (Route x : routes)
+        {
+            int exits = x.numberOfExitsConnected();
+            if (exits == 12)
+                basicScore = basicScore + 45;
+            else if (exits > 1)
+                basicScore = basicScore + (4*(exits-1));
+        }
+
+        basicScore = basicScore + board.centreTileScore();
+
+        basicScore = basicScore - board.countErrors();
+
+
+        int highwayscore = 0;
+        int railwayscore = 0;
+
+        for (Route x : routes)
+        {
+            x.highWayRoutes();
+            x.railwayRoutes();
+            x.countLongestHighway();
+            x.countLongestRailway();
+            if (x.longestrailway > railwayscore)
+                railwayscore = x.longestrailway;
+            if (x.longesthighway > highwayscore)
+                highwayscore = x.longesthighway;
+        }
+
+        return basicScore + highwayscore + railwayscore;
 
 
 
-        return -1;
+
     }
 
-    //public int getSpecialTileCount(){
-        // return 0;
-    //}
-
+    public static void main(String[] args) {
+        int ascore = getAdvancedScore("A4A12B2B16A1B01A1B23S1B32A1A32B1B44B2A44A4C16A3D15A4D01A5D23A4E20B1F24A2F17A1F01B0G16A5C34A4C43A5C53A3D50A4D61S4E50A0F51A1F67S2E46B1E31A1F30A2G36A1G41B1G52");
+        System.out.println(ascore);
+    }
 
 }
 
