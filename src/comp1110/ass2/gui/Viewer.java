@@ -345,6 +345,36 @@ public class Viewer extends Application {
 
     }
 
+    void testPlacement(String placement)
+    {
+        //if(isBoardStringWellFormed(placement)) {
+        tiles.getChildren().clear();
+        for(int i = 0; i < placement.length(); i+=5) {
+            String img = placement.substring(i, i + 2);
+            int row = placement.charAt(i + 2) - 65 + 1;
+            int col = placement.charAt(i + 3) - 48;
+            int orientation = placement.charAt(i + 4) - 48;
+
+            Image image =new Image(Viewer.class.getResource(URI_BASE+img+".png").toString());
+                ImageView imageview = new ImageView();
+                imageview.setImage(image);
+                imageview.setFitWidth(Tile_WIDTH);
+                imageview.setFitHeight(Tile_WIDTH);
+                imageview.setX(Tile_START_X + Tile_WIDTH * col);
+                imageview.setY(Tile_START_Y + Tile_WIDTH * row);
+
+                if(orientation >=4){
+                    imageview.setScaleX(-1);
+                }
+                imageview.setRotate(orientation * 90);
+
+                TileImage tileImage = new TileImage(image, img, Tile_START_X + Tile_WIDTH * col, Tile_START_Y + Tile_WIDTH * row, orientation);
+
+                tiles.getChildren().add(tileImage);
+
+            }
+        //}
+    }
     public String getPlacement(int player) {
         String placement = "";
         if(player == 1) {
@@ -728,15 +758,13 @@ public class Viewer extends Application {
 
         makeBoard();
 
-
-        /*Label label1 = new Label("Placement:");
+        TextField textField;
+        Label label1 = new Label("Placement:");
         textField = new TextField();
         textField.setPrefWidth(300);
         Button button = new Button("Refresh");
         button.setOnAction(e -> {
-           makePlacement(textField.getText());
-            textField.clear();
-           //textField.setText(CURRENT_PLACEMENT);
+           testPlacement(textField.getText());
         });
 
         Button button1 = new Button("gameover");
@@ -744,15 +772,15 @@ public class Viewer extends Application {
         button1.setLayoutY(0);
         button1.setOnAction(e -> {
            gameOver();
-        });*/
+        });
 
-        /*HBox hb = new HBox();
+        HBox hb = new HBox();
         hb.getChildren().addAll(label1, textField, button);
         hb.setSpacing(10);
         hb.setLayoutX(130);
         hb.setLayoutY(VIEWER_HEIGHT - 50);
         controls.getChildren().add(hb);
-        controls.getChildren().add(button1);*/
+        controls.getChildren().add(button1);
         makeBoard();
         rollDice();
         makeDiceTiles();
