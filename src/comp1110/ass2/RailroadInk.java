@@ -358,7 +358,7 @@ public class RailroadInk {
      * @param diceRoll a String representing a dice roll for the round
      * @return A string representing the best possible move given a boardString and a dice roll
      *
-     * Description : 
+     * Description :
      */
 
     public static String generateMove(String boardString, String diceRoll) {
