@@ -247,7 +247,7 @@ public class RailroadInk {
         // FIXME Task 8: compute the basic score
 
         if (!isValidPlacementSequence(boardString))
-            return -9999;
+            return -9999;                                           // returning absurdly large negative number which indicates that an invalid boardstring was received
 
         if (boardString.isEmpty())
             return 0;
@@ -415,21 +415,23 @@ public class RailroadInk {
 
     }
 
+
     /**
-     * Given the current state of a game board, output an integer representing the sum of all the factors contributing
-     * to `getBasicScore`, as well as those attributed to:
-     * <p>
-     * * Longest railroad
-     * * Longest highway
+     * Author : Jihirshu Narayan
+     * Created : 10/05/2019
+     * Last Modified : -
+     * Description : This method follows the same implementation as basic score. However, in addition to basic score, we calculate the longest highway and
+     *                longest railway route as well and add that as bonus points to the basic score.
      *
      * @param boardString a board string representing a completed game
-     * @return integer (positive or negative) for final score (not counting expansion packs)
+     * @return an integer value representing advanced score which considers bonus points for longest highway and railway length
      */
+
     public static int getAdvancedScore(String boardString)
     {
         // FIXME Task 12: compute the total score including bonus points
         if (!isValidPlacementSequence(boardString))
-            return -9999;
+            return -9999;                                       // returning absurdly large negative number which indicates that an invalid boardstring was received
 
         if (boardString.isEmpty())
             return 0;
@@ -530,12 +532,10 @@ public class RailroadInk {
     public static void main(String[] args)
     {
         String diceRoll = "A5A5A5B1";
-        String boardString = "A4A50A0B61A3D60B1F60S0E61A0E52A5G52A4G61B2B50A0A30A1A21A5A10B2G31A3G41B0G12A0F13A2F01S1D03A2B02A1C00B0A00A3G21S3G00A1E00A4C50B1D50A0F51";
+        String boardString = "";
 
-        System.out.println(generateMove(boardString, "B1"));
-        System.out.println(generateMove(boardString+"B1A61", "A5"));
-        System.out.println(generateMove(boardString + "B1A61A5C62", "A5"));
-        System.out.println(generateMove(boardString, "A5"));
+        System.out.println(generateMove(boardString, diceRoll));
+
     }
 
 }

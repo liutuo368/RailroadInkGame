@@ -1,3 +1,11 @@
+/**
+ * Author : Jihirshu Narayan
+ * Created : 29/03/2019
+ * Last Modifed - 10/05/2019
+ * Descritption : Class board stores a collection of tiles as a two dimensional array. This representation of board makes it easier
+ *                to track tile placements and explore their interaction with one another.
+ */
+
 package comp1110.ass2;
 
 import java.util.ArrayList;
