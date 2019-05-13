@@ -299,7 +299,7 @@ public class Board
                     }
                 }
             }
-            if (results.size() > 2500)                  // THIS BLOCK LIMITS THE MOVES IN ORDER TO PASS THE TESTS WITHIN TIME LIMIT
+            if (results.size() > 250)                  // THIS BLOCK LIMITS THE MOVES IN ORDER TO PASS THE TESTS WITHIN TIME LIMIT
             {
                 String[] result = results.toArray(new String[results.size()]);
                 return result;
@@ -453,21 +453,23 @@ public class Board
         if (count > longestRailway)
             longestRailway = count;
 
-        map[x.shape[1]][x.shape[2]] = 0;
+
         int[][] clone = new int[7][7];
 
+        for (int i = 0;i<7;i++)
+        {
+            for (int j = 0;j<7;j++)
+            {
+                clone[i][j] = map[i][j];
+            }
+        }
+        clone[x.shape[1]][x.shape[2]] = 0;
 
         try
         {
             if ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) && (map[x.shape[1]-1][x.shape[2]] == 1))
             {
-                for (int i = 0;i<7;i++)
-                {
-                    for (int j = 0;j<7;j++)
-                    {
-                        clone[i][j] = map[i][j];
-                    }
-                }
+
                 findRailwayNeighboursRecursively((Tile) this.board[x.shape[1]-1][x.shape[2]], count+1,clone);
             }
         }
@@ -480,13 +482,7 @@ public class Board
         {
             if ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) && (map[x.shape[1]+1][x.shape[2]] == 1))
             {
-                for (int i = 0;i<7;i++)
-                {
-                    for (int j = 0;j<7;j++)
-                    {
-                        clone[i][j] = map[i][j];
-                    }
-                }
+
                 findRailwayNeighboursRecursively((Tile) this.board[x.shape[1]+1][x.shape[2]], count+1, clone);
             }
         }
@@ -498,13 +494,7 @@ public class Board
         {
             if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) && (map[x.shape[1]][x.shape[2]-1] == 1))
             {
-                for (int i = 0;i<7;i++)
-                {
-                    for (int j = 0;j<7;j++)
-                    {
-                        clone[i][j] = map[i][j];
-                    }
-                }
+
                 findRailwayNeighboursRecursively((Tile)this.board[x.shape[1]][x.shape[2]-1], count+1, clone);
             }
         }
@@ -516,13 +506,7 @@ public class Board
         {
             if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) && (map[x.shape[1]][x.shape[2]+1] == 1))
             {
-                for (int i = 0;i<7;i++)
-                {
-                    for (int j = 0;j<7;j++)
-                    {
-                        clone[i][j] = map[i][j];
-                    }
-                }
+
                 findRailwayNeighboursRecursively((Tile)this.board[x.shape[1]][x.shape[2]+1], count+1, clone);
             }
         }
@@ -567,20 +551,22 @@ public class Board
         if (count > longestHighway)
             longestHighway = count;
 
-        map[x.shape[1]][x.shape[2]] = 0;
+
         int[][] clone = new int[7][7];
+        for (int i = 0;i<7;i++)
+        {
+            for (int j = 0;j<7;j++)
+            {
+                clone[i][j] = map[i][j];
+            }
+        }
+
+        clone[x.shape[1]][x.shape[2]] = 0;
 
         try
         {
             if ((x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) && (map[x.shape[1]-1][x.shape[2]] == 1))
             {
-                for (int i = 0;i<7;i++)
-                {
-                    for (int j = 0;j<7;j++)
-                    {
-                        clone[i][j] = map[i][j];
-                    }
-                }
                 findHighwayNeighboursRecursively((Tile) this.board[x.shape[1]-1][x.shape[2]], count+1, clone);
             }
         }
@@ -592,13 +578,6 @@ public class Board
         {
             if ((x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) && (map[x.shape[1]+1][x.shape[2]] == 1))
             {
-                for (int i = 0;i<7;i++)
-                {
-                    for (int j = 0;j<7;j++)
-                    {
-                        clone[i][j] = map[i][j];
-                    }
-                }
                 findHighwayNeighboursRecursively((Tile) this.board[x.shape[1]+1][x.shape[2]], count+1, clone);
             }
         }
@@ -610,13 +589,6 @@ public class Board
         {
             if ((x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) && (map[x.shape[1]][x.shape[2]-1] == 1))
             {
-                for (int i = 0;i<7;i++)
-                {
-                    for (int j = 0;j<7;j++)
-                    {
-                        clone[i][j] = map[i][j];
-                    }
-                }
                 findHighwayNeighboursRecursively((Tile)this.board[x.shape[1]][x.shape[2]-1], count+1, clone);
             }
         }
@@ -628,13 +600,6 @@ public class Board
         {
             if ((x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) && (map[x.shape[1]][x.shape[2]+1] == 1))
             {
-                for (int i = 0;i<7;i++)
-                {
-                    for (int j = 0;j<7;j++)
-                    {
-                        clone[i][j] = map[i][j];
-                    }
-                }
                 findHighwayNeighboursRecursively((Tile)this.board[x.shape[1]][x.shape[2]+1], count+1, clone);
             }
         }
