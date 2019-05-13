@@ -134,7 +134,7 @@ public class RailroadInk {
 
         int numberOfTiles = boardString.length()/5;
         Tile[] tile_array = new Tile[numberOfTiles];
-//        boolean[][] board =  new boolean[7][7];
+
         int counter = 0;
         for (int i = 0;i < boardString.length();i=i+5)
         {
@@ -539,5 +539,3 @@ public class RailroadInk {
     }
 
 }
-
-
