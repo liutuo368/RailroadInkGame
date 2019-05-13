@@ -6,6 +6,7 @@ import java.util.Random;
 
 public class RailroadInk {
     /**
+     * Created by Jingfen Qiao
      * Determine whether a tile placement string is well-formed:
      * - it consists of exactly 5 characters;
      * - the first character represents a die A or B, or a special tile S
@@ -46,6 +47,7 @@ public class RailroadInk {
     }
 
     /**
+     * Created by Tuo Liu
      * Determine whether a board string is well-formed:
      * - it consists of exactly N five-character tile placements (where N = 1 .. 31);
      * - each piece placement is well-formed
