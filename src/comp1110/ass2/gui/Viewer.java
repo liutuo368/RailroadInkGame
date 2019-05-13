@@ -300,7 +300,6 @@ public class Viewer extends Application {
             }
         }
 
-
         // FIXME Task 4: implement the simple placement viewer
         /*if(isBoardStringWellFormed(placement)) {
             tiles.getChildren().clear();
@@ -616,10 +615,13 @@ public class Viewer extends Application {
 
 
     // Written by Jingfen Qiao
+    // open an new window to show the final score of the gamer
+    // There are two window for displaying the score of single player and multi-player separately.
     private void gameOver() {
 
         gameOver = true;
 
+        // add image to the window of single player
         Image img = new Image(Viewer.class.getResource(URI_BASE+"WOW.png").toString());
         ImageView imageview = new ImageView(img);
         imageview.setX(250);
@@ -627,45 +629,52 @@ public class Viewer extends Application {
         imageview.setFitWidth(120);
         imageview.setFitHeight(120);
 
+        // add image to the window of multi-player
         ImageView imageview2 = new ImageView(img);
         imageview2.setX(250);
         imageview2.setY(10);
         imageview2.setFitWidth(120);
         imageview2.setFitHeight(120);
 
-
+        // Add words to remind the player that the game is over
         Label label1 = new Label("CONGRATULATIONS... YOU BEAT THE GAME!");
         label1.setFont(Font.font("family", FontWeight.BLACK.EXTRA_BOLD, FontPosture.REGULAR,20));
         label1.setLayoutX(120);
         label1.setLayoutY(130);
 
+        // Add words to remind players that the game is over
         Label label5 = new Label("CONGRATULATIONS... YOU BEAT THE GAME!");
         label5.setFont(Font.font("family", FontWeight.BLACK.EXTRA_BOLD, FontPosture.REGULAR,20));
         label5.setLayoutX(120);
         label5.setLayoutY(130);
 
-
+        // Invoke the score of the single player
         Label label2 = new Label("Your Score: " + getBasicScore(getPlacement(1)));
         label2.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
         label2.setLayoutX(250);
         label2.setLayoutY(170);
 
+        // Invoke the score of the first player
         Label label3 = new Label("First player's score: " + getBasicScore(getPlacement(1)));
         label3.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
         label3.setLayoutX(220);
         label3.setLayoutY(170);
 
+        // Invoke the score of the second player
         Label label4 = new Label("Second player's score: " + getBasicScore(getPlacement(2)));
         label4.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
         label4.setLayoutX(220);
         label4.setLayoutY(220);
 
+        // Group the label1,label2 and imageview together for the window of single player
         Group rootOne = new Group();
         rootOne.getChildren().addAll(label1,label2,imageview);
 
+        // Group the label5, label3, imageview2 together for the window of multi-players
         Group rootMulti = new Group();
         rootMulti.getChildren().addAll(label5,label3,label4,imageview2);
 
+        // if there are two players, showing the score of each person separately, otherwise, show the score of the single player.
         Scene scene;
         if(multiPlayer)
         {
@@ -677,7 +686,6 @@ public class Viewer extends Application {
             scene = new Scene(rootOne, 640, 300);
         }
 
-        //Scene scene = new Scene(root, 640, 300);
 
         //New window
         Stage gameOverWindow = new Stage();
