@@ -358,7 +358,11 @@ public class RailroadInk {
      * @param diceRoll a String representing a dice roll for the round
      * @return A string representing the best possible move given a boardString and a dice roll
      *
-     * Description :
+     * Description : An array of Tile objects is created from the boardString. A Board object is created as well. The board object has a function which returns
+     *               an array of all possible moves for a given baordString and dice roll. We add all the generated move string to the original boardString one by one
+     *               and evaluate the basic score for in each iteration. The generated move which returns the highest basic score is selected and returned as the best
+     *               possible single move.
+     *
      */
 
     public static String generateMove(String boardString, String diceRoll) {
