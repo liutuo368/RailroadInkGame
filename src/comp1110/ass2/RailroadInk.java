@@ -6,6 +6,7 @@ import java.util.Random;
 
 public class RailroadInk {
     /**
+     * Created by Jingfen Qiao
      * Determine whether a tile placement string is well-formed:
      * - it consists of exactly 5 characters;
      * - the first character represents a die A or B, or a special tile S
@@ -46,6 +47,7 @@ public class RailroadInk {
     }
 
     /**
+     * Created by Tuo Liu
      * Determine whether a board string is well-formed:
      * - it consists of exactly N five-character tile placements (where N = 1 .. 31);
      * - each piece placement is well-formed
@@ -84,33 +86,20 @@ public class RailroadInk {
     }
 
 
+
     /**
-     * Determine whether the provided placements are neighbours connected by at least one validly connecting edge.
-     * For example,
-     * - areConnectedNeighbours("A3C10", "A3C23") would return true as these tiles are connected by a highway edge;
-     * - areConnectedNeighbours("A3C23", "B1B20") would return false as these neighbouring tiles are disconnected;
-     * - areConnectedNeighbours("A0B30", "A3B23") would return false as these neighbouring tiles have an
-     * invalid connection between highway and railway; and
-     * areConnectedNeighbours("A0B30", "A3C23") would return false as these tiles are not neighbours.
+     * Author : Jihirshu Narayan
+     * Created on : 29/03/2019
+     * Last modified : -
+     * @param tilePlacementStringA
+     * @param tilePlacementStringB
+     * @return boolean value telling us if the two tile placement strings are connected neighbours or not
      *
-     * @return true if the placements are connected neighbours
+     * Description : The tile id, tile location and tile orientation information is extracted from each tile placement string
+     *              and two tile objects are connected accordingly. We check if they are connected using the isConnected function from class Tile.
+     *
      */
-//    public static boolean areConnectedNeighbours(String tilePlacementStringA, String tilePlacementStringB) {
-//        Tiles a = Tiles.valueOf(tilePlacementStringA.substring(0,2));
-//        Tiles b = Tiles.valueOf(tilePlacementStringB.substring(0,2));
-//        a.set_default();
-//        b.set_default();
-//        a.translate(tilePlacementStringA.substring(2,4));
-//        b.translate(tilePlacementStringB.substring(2,4));
-//
-//        a.rotate90(tilePlacementStringA.charAt(4));
-//        b.rotate90(tilePlacementStringB.charAt(4));
-//
-//
-//
-//        return (a.isConnected(b));
-//
-//    }
+
     public static boolean areConnectedNeighbours(String tilePlacementStringA, String tilePlacementStringB)
     {
         Tile a = new Tile(tilePlacementStringA.substring(0,2));
@@ -125,22 +114,20 @@ public class RailroadInk {
         return (a.isConnected(b));
     }
 
+
     /**
-     * Given a well-formed board string representing an ordered list of placements,
-     * determine whether the board string is valid.
-     * A board string is valid if each tile placement is legal with respect to all previous tile
-     * placements in the string, according to the rules for legal placements:
-     * - A tile must be placed such that at least one edge connects to either an exit or a pre-existing route.
-     *   Such a connection is called a valid connection.
-     * - Tiles may not be placed such that a highway edge connects to a railway edge;
-     *   this is referred to as an invalid connection.
-     *   Highways and railways may only join at station tiles.
-     * - A tile may have one or more edges touching a blank edge of another tile;
-     *   this is referred to as disconnected, but the placement is still legal.
+     * Author : Jihirshu Narayan
+     * Created : 29/03/2019
+     * Last modified : 09/05/2019
+     * @param boardString
+     * @return boolean value representing if the boardstring represents valid placement of tiles
+     * Description : The boardString is a string of multiple tileplacement strings concatenated together. We extract tile placement strings one at a time
+     *              by incrementing 5 steps in the boardstring. In each iteration we create a tile object which is then added to an array of tile objects.
      *
-     * @param boardString a board string representing some placement sequence
-     * @return true if placement sequence is valid
+     *              Once we have the tile array ready, we iterate over each tile object making sure its either connected to an exit or another tile object in the
+     *              array. We also check for invalid connections. If all tile have a valid placement then the function returns true.
      */
+
     public static boolean isValidPlacementSequence(String boardString)
     {
         // FIXME Task 6: determine whether the given placement sequence is valid
@@ -156,10 +143,6 @@ public class RailroadInk {
             tile_array[counter].set_default();
             tile_array[counter].translate(temp_substring.substring(2,4));
             tile_array[counter].rotate90(temp_substring.charAt(4));
-//            if (board[tile_array[counter].getShape()[1]][tile_array[counter].getShape()[2]])
-//                return false;
-//            else
-//                board[tile_array[counter].getShape()[1]][tile_array[counter].getShape()[2]] = true;
 
             counter++;
         }
@@ -180,6 +163,8 @@ public class RailroadInk {
             {
                 if (i!=j)
                 {
+                    if (tile_array[i].getLocation().equals(tile_array[j].getLocation()))
+                        return false;
                     if (tile_array[i].isInvalidConenction(tile_array[j]))
                         return false;
                     if (tile_array[i].isConnected(tile_array[j]))
@@ -197,15 +182,14 @@ public class RailroadInk {
 
     }
 
+
+
     /**
-     * Generate a random dice roll as a string of eight characters.
-     * Dice A should be rolled three times, dice B should be rolled once.
-     * Die A has faces numbered 0-5.
-     * Die B has faces numbered 0-2.
-     * Each die roll is composed of a character 'A' or 'B' representing the dice,
-     * followed by a digit character representing the face.
-     *
-     * @return a String representing the die roll e.g. A0A4A3B2
+     * Author : Jihirshu Narayan
+     * Created on : 11/04/2019
+     * Last modified : -
+     * @return a String representing dice roll for a round.
+     * Decription : 4 randomly selected dice out of A0,A1,A2,A3,A4,A5,B0,B1,B2 (repitition allowed)
      */
 
     public static String generateDiceRoll() {
@@ -231,17 +215,33 @@ public class RailroadInk {
         return dice_roll;
     }
 
+
+
+
     /**
+     * Author : Jihirshu Narayan
+     * Created on : 11/04/2019
+     * Last Modified : -
      * Given the current state of a game board, output an integer representing the sum of all the following factors
      * that contribute to the player's final score.
      * <p>
      * * Number of exits mapped
      * * Number of centre tiles used
      * * Number of dead ends in the network
-     *
      * @param boardString a board string representing a completed game
-     * @return integer (positive or negative) for score *not* considering longest rail/highway
+     * @return an integer value representing basic score for the given boardstring
+     * Description : We create an array of tile objects from the given boardstring. Tile B2 is repeated twice for every occurrence since it represents a highway
+     *              connection as well as a railway connection but not connected to each other. Once the tile array is created, we create all possible routes
+     *              from the tiles and store each as a route object in a list of routes objects. Then we iterate through the routes list and check if any of
+     *              these routes are  connected to each other and merge them if they are. At the end of the iteration, we have a list of disconnected routes and
+     *              we count their exits.
+     *
+     *              We also create a board object which contains a 2D array of tile objects. Using the board object we find out how many tiles are placed in the
+     *              center and how many errors are on the board. We get the basic score by summing exit score, center tile score and subtracting the errors.
+     *
      */
+
+
     public static int getBasicScore(String boardString)
     {
         // FIXME Task 8: compute the basic score
@@ -334,6 +334,8 @@ public class RailroadInk {
         basicScore = basicScore - board.countErrors();
 
         return basicScore;
+
+
     }
 
     /**
@@ -344,6 +346,25 @@ public class RailroadInk {
      * @return a String representing an ordered sequence of valid piece placements for the current round
      * @see RailroadInk#generateDiceRoll()
      */
+
+
+    /**
+     * Author : Jihirshu Narayan
+     * Created : 16/04/2019
+     * Last modified : -
+     * Given a valid boardString and a dice roll for the round,
+     * return a String representing an ordered sequence of valid piece placements for the round.
+     * @param boardString a board string representing the current state of the game as at the start of the round
+     * @param diceRoll a String representing a dice roll for the round
+     * @return A string representing the best possible move given a boardString and a dice roll
+     *
+     * Description : An array of Tile objects is created from the boardString. A Board object is created as well. The board object has a function which returns
+     *               an array of all possible moves for a given baordString and dice roll. We add all the generated move string to the original boardString one by one
+     *               and evaluate the basic score for in each iteration. The generated move which returns the highest basic score is selected and returned as the best
+     *               possible single move.
+     *
+     */
+
     public static String generateMove(String boardString, String diceRoll) {
         // FIXME Task 10: generate a valid move
         String[] choices = {"","","",""};
@@ -404,15 +425,118 @@ public class RailroadInk {
      * @param boardString a board string representing a completed game
      * @return integer (positive or negative) for final score (not counting expansion packs)
      */
-    public static int getAdvancedScore(String boardString) {
+    public static int getAdvancedScore(String boardString)
+    {
         // FIXME Task 12: compute the total score including bonus points
-        return -1;
+        if (!isValidPlacementSequence(boardString))
+            return -9999;
+
+        if (boardString.isEmpty())
+            return 0;
+
+        int basicScore = 0;
+        int b2Counter = 0;
+        for (int i = 0;i < boardString.length();i=i+5)
+        {
+            if (boardString.substring(i,i+2).equals("B2"))          //Piece B2 will be treated as two individual piece on the same location. Counting B2 pieces in boardstring here
+                b2Counter++;
+
+        }
+        ArrayList<Route> routes = new ArrayList<>();
+
+        int tile_number = (boardString.length())/5;
+        Tile[] tile_array = new Tile[tile_number + b2Counter];      // Adjusting the length of tile_array to accomodate B2 piece copies
+        Board board = new Board();
+        int counter = 0;
+        for (int i = 0;i < boardString.length();i=i+5)
+        {
+            String temp_substring = boardString.substring(i,i+5);
+            tile_array[counter] = new Tile(temp_substring.substring(0,2));
+            tile_array[counter].set_default();
+            tile_array[counter].translate(temp_substring.substring(2,4));
+            tile_array[counter].rotate90(temp_substring.charAt(4));
+            board.place_tile(tile_array[counter]);
+            if (tile_array[counter].getName().equals("B2"))
+            {
+                tile_array[counter+1] = new Tile(temp_substring.substring(0,2));
+                tile_array[counter+1].set_default();
+                tile_array[counter+1].translate(temp_substring.substring(2,4));
+                tile_array[counter+1].rotate90(temp_substring.charAt(4));
+                tile_array[counter].shape[5] = 0;
+                tile_array[counter+1].shape[4] = 0;
+                counter++;
+            }
+
+
+            counter++;
+        }
+        Route route = new Route(tile_array[0]);
+        outer:
+        for (int i=1;i<tile_array.length;i++)
+        {
+            if (routes.isEmpty())
+                routes.add(route);
+            inner:
+            for (Route x : routes)
+            {
+                if (x.connected_to_route(tile_array[i]))
+                    continue outer;
+            }
+            routes.add(new Route(tile_array[i]));
+        }
+
+        for (int i = 0;i<routes.size();i++)
+        {
+            for (int j = 0;j<routes.size();j++)
+            {
+                if (i!=j)
+                {
+                    if (routes.get(i).checkRoutesConnected(routes.get(j)))
+                    {
+                        routes.get(i).mergeRoutes(routes.get(j));
+                        routes.remove(j);
+                        i=0;
+                        j=0;
+                    }
+                }
+            }
+        }
+
+        for (Route x : routes)
+        {
+            int exits = x.numberOfExitsConnected();
+            if (exits == 12)
+                basicScore = basicScore + 45;
+            else if (exits > 1)
+                basicScore = basicScore + (4*(exits-1));
+        }
+
+        basicScore = basicScore + board.centreTileScore();
+
+        basicScore = basicScore - board.countErrors();
+
+        board.generateConnections();
+        board.getLongestHighwayCount();
+        board.getLongestRailwayCount();
+
+
+        return basicScore + board.longestRailway + board.longestHighway;
+
+
+
+
     }
 
-    //public int getSpecialTileCount(){
-        // return 0;
-    //}
+    public static void main(String[] args)
+    {
+        String diceRoll = "A5A5A5B1";
+        String boardString = "A4A50A0B61A3D60B1F60S0E61A0E52A5G52A4G61B2B50A0A30A1A21A5A10B2G31A3G41B0G12A0F13A2F01S1D03A2B02A1C00B0A00A3G21S3G00A1E00A4C50B1D50A0F51";
 
+        System.out.println(generateMove(boardString, "B1"));
+        System.out.println(generateMove(boardString+"B1A61", "A5"));
+        System.out.println(generateMove(boardString + "B1A61A5C62", "A5"));
+        System.out.println(generateMove(boardString, "A5"));
+    }
 
 }
 

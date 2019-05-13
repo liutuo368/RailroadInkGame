@@ -2,16 +2,23 @@ package comp1110.ass2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import comp1110.ass2.Tile;
 
 
 public class Board
 {
     private Object[][] board;
     private ArrayList<String> specialTiles = new ArrayList<>(Arrays.asList("S0","S1","S2","S3","S4","S5"));
+    private int[][] highwayConnections;
+    private int[][] railwayConnections;
+    public int longestHighway = 0;
+    public int longestRailway = 0;
+
     public Board()
     {
         this.board = new Object[7][7];
-
+        this.highwayConnections = new int[7][7];
+        this.railwayConnections = new int[7][7];
     }
 
     public Board(Board board)
@@ -292,7 +299,7 @@ public class Board
                     }
                 }
             }
-            if (results.size() > 2500)                  // THIS BLOCK LIMITS THE MOVES IN ORDER TO PASS THE TESTS WITHIN TIME LIMIT
+            if (results.size() > 250)                  // THIS BLOCK LIMITS THE MOVES IN ORDER TO PASS THE TESTS WITHIN TIME LIMIT
             {
                 String[] result = results.toArray(new String[results.size()]);
                 return result;
@@ -306,5 +313,302 @@ public class Board
         String[] result = results.toArray(new String[results.size()]);
         return result;
     }
+
+
+
+    public boolean checkHighwayConnection(Tile x)
+    {
+        if (x.check_highway_exit())
+            return true;
+        try
+        {
+            if (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]]))
+                return true;
+        }
+        catch (Exception e)
+        {
+
+        }
+        try
+        {
+            if (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]]))
+                return true;
+        }
+        catch (Exception e)
+        {
+
+        }
+        try
+        {
+            if (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1]))
+                return true;
+        }
+        catch (Exception e)
+        {
+
+        }
+        try
+        {
+            if (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1]))
+                return true;
+        }
+        catch (Exception e)
+        {
+
+        }
+        return false;
+    }
+
+
+    public boolean checkRailwayConnection(Tile x)
+    {
+        if (x.check_railway_exit())
+            return true;
+        try
+        {
+            if (x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]]))
+                return true;
+        }
+        catch (Exception e)
+        {
+
+        }
+        try
+        {
+            if (x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]]))
+                return true;
+        }
+        catch (Exception e)
+        {
+
+        }
+        try
+        {
+            if (x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1]))
+                return true;
+        }
+        catch (Exception e)
+        {
+
+        }
+        try
+        {
+            if (x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1]))
+                return true;
+        }
+        catch (Exception e)
+        {
+
+        }
+        return false;
+    }
+
+    public void generateConnections()
+    {
+        for (int i=0;i<7;i++)
+        {
+            for (int j=0;j<7;j++)
+            {
+                if (this.board[i][j] != null)
+                {
+                    Tile x = (Tile) board[i][j];
+                    if (checkHighwayConnection(x))
+                        this.highwayConnections[i][j] = 1;
+                    if (checkRailwayConnection(x))
+                        this.railwayConnections[i][j] = 1;
+                }
+            }
+        }
+    }
+
+    public void getLongestRailwayCount()
+    {
+        for (int i = 0;i<7;i++)
+        {
+            for (int j = 0;j<7;j++)
+            {
+                if (this.board[i][j] != null)
+                {
+                    int[][] clone = new int[7][7];
+
+                    for (int x = 0; x < 7; x++)
+                    {
+                        for (int y = 0; y < 7; y++)
+                        {
+                            clone[x][y] = this.railwayConnections[x][y];
+                        }
+                    }
+
+                    if (this.railwayConnections[i][j] == 1)
+                    {
+                        findRailwayNeighboursRecursively((Tile) this.board[i][j], 1, clone);
+                    }
+                }
+            }
+        }
+    }
+
+    public void findRailwayNeighboursRecursively(Tile x, int count, int[][] map)
+    {
+        if (count > longestRailway)
+            longestRailway = count;
+
+
+        int[][] clone = new int[7][7];
+
+        for (int i = 0;i<7;i++)
+        {
+            for (int j = 0;j<7;j++)
+            {
+                clone[i][j] = map[i][j];
+            }
+        }
+        clone[x.shape[1]][x.shape[2]] = 0;
+
+        try
+        {
+            if ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) && (map[x.shape[1]-1][x.shape[2]] == 1))
+            {
+
+                findRailwayNeighboursRecursively((Tile) this.board[x.shape[1]-1][x.shape[2]], count+1,clone);
+            }
+        }
+
+        catch (Exception e)
+        {
+
+        }
+        try
+        {
+            if ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) && (map[x.shape[1]+1][x.shape[2]] == 1))
+            {
+
+                findRailwayNeighboursRecursively((Tile) this.board[x.shape[1]+1][x.shape[2]], count+1, clone);
+            }
+        }
+        catch (Exception e)
+        {
+
+        }
+        try
+        {
+            if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) && (map[x.shape[1]][x.shape[2]-1] == 1))
+            {
+
+                findRailwayNeighboursRecursively((Tile)this.board[x.shape[1]][x.shape[2]-1], count+1, clone);
+            }
+        }
+        catch (Exception e)
+        {
+
+        }
+        try
+        {
+            if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) && (map[x.shape[1]][x.shape[2]+1] == 1))
+            {
+
+                findRailwayNeighboursRecursively((Tile)this.board[x.shape[1]][x.shape[2]+1], count+1, clone);
+            }
+        }
+        catch (Exception e)
+        {
+
+        }
+
+
+    }
+
+
+    public void getLongestHighwayCount()
+    {
+        for (int i = 0;i<7;i++)
+        {
+            for (int j = 0;j<7;j++)
+            {
+                if (this.board[i][j] != null)
+                {
+                    int[][] clone = new int[7][7];
+
+                    for (int x = 0; x < 7; x++)
+                    {
+                        for (int y = 0; y < 7; y++)
+                        {
+                            clone[x][y] = this.highwayConnections[x][y];
+                        }
+                    }
+
+                    if (this.highwayConnections[i][j] == 1)
+                    {
+                        findHighwayNeighboursRecursively((Tile) this.board[i][j], 1, clone);
+                    }
+                }
+            }
+        }
+    }
+
+    public void findHighwayNeighboursRecursively(Tile x, int count, int[][] map)
+    {
+        if (count > longestHighway)
+            longestHighway = count;
+
+
+        int[][] clone = new int[7][7];
+        for (int i = 0;i<7;i++)
+        {
+            for (int j = 0;j<7;j++)
+            {
+                clone[i][j] = map[i][j];
+            }
+        }
+
+        clone[x.shape[1]][x.shape[2]] = 0;
+
+        try
+        {
+            if ((x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) && (map[x.shape[1]-1][x.shape[2]] == 1))
+            {
+                findHighwayNeighboursRecursively((Tile) this.board[x.shape[1]-1][x.shape[2]], count+1, clone);
+            }
+        }
+        catch (Exception e)
+        {
+
+        }
+        try
+        {
+            if ((x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) && (map[x.shape[1]+1][x.shape[2]] == 1))
+            {
+                findHighwayNeighboursRecursively((Tile) this.board[x.shape[1]+1][x.shape[2]], count+1, clone);
+            }
+        }
+        catch (Exception e)
+        {
+
+        }
+        try
+        {
+            if ((x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) && (map[x.shape[1]][x.shape[2]-1] == 1))
+            {
+                findHighwayNeighboursRecursively((Tile)this.board[x.shape[1]][x.shape[2]-1], count+1, clone);
+            }
+        }
+        catch (Exception e)
+        {
+
+        }
+        try
+        {
+            if ((x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) && (map[x.shape[1]][x.shape[2]+1] == 1))
+            {
+                findHighwayNeighboursRecursively((Tile)this.board[x.shape[1]][x.shape[2]+1], count+1, clone);
+            }
+        }
+        catch (Exception e)
+        {
+
+        }
+
+    }
+
 
 }
