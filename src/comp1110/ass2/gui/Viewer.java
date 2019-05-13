@@ -328,7 +328,7 @@ public class Viewer extends Application {
 
     }
 
-    /*
+
     void testPlacement(String placement) {
             tiles.getChildren().clear();
             for(int i = 0; i < placement.length(); i+=5) {
@@ -355,7 +355,7 @@ public class Viewer extends Application {
                 tiles.getChildren().add(tileImage);
 
             }
-    }*/
+    }
 
     /**
      * Created by Tuo Liu
@@ -704,7 +704,7 @@ public class Viewer extends Application {
             scene = new Scene(rootOne, 640, 300);
         }
 
-        //Scene scene = new Scene(root, 640, 300);
+//        Scene scene = new Scene(root, 640, 300);
 
         //New window
         Stage gameOverWindow = new Stage();
@@ -780,7 +780,7 @@ public class Viewer extends Application {
         newGameButton.setLayoutX(Tile_START_X / 5);
         newGameButton.setLayoutY(Tile_START_Y * 3.5);
 
-        /*TextField textField = new TextField();
+        TextField textField = new TextField();
         Button testButton = new Button("Refresh");
         testButton.setOnAction(e -> {
                     testPlacement(textField.getText());
@@ -790,7 +790,7 @@ public class Viewer extends Application {
         HBox hBox = new HBox();
         hBox.setLayoutX(20);
         hBox.setLayoutY(700);
-        hBox.getChildren().addAll(textField, testButton);*/
+        hBox.getChildren().addAll(textField, testButton);
 
 
 
