@@ -388,7 +388,6 @@ public class RailroadInk {
                 choices[pieceCounter] = diceRoll.substring(i,i+2);
                 pieceCounter++;
 
-
         }
 
         String[] result = board.generateMoves(choices);
