@@ -6,4 +6,7 @@ We declare that the work we have submitted for Stage F of this assignment and al
 
 * The idea of creating getPlacement method is from a discussion between group members.
 
+* findHighwayNeighboursRecursively and findRailwayNeighboursRecursively function was optimised with an idea taken from Piazaa discussion thread.
+   https://piazza.com/class/jsi5zea482b2h4?cid=791
+
 Signed: Jihirshu Narayan (u6811576), Jingfen Qiao (u6843015), and Tuo Liu (u6567008)

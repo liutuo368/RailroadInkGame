@@ -1,3 +1,12 @@
+/**
+ * Author : Jihirshu Narayan
+ * Created : 29/03/2019
+ * Last Modified - 10/05/2019
+ *
+ * Description : Class Tile which stores the spec details of each tile as an integer array. There are numerous functions defined which explore the relationships
+ *               between two tiles : example - whether two tiles are neighbours, whether two tiles are connected, whether they are connected by railway or highway,etc.
+ */
+
 package comp1110.ass2;
 
 import java.util.Arrays;

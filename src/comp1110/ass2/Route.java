@@ -1,3 +1,11 @@
+/**
+ * Author : Jihirshu Narayan
+ * Created : 11/04/2019
+ * Last Modified : 10/05/2019
+ * Description : Class route stores an array of tiles that are connected to each other. This facilitates establishing routes from a boardString. This
+ *               class also has a function which checks if there is any interaction between two routes and merges them if there is a connection.
+ */
+
 package comp1110.ass2;
 
 import java.util.Arrays;
