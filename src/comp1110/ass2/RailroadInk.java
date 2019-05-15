@@ -3,7 +3,7 @@ package comp1110.ass2;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
-
+import java.util.Set;
 public class RailroadInk {
     /**
      * Created by Jingfen Qiao
@@ -391,19 +391,21 @@ public class RailroadInk {
 
         }
 
-        String[] result = board.generateMoves(choices);
+//        String[] result = board.generateMoves(choices);
+        Set<String> result = board.generateMove(choices);
 
         int initial_score = getBasicScore(boardString);
 
         int max = initial_score;
         String result_final = "";
-        for (int i=0;i<result.length;i++)
+//        for (int i=0;i<result.length;i++)
+        for (Object x : result)
         {
-            String newBoardString = boardString + result[i];
+            String newBoardString = boardString + x;
             int currentScore = getBasicScore(newBoardString);
             if ( currentScore > max)
             {
-                result_final = result[i];
+                result_final = x.toString();
                 max = currentScore;
             }
 
