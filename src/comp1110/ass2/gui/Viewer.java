@@ -643,10 +643,12 @@ public class Viewer extends Application {
 
 
     // Written by Jingfen Qiao
+    // Open an new window to display the scores.
     private void gameOver() {
 
         gameOver = true;
 
+        // image for the window of single player
         Image img = new Image(Viewer.class.getResource(URI_BASE+"WOW.png").toString());
         ImageView imageview = new ImageView(img);
         imageview.setX(250);
@@ -654,6 +656,7 @@ public class Viewer extends Application {
         imageview.setFitWidth(120);
         imageview.setFitHeight(120);
 
+        // image for the window of multi-players
         ImageView imageview2 = new ImageView(img);
         imageview2.setX(250);
         imageview2.setY(10);
@@ -661,38 +664,45 @@ public class Viewer extends Application {
         imageview2.setFitHeight(120);
 
 
+        // Words to remind the player about the score
         Label label1 = new Label("CONGRATULATIONS... YOU BEAT THE GAME!");
         label1.setFont(Font.font("family", FontWeight.BLACK.EXTRA_BOLD, FontPosture.REGULAR,20));
         label1.setLayoutX(120);
         label1.setLayoutY(130);
 
+        // Words to remind two players about scores
         Label label5 = new Label("CONGRATULATIONS... YOU BEAT THE GAME!");
         label5.setFont(Font.font("family", FontWeight.BLACK.EXTRA_BOLD, FontPosture.REGULAR,20));
         label5.setLayoutX(120);
         label5.setLayoutY(130);
 
-
+        // Generate the score of single player by invoking the function getPlacement
         Label label2 = new Label("Your Score: " + getBasicScore(getPlacement(1)));
         label2.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
         label2.setLayoutX(250);
         label2.setLayoutY(170);
 
+        // Generate the score of first player between two players by invoking the function getPlacement
         Label label3 = new Label("First player's score: " + getBasicScore(getPlacement(1)));
         label3.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
         label3.setLayoutX(220);
         label3.setLayoutY(170);
 
+        // Generate the score of second player between two players by invoking the function getPlacement as well
         Label label4 = new Label("Second player's score: " + getBasicScore(getPlacement(2)));
         label4.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
         label4.setLayoutX(220);
         label4.setLayoutY(220);
 
+        // Group label1, label2 and image together for the window of single player
         Group rootOne = new Group();
         rootOne.getChildren().addAll(label1,label2,imageview);
 
+        // Group label5,label4, imageview2 together for the window of multi-players
         Group rootMulti = new Group();
         rootMulti.getChildren().addAll(label5,label3,label4,imageview2);
 
+        // Show the window of single player if they select the singe player, otherwise, show the window of multi-players
         Scene scene;
         if(multiPlayer)
         {
