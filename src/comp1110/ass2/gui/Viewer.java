@@ -610,7 +610,7 @@ public class Viewer extends Application {
             diceRoll += diceTiles.get(i).name;
         }
         System.out.println("BoardString: "+ getPlacement(2) + ", DiceRolls: " + diceRoll);
-        String place = generateMove(getPlacement(2), diceRoll);
+        String place = computerOpponent(getPlacement(2), diceRoll);
         System.out.println("Got: " + place);
         for(int i = 0; i < place.length(); i+=5) {
             String tilePlacement = place.substring(i, i+5);

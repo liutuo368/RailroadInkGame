@@ -643,10 +643,10 @@ public class Board
 //            if (possibleMoves.count.get(moveSoFar.substring(0, 2)) > 200)
 //                return;
 //        }
-        if (possibleMoves.size() > 1000)
+        if (possibleMoves.size() > 5000)
             return;
 
-        if (moveSoFar.length()>=20)
+        if (moveSoFar.length()>=30)
             return;
 
         if ((choices.length == 0) && (specialTiles == 3))
