@@ -417,7 +417,7 @@ public class RailroadInk {
     }
 
     public static String computerOpponent(String boardString, String diceRoll) {
-        // FIXME Task 10: generate a valid move
+        
         String[] choices = {"","","",""};
         int tile_number = (boardString.length())/5;
         Tile[] tile_array = new Tile[tile_number];      // Adjusting the length of tile_array to accomodate B2 piece copies
