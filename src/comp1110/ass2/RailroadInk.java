@@ -533,9 +533,13 @@ public class RailroadInk {
     public static void main(String[] args)
     {
         String diceRoll = "A1A1A4B0";
-        String boardString = "A4A10A1A30A4A50S1B32A1B01A1B61B2B10A1B21S5B50A1B41A4D01A4D61A3D12B0C30A3D50A4C10A4C50A1F01A1F61A4G10B1F12A4G50B1E10A1E21A3E52B1F56S4E31";
+//        String boardString = "A4A10A1A30A4A50S1B32A1B01A1B61B2B10A1B21S5B50A1B41A4D01A4D61A3D12B0C30A3D50A4C10A4C50A1F01A1F61A4G10B1F12A4G50B1E10A1E21A3E52B1F56S4E31";
+        String boardString = "";
+//        System.out.println(generateMove(boardString, diceRoll));
 
-        System.out.println(generateMove(boardString, diceRoll));
+
+        String x = "B1A61S0B43A5C62A5C40";
+        System.out.println(isValidPlacementSequence(x));
 
     }
 

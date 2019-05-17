@@ -207,7 +207,8 @@ public class Board
                     {
                          try
                          {
-                             if (this.board[x[0]][x[1]] != null) {
+                             if (this.board[x[0]][x[1]] != null)
+                             {
                                  Tile neighbour = (Tile) this.board[x[0]][x[1]];
                                  if (countSpecialTiles < 3)
                                  {
@@ -302,10 +303,98 @@ public class Board
                                      }
                                  }
                              }
-//                             else
-//                             {
-//
-//                             }
+                             else
+                             {
+                                if (((i == 0) && (j==1)) || ((i == 0) && (j==3)) || ((i == 0) && (j==5)) || ((i == 6) && (j==1)) || (((i == 6) && (j==3)))
+                                     || ((i == 6) && (j==5)) || ((i == 1) && (j==0)) || ((i == 3) && (j==0)) || ((i == 5) && (j==0)) ||
+                                     ((i == 1) && (j==6)) || ((i == 3) && (j==6)) || ((i == 5) && (j==6)))
+                                {
+                                    if (countSpecialTiles < 3)
+                                    {
+                                        for (int z = 0; z < this.specialTiles.size(); z++) {
+                                            Tile currentTile = new Tile(this.specialTiles.get(z));
+                                            currentTile.set_default();
+                                            currentTile.translate(i, j);
+
+                                            for (int orientation = 0; orientation < 8; orientation++)
+                                            {
+                                                currentTile.rotate90(orientation);
+                                                if (results.contains(currentTile.toString()))
+                                                    continue ;
+                                                if (!(this.checkInvalidConnection(currentTile)))
+                                                {
+                                                    if (((currentTile.check_exit_connection())) && (!currentTile.checkInvalidExitConnection()))
+                                                    {
+                                                        ArrayList<String> temp_list = new ArrayList<>(Arrays.asList(choices));
+                                                        String[] new_choice = temp_list.toArray(new String[temp_list.size()]);
+                                                        Board board = new Board(this);
+                                                        board.place_tile(currentTile);
+                                                        result_string = result_string + currentTile.toString();
+                                                        String[] temp_results = board.generateMoves(new_choice);
+                                                        for (int k=0;k<temp_results.length;k++)
+                                                        {
+                                                            results.add(result_string+temp_results[k]);
+                                                        }
+
+                                                        if (temp_results==null)
+                                                            results.add(result_string);
+                                                        else
+                                                        {
+                                                            for (int k=0;k<temp_results.length;k++)
+                                                            {
+                                                                results.add(result_string+temp_results[k]);
+                                                            }
+                                                        }
+
+                                                        result_string = "";
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    for (String z : choices)
+                                    {
+                                        if (!z.equals(""))
+                                        {
+                                            Tile currentTile = new Tile(z);
+                                            currentTile.set_default();
+                                            currentTile.translate(i, j);
+                                            for (int orientation = 0; orientation < 8; orientation++) {
+                                                currentTile.rotate90(orientation);
+                                                if (results.contains(currentTile.toString()))
+                                                    continue ;
+                                                if (!(this.checkInvalidConnection(currentTile)))
+                                                {
+                                                    if (((currentTile.check_exit_connection())) && (!currentTile.checkInvalidExitConnection()))
+
+                                                    {
+                                                        ArrayList<String> temp_list = new ArrayList<>(Arrays.asList(choices));
+                                                        temp_list.remove(currentTile.getName());
+                                                        String[] new_choice = temp_list.toArray(new String[temp_list.size()]);
+                                                        Board board = new Board(this);
+                                                        board.place_tile(currentTile);
+                                                        result_string = result_string + currentTile.toString();
+                                                        String[] temp_results = board.generateMoves(new_choice);
+
+                                                        if (temp_results==null)
+                                                            results.add(result_string);
+                                                        else
+                                                        {
+                                                            for (int k=0;k<temp_results.length;k++)
+                                                            {
+                                                                results.add(result_string + temp_results[k]);
+                                                            }
+                                                        }
+
+                                                        result_string = "";
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                             }
 
                          }
                          catch (Exception e)
@@ -629,6 +718,10 @@ public class Board
 
     public void generateMovesRecursively(Set possibleMoves, String[] choices, int specialTiles, String moveSoFar, int row, int col)
     {
+
+        if (possibleMoves.size() > 1000)
+            return;
+
         if (moveSoFar.length()>=20)
             return;
 
@@ -655,7 +748,20 @@ public class Board
                 x.rotate90(j);
                 try
                 {
-                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_exit_connection()))
+                    boolean flag;
+                    try
+                    {
+                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])));
+                    }
+                    catch (Exception E)
+                    {
+                        flag=false;
+                    }
+
+//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_exit_connection()))
+
+                    if (flag || x.check_exit_connection())
+
                     {
                         Board board =  new Board(this);
                         board.place_tile(x);
@@ -669,6 +775,7 @@ public class Board
                             counter++;
                         }
                         String newMove = moveSoFar + x.toString();
+
                         possibleMoves.add(newMove);
 
                         for (int m = 0;m<7;m++)
@@ -693,44 +800,17 @@ public class Board
                 }
                 try
                 {
-                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_exit_connection()))
+                    boolean flag;
+                    try
                     {
-                        Board board =  new Board(this);
-                        board.place_tile(x);
-                        String[] new_choices = new String[choices.length-1];
-                        int counter=0;
-                        for (int k = 0;k<choices.length;k++)
-                        {
-                            if (i == k)
-                                continue;
-                            new_choices[counter] = choices[k];
-                            counter++;
-                        }
-                        String newMove = moveSoFar + x.toString();
-                        possibleMoves.add(newMove);
-
-                        for (int m = 0;m<7;m++)
-                        {
-                            for (int n=0;n<7;n++)
-                            {
-                                if ((m==row) && (n==col))
-                                    continue;
-                                if (board.board[m][n] == null)
-                                {
-                                    board.generateMovesRecursively(possibleMoves, new_choices, specialTiles, newMove, m,n);
-                                }
-                            }
-                        }
-
+                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])));
                     }
-                }
-                catch (Exception E)
-                {
-
-                }
-                try
-                {
-                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_exit_connection()))
+                    catch (Exception E)
+                    {
+                        flag=false;
+                    }
+//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_exit_connection()))
+                    if (flag || x.check_exit_connection())
                     {
                         Board board =  new Board(this);
                         board.place_tile(x);
@@ -767,7 +847,64 @@ public class Board
                 }
                 try
                 {
-                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]-1])) || (x.check_exit_connection()))
+                    boolean flag;
+                    try
+                    {
+                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])));
+                    }
+                    catch (Exception E)
+                    {
+                        flag=false;
+                    }
+//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_exit_connection()))
+                    if (flag || x.check_exit_connection())
+                    {
+                        Board board =  new Board(this);
+                        board.place_tile(x);
+                        String[] new_choices = new String[choices.length-1];
+                        int counter=0;
+                        for (int k = 0;k<choices.length;k++)
+                        {
+                            if (i == k)
+                                continue;
+                            new_choices[counter] = choices[k];
+                            counter++;
+                        }
+                        String newMove = moveSoFar + x.toString();
+                        possibleMoves.add(newMove);
+
+                        for (int m = 0;m<7;m++)
+                        {
+                            for (int n=0;n<7;n++)
+                            {
+                                if ((m==row) && (n==col))
+                                    continue;
+                                if (board.board[m][n] == null)
+                                {
+                                    board.generateMovesRecursively(possibleMoves, new_choices, specialTiles, newMove, m,n);
+                                }
+                            }
+                        }
+
+                    }
+                }
+                catch (Exception E)
+                {
+
+                }
+                try
+                {
+                    boolean flag;
+                    try
+                    {
+                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])));
+                    }
+                    catch (Exception E)
+                    {
+                        flag=false;
+                    }
+//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_exit_connection()))
+                    if (flag || x.check_exit_connection())
                     {
                         Board board =  new Board(this);
                         board.place_tile(x);
@@ -823,12 +960,24 @@ public class Board
                 x.rotate90(j);
                 try
                 {
-                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_exit_connection()))
+                    boolean flag;
+                    try
+                    {
+                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])));
+                    }
+                    catch (Exception E)
+                    {
+                        flag=false;
+                    }
+//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_exit_connection()))
+                    if (flag || x.check_exit_connection())
                     {
                         Board board =  new Board(this);
                         board.place_tile(x);
                         int newSpecialTiles = board.countSpecialTiles();
                         String newMove = moveSoFar + x.toString();
+                        if (newMove.equals("A4A20B0A62S5D20S0C63"))
+                            System.out.println("good");
                         possibleMoves.add(newMove);
 
                         for (int m = 0;m<7;m++)
@@ -853,12 +1002,25 @@ public class Board
                 }
                 try
                 {
-                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_exit_connection()))
+                    boolean flag;
+                    try
+                    {
+                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])));
+                    }
+                    catch (Exception E)
+                    {
+                        flag=false;
+                    }
+//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_exit_connection()))
+
+                    if (flag || x.check_exit_connection())
                     {
                         Board board =  new Board(this);
                         board.place_tile(x);
                         int newSpecialTiles = board.countSpecialTiles();
                         String newMove = moveSoFar + x.toString();
+                        if (newMove.equals("A4A20B0A62S5D20S0C63"))
+                            System.out.println("good");
                         possibleMoves.add(newMove);
 
                         for (int m = 0;m<7;m++)
@@ -882,12 +1044,24 @@ public class Board
                 }
                 try
                 {
-                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_exit_connection()))
+                    boolean flag;
+                    try
+                    {
+                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])));
+                    }
+                    catch (Exception E)
+                    {
+                        flag=false;
+                    }
+//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_exit_connection()))
+                    if (flag || x.check_exit_connection())
                     {
                         Board board =  new Board(this);
                         board.place_tile(x);
                         int newSpecialTiles = board.countSpecialTiles();
                         String newMove = moveSoFar + x.toString();
+                        if (newMove.equals("A4A20B0A62S5D20S0C63"))
+                            System.out.println("good");
                         possibleMoves.add(newMove);
 
                         for (int m = 0;m<7;m++)
@@ -911,12 +1085,24 @@ public class Board
                 }
                 try
                 {
-                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]-1])) || (x.check_exit_connection()))
+                    boolean flag;
+                    try
+                    {
+                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])));
+                    }
+                    catch (Exception E)
+                    {
+                        flag=false;
+                    }
+//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_exit_connection()))
+                    if (flag || x.check_exit_connection())
                     {
                         Board board =  new Board(this);
                         board.place_tile(x);
                         int newSpecialTiles = board.countSpecialTiles();
                         String newMove = moveSoFar + x.toString();
+                        if (newMove.equals("A4A20B0A62S5D20S0C63"))
+                            System.out.println("good");
                         possibleMoves.add(newMove);
 
                         for (int m = 0;m<7;m++)
