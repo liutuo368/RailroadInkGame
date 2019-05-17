@@ -213,12 +213,18 @@ public class Board
                                  if (countSpecialTiles < 3)
                                  {
                                      for (int z = 0; z < this.specialTiles.size(); z++) {
-                                         Tile currentTile = new Tile(this.specialTiles.get(z));
+                                         String special = this.specialTiles.get(z);
+                                         Tile currentTile = new Tile(special);
                                          currentTile.set_default();
                                          currentTile.translate(i, j);
 
                                          for (int orientation = 0; orientation < 8; orientation++)
                                          {
+                                             if (((special.equals("S2")) || (special.equals("S3"))) && (j > 1))
+                                                 continue;
+                                             if ((special.equals("S5")) && (j>1))
+                                                 continue;
+
                                              currentTile.rotate90(orientation);
                                              if (results.contains(currentTile.toString()))
                                                  continue ;
@@ -265,6 +271,12 @@ public class Board
                                          currentTile.set_default();
                                          currentTile.translate(i, j);
                                          for (int orientation = 0; orientation < 8; orientation++) {
+//                                             if (((z.equals("A1")) || (z.equals("A4"))) && (j>1))
+//                                                 continue;
+//
+//                                             if ((!(z.equals("B1"))) && (j > 3))
+//                                                 continue;
+
                                              currentTile.rotate90(orientation);
                                              if (results.contains(currentTile.toString()))
                                                  continue ;
@@ -303,99 +315,6 @@ public class Board
                                      }
                                  }
                              }
-                             else
-                             {
-                                if (((i == 0) && (j==1)) || ((i == 0) && (j==3)) || ((i == 0) && (j==5)) || ((i == 6) && (j==1)) || (((i == 6) && (j==3)))
-                                     || ((i == 6) && (j==5)) || ((i == 1) && (j==0)) || ((i == 3) && (j==0)) || ((i == 5) && (j==0)) ||
-                                     ((i == 1) && (j==6)) || ((i == 3) && (j==6)) || ((i == 5) && (j==6)))
-                                {
-                                    if (countSpecialTiles < 3)
-                                    {
-                                        for (int z = 0; z < this.specialTiles.size(); z++) {
-                                            Tile currentTile = new Tile(this.specialTiles.get(z));
-                                            currentTile.set_default();
-                                            currentTile.translate(i, j);
-
-                                            for (int orientation = 0; orientation < 8; orientation++)
-                                            {
-                                                currentTile.rotate90(orientation);
-                                                if (results.contains(currentTile.toString()))
-                                                    continue ;
-                                                if (!(this.checkInvalidConnection(currentTile)))
-                                                {
-                                                    if (((currentTile.check_exit_connection())) && (!currentTile.checkInvalidExitConnection()))
-                                                    {
-                                                        ArrayList<String> temp_list = new ArrayList<>(Arrays.asList(choices));
-                                                        String[] new_choice = temp_list.toArray(new String[temp_list.size()]);
-                                                        Board board = new Board(this);
-                                                        board.place_tile(currentTile);
-                                                        result_string = result_string + currentTile.toString();
-                                                        String[] temp_results = board.generateMoves(new_choice);
-                                                        for (int k=0;k<temp_results.length;k++)
-                                                        {
-                                                            results.add(result_string+temp_results[k]);
-                                                        }
-
-                                                        if (temp_results==null)
-                                                            results.add(result_string);
-                                                        else
-                                                        {
-                                                            for (int k=0;k<temp_results.length;k++)
-                                                            {
-                                                                results.add(result_string+temp_results[k]);
-                                                            }
-                                                        }
-
-                                                        result_string = "";
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    for (String z : choices)
-                                    {
-                                        if (!z.equals(""))
-                                        {
-                                            Tile currentTile = new Tile(z);
-                                            currentTile.set_default();
-                                            currentTile.translate(i, j);
-                                            for (int orientation = 0; orientation < 8; orientation++) {
-                                                currentTile.rotate90(orientation);
-                                                if (results.contains(currentTile.toString()))
-                                                    continue ;
-                                                if (!(this.checkInvalidConnection(currentTile)))
-                                                {
-                                                    if (((currentTile.check_exit_connection())) && (!currentTile.checkInvalidExitConnection()))
-
-                                                    {
-                                                        ArrayList<String> temp_list = new ArrayList<>(Arrays.asList(choices));
-                                                        temp_list.remove(currentTile.getName());
-                                                        String[] new_choice = temp_list.toArray(new String[temp_list.size()]);
-                                                        Board board = new Board(this);
-                                                        board.place_tile(currentTile);
-                                                        result_string = result_string + currentTile.toString();
-                                                        String[] temp_results = board.generateMoves(new_choice);
-
-                                                        if (temp_results==null)
-                                                            results.add(result_string);
-                                                        else
-                                                        {
-                                                            for (int k=0;k<temp_results.length;k++)
-                                                            {
-                                                                results.add(result_string + temp_results[k]);
-                                                            }
-                                                        }
-
-                                                        result_string = "";
-                                                    }
-
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                             }
-
                          }
                          catch (Exception e)
                          {
@@ -716,9 +635,13 @@ public class Board
     }
 
 
-    public void generateMovesRecursively(Set possibleMoves, String[] choices, int specialTiles, String moveSoFar, int row, int col)
+    public void generateMovesRecursively(mySet possibleMoves, String[] choices, int specialTiles, String moveSoFar, int row, int col)
     {
-
+//        if (moveSoFar.length() > 0)
+//        {
+//            if (possibleMoves.count.get(moveSoFar.substring(0, 2)) > 200)
+//                return;
+//        }
         if (possibleMoves.size() > 1000)
             return;
 
@@ -1132,9 +1055,9 @@ public class Board
 
     }
 
-    public Set generateMove(String[] choices)
+    public mySet generateMove(String[] choices)
     {
-        Set possibleMoves = new HashSet();
+        mySet possibleMoves = new mySet();
         int specialtiles = this.countSpecialTiles();
         for (int i = 0; i < 7; i++)
         {
