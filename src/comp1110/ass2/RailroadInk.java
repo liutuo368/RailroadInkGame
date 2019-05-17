@@ -394,7 +394,7 @@ public class RailroadInk {
 
         int max = initial_score;
         String result_final = "";
-        if (boardString.isEmpty())
+        if (boardString.length()<=20)
         {
             mySet result = board.generateMove(choices);
             for (Object first : result)
@@ -414,6 +414,21 @@ public class RailroadInk {
 
             }
         }
+//        else if (boardString.length() <= 20)
+//        {
+//            mySet result = board.generateMove(choices);
+//            for (Object x : result)
+//            {
+//                String newBoardString = boardString + x;
+//                int currentScore = getBasicScore(newBoardString);
+//                if ( currentScore > max)
+//                {
+//                    result_final = x.toString();
+//                    max = currentScore;
+//                }
+//
+//            }
+//        }
         else
         {
             String[] result = board.generateMoves(choices);
@@ -553,9 +568,9 @@ public class RailroadInk {
 
     public static void main(String[] args)
     {
-        String diceRoll = "A1A2A3B0";
-//        String boardString = "A4A10A1A30A4A50S1B32A1B01A1B61B2B10A1B21S5B50A1B41A4D01A4D61A3D12B0C30A3D50A4C10A4C50A1F01A1F61A4G10B1F12A4G50B1E10A1E21A3E52B1F56S4E31";
-        String boardString = "";
+        String diceRoll = "A0A1A5B0";
+        String boardString = "A3A10B1A23";
+//        String boardString = "";
         System.out.println(generateMove(boardString, diceRoll));
 
 

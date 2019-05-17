@@ -304,6 +304,7 @@ public class Board
                                                      }
 
                                                      result_string = "";
+
                                                  }
 //                                                 if ((i == 0) || (i == 6) || (j == 0) || (j == 6))
 //                                                     if (currentTile.check_exit_connection())
