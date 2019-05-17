@@ -549,6 +549,9 @@ public class Viewer extends Application {
             specialTiles2.add(new TileImage(image, img, x,Tile_START_Y / 3,0));
             specialTiles1.get(i).isSpecial = true;
             specialTiles2.get(i).isSpecial = true;
+            if(vsPC) {
+                specialTiles2.get(i).isPlaced = true;
+            }
             x += Tile_WIDTH * 1.5;
         }
     }
@@ -579,6 +582,9 @@ public class Viewer extends Application {
     private void makeDiceTiles() {
         diceRolls.getChildren().clear();
         for(int i = 0; i < diceTiles.size(); i++) {
+            if(vsPC && currentPlayer == 2) {
+                diceTiles.get(i).isPlaced = true;
+            }
             diceRolls.getChildren().add(diceTiles.get(i));
         }
     }
@@ -603,30 +609,37 @@ public class Viewer extends Application {
         for(int i = 0; i < diceTiles.size(); i++) {
             diceRoll += diceTiles.get(i).name;
         }
-        for(int i = 0; i < 4; i++) {
-            String place = testNextMove(getPlacement(2), diceRoll);
-            TileImage tmpTile = makeTile(place);
+        System.out.println("BoardString: "+ getPlacement(2) + ", DiceRolls: " + diceRoll);
+        String place = generateMove(getPlacement(2), diceRoll);
+        System.out.println("Got: " + place);
+        for(int i = 0; i < place.length(); i+=5) {
+            String tilePlacement = place.substring(i, i+5);
+            TileImage tmpTile = makeTile(tilePlacement);
             tmpTile.isPlaced = true;
             placement2.add(tmpTile);
             grids[tmpTile.row][tmpTile.col].isEmpty2 = false;
-            if(place.charAt(0) == 'S') {
+            if(tilePlacement.charAt(0) == 'S') {
                 for(int j = 0; j < specialTiles2.size(); j++) {
-                    if(specialTiles2.get(j).name == tmpTile.name) {
+                    if(specialTiles2.get(j).name.equals(tmpTile.name)) {
                         specialTiles2.remove(j);
                         break;
                     }
                 }
             } else {
                 for(int j = 0; j < diceTiles.size(); j++) {
-                    if(diceTiles.get(j).name == tmpTile.name) {
+                    if(diceTiles.get(j).name.equals(tmpTile.name)) {
                         diceTiles.remove(j);
                         break;
                     }
                 }
-                diceRoll = diceRoll.replaceFirst(place.substring(0, 2), "");
+                diceRoll = diceRoll.replaceFirst(tilePlacement.substring(0, 2), "");
             }
             makePlacement();
+            makeDiceTiles();
+            makeSpecialTiles();
+
         }
+        makeDiceTiles();
 
     }
 
@@ -650,6 +663,9 @@ public class Viewer extends Application {
                 } else {
                     currentPlayer = 2;
                     if(vsPC) {
+                        makePlacement();
+                        makeSpecialTiles();
+                        playerLabel.setText("Player: " + currentPlayer);
                         pcGo();
                     }
                 }
