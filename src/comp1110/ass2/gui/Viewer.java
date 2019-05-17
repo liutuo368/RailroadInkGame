@@ -549,9 +549,6 @@ public class Viewer extends Application {
             specialTiles2.add(new TileImage(image, img, x,Tile_START_Y / 3,0));
             specialTiles1.get(i).isSpecial = true;
             specialTiles2.get(i).isSpecial = true;
-            if(vsPC) {
-                specialTiles2.get(i).isPlaced = true;
-            }
             x += Tile_WIDTH * 1.5;
         }
     }
@@ -568,6 +565,9 @@ public class Viewer extends Application {
             }
         } else {
             for(int i = 0; i < specialTiles2.size(); i++) {
+                if(vsPC) {
+                    specialTiles2.get(i).isPlaced = true;
+                }
                 specialTiles.getChildren().add(specialTiles2.get(i));
             }
         }
