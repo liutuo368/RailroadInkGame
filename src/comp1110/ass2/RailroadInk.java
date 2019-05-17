@@ -394,57 +394,21 @@ public class RailroadInk {
 
         int max = initial_score;
         String result_final = "";
-        if (boardString.length()<=20)
-        {
-            mySet result = board.generateMove(choices);
-            for (Object first : result)
-            {
-                max = getBasicScore(first.toString());
-                break;
-            }
-            for (Object x : result)
-            {
-                String newBoardString = boardString + x;
-                int currentScore = getBasicScore(newBoardString);
-                if ( currentScore > max)
-                {
-                    result_final = x.toString();
-                    max = currentScore;
-                }
 
-            }
-        }
-//        else if (boardString.length() <= 20)
-//        {
-//            mySet result = board.generateMove(choices);
-//            for (Object x : result)
-//            {
-//                String newBoardString = boardString + x;
-//                int currentScore = getBasicScore(newBoardString);
-//                if ( currentScore > max)
-//                {
-//                    result_final = x.toString();
-//                    max = currentScore;
-//                }
-//
-//            }
-//        }
-        else
+        String[] result = board.generateMoves(choices);
+        for (int i=0;i<result.length;i++)
         {
-            String[] result = board.generateMoves(choices);
-            for (int i=0;i<result.length;i++)
+            String newBoardString = boardString + result[i];
+            int currentScore = getBasicScore(newBoardString);
+            if ( currentScore > max)
             {
-                String newBoardString = boardString + result[i];
-                int currentScore = getBasicScore(newBoardString);
-                if ( currentScore > max)
-                {
-                    result_final = result[i].toString();
-                    max = currentScore;
-                }
-
+                result_final = result[i].toString();
+                max = currentScore;
             }
 
         }
+
+
 
         return result_final;
 
@@ -452,6 +416,63 @@ public class RailroadInk {
 
     }
 
+    public static String computerOpponent(String boardString, String diceRoll) {
+        // FIXME Task 10: generate a valid move
+        String[] choices = {"","","",""};
+        int tile_number = (boardString.length())/5;
+        Tile[] tile_array = new Tile[tile_number];      // Adjusting the length of tile_array to accomodate B2 piece copies
+        Board board = new Board();
+        int counter = 0;
+
+        for (int i=0;i<boardString.length();i=i+5)
+        {
+            String temp = boardString.substring(i,i+5);
+            tile_array[counter] = new Tile(temp.substring(0,2));
+            tile_array[counter].set_default();
+            tile_array[counter].translate(temp.substring(2,4));
+            tile_array[counter].rotate90(temp.charAt(4));
+            board.place_tile(tile_array[counter]);
+        }
+        int pieceCounter=0;
+        for (int i=0;i<diceRoll.length();i=i+2)
+        {
+            choices[pieceCounter] = diceRoll.substring(i,i+2);
+            pieceCounter++;
+
+        }
+
+        int initial_score = getBasicScore(boardString);
+
+        int max = initial_score;
+        String result_final = "";
+
+        mySet result = board.generateMove(choices);
+        for (Object first : result)
+        {
+            max = getBasicScore(boardString+first.toString());
+            break;
+        }
+        for (Object x : result)
+        {
+            String newBoardString = boardString + x.toString();
+            if (!isValidPlacementSequence(newBoardString))
+                continue;
+            int currentScore = getBasicScore(newBoardString);
+            if ( currentScore > max)
+            {
+                result_final = x.toString();
+                max = currentScore;
+            }
+
+        }
+
+
+
+        return result_final;
+
+
+
+    }
 
     /**
      * Author : Jihirshu Narayan
@@ -568,8 +589,8 @@ public class RailroadInk {
 
     public static void main(String[] args)
     {
-        String diceRoll = "A0A1A5B0";
-        String boardString = "A3A10B1A23";
+        String diceRoll = "A2A5A2B2";
+        String boardString = "A3A10A4A21B1A33A3A50B2A61S1B01S4B10A1A00A1B21B1B32A5C30";
 //        String boardString = "";
         System.out.println(generateMove(boardString, diceRoll));
 
