@@ -775,13 +775,24 @@ public class Viewer extends Application {
         label4.setLayoutX(220);
         label4.setLayoutY(220);
 
+        // Get the advanced score
+        Label label6 = new Label("Advanced score: " + getAdvancedScore(getPlacement(1)));
+        label6.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
+        label6.setLayoutX(220);
+        label6.setLayoutY(270);
+
+        Label label7 = new Label("Advanced score: " + getAdvancedScore(getPlacement(1)));
+        label7.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
+        label7.setLayoutX(220);
+        label7.setLayoutY(210);
+
         // Group label1, label2 and image together for the window of single player
         Group rootOne = new Group();
-        rootOne.getChildren().addAll(label1,label2,imageview);
+        rootOne.getChildren().addAll(label1,label2,label7,imageview);
 
         // Group label5,label4, imageview2 together for the window of multi-players
         Group rootMulti = new Group();
-        rootMulti.getChildren().addAll(label5,label3,label4,imageview2);
+        rootMulti.getChildren().addAll(label5,label3,label4,label6,imageview2);
 
         // Show the window of single player if they select the singe player, otherwise, show the window of multi-players
         Scene scene;
