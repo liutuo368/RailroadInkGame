@@ -589,10 +589,10 @@ public class RailroadInk {
 
     public static void main(String[] args)
     {
-        String diceRoll = "A2A5A2B2";
-        String boardString = "A3A10A4A21B1A33A3A50B2A61S1B01S4B10A1A00A1B21B1B32A5C30";
+        String diceRoll = "A2A4A5B2";
+        String boardString = "";
 //        String boardString = "";
-        System.out.println(generateMove(boardString, diceRoll));
+        System.out.println(computerOpponent(boardString, diceRoll));
 
 
     }
