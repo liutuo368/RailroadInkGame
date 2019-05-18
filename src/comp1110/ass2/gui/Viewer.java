@@ -769,22 +769,28 @@ public class Viewer extends Application {
         label3.setLayoutX(220);
         label3.setLayoutY(170);
 
-        // Generate the score of second player between two players by invoking the function getPlacement as well
-        Label label4 = new Label("Second player's score: " + getBasicScore(getPlacement(2)));
-        label4.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
-        label4.setLayoutX(220);
-        label4.setLayoutY(220);
-
         // Get the advanced score
         Label label6 = new Label("Advanced score: " + getAdvancedScore(getPlacement(1)));
         label6.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
         label6.setLayoutX(220);
-        label6.setLayoutY(270);
+        label6.setLayoutY(200);
 
+        // Generate the score of second player between two players by invoking the function getPlacement as well
+        Label label4 = new Label("Second player's score: " + getBasicScore(getPlacement(2)));
+        label4.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
+        label4.setLayoutX(220);
+        label4.setLayoutY(230);
+
+        Label label8 = new Label("Advanced score: " + getAdvancedScore(getPlacement(2)));
+        label8.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
+        label8.setLayoutX(220);
+        label8.setLayoutY(260);
+
+        // Advanced score for first player
         Label label7 = new Label("Advanced score: " + getAdvancedScore(getPlacement(1)));
         label7.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
         label7.setLayoutX(220);
-        label7.setLayoutY(210);
+        label7.setLayoutY(230);
 
         // Group label1, label2 and image together for the window of single player
         Group rootOne = new Group();
@@ -792,7 +798,7 @@ public class Viewer extends Application {
 
         // Group label5,label4, imageview2 together for the window of multi-players
         Group rootMulti = new Group();
-        rootMulti.getChildren().addAll(label5,label3,label4,label6,imageview2);
+        rootMulti.getChildren().addAll(label5,label3,label4,label6,label8,imageview2);
 
         // Show the window of single player if they select the singe player, otherwise, show the window of multi-players
         Scene scene;
