@@ -319,9 +319,9 @@ public class Viewer extends Application {
 //                                gameOver();
 //                            }
 //                            */
-                                if(tilesLeft == 0) { // If there is no tiles left, go to next round
+                                /*if(tilesLeft == 0) { // If there is no tiles left, go to next round
                                     nextRound();
-                                }
+                                }*/
                                 return true;
                             }
                         }
@@ -351,7 +351,7 @@ public class Viewer extends Application {
     }
 
 
-    void testPlacement(String placement) {
+    /*void testPlacement(String placement) {
             tiles.getChildren().clear();
             for(int i = 0; i < placement.length(); i+=5) {
                 String img = placement.substring(i, i + 2);
@@ -366,7 +366,7 @@ public class Viewer extends Application {
                 tiles.getChildren().add(tileImage);
 
             }
-    }
+    }*/
 
     /**
      * Created by Tuo Liu
@@ -613,6 +613,7 @@ public class Viewer extends Application {
         String place = computerOpponent(getPlacement(2), diceRoll);
         System.out.println("Got: " + place);
         for(int i = 0; i < place.length(); i+=5) {
+
             String tilePlacement = place.substring(i, i+5);
             TileImage tmpTile = makeTile(tilePlacement);
             tmpTile.isPlaced = true;
@@ -870,7 +871,7 @@ public class Viewer extends Application {
         newGameButton.setLayoutX(Tile_START_X / 5);
         newGameButton.setLayoutY(Tile_START_Y * 3.5);
 
-        TextField textField = new TextField();
+        /*TextField textField = new TextField();
         Button testButton = new Button("Refresh");
         testButton.setOnAction(e -> {
                     testPlacement(textField.getText());
@@ -880,11 +881,11 @@ public class Viewer extends Application {
         HBox hBox = new HBox();
         hBox.setLayoutX(20);
         hBox.setLayoutY(700);
-        hBox.getChildren().addAll(textField, testButton);
+        hBox.getChildren().addAll(textField, testButton);*/
 
 
 
-        controls.getChildren().addAll(label, roundLabel, specialLabel, playerLabel, nextRoundButton, newGameButton,hBox);
+        controls.getChildren().addAll(label, roundLabel, specialLabel, playerLabel, nextRoundButton, newGameButton);
 
         initGrids();
         initSpecialTiles();
