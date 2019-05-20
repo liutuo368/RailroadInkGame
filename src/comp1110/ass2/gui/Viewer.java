@@ -1,16 +1,12 @@
 package comp1110.ass2.gui;
 
-
-import comp1110.ass2.Tile;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
@@ -20,7 +16,6 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static comp1110.ass2.RailroadInk.*;
 
@@ -589,6 +584,12 @@ public class Viewer extends Application {
         }
     }
 
+    /**
+     * Created by Tuo Liu
+     * To convert a placement string to a TileImage object
+     * @param placement
+     * @return
+     */
     private TileImage makeTile(String placement) {
         String img = placement.substring(0, 2);
         int row = placement.charAt(2) - 65;
@@ -603,6 +604,10 @@ public class Viewer extends Application {
         return tileImage;
     }
 
+    /**
+     * Created by Tuo Liu
+     * To generate the next move by computer and place the placement on the board
+     */
     private void pcGo () {
         makePlacement();
         String diceRoll = "";
@@ -626,6 +631,7 @@ public class Viewer extends Application {
                         break;
                     }
                 }
+                specialCount2++;
             } else {
                 for(int j = 0; j < diceTiles.size(); j++) {
                     if(diceTiles.get(j).name.equals(tmpTile.name)) {
