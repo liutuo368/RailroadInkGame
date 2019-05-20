@@ -630,7 +630,7 @@ public class Viewer extends Application {
         }
         tilesLeft = 4;
         System.out.println("BoardString: "+ getPlacement(2) + ", DiceRolls: " + diceRoll);
-        String place = smartGame ? computerOpponent(getPlacement(2), diceRoll) :computerOpponent(getPlacement(2), diceRoll);
+        String place = smartGame ? computerOpponentNoRestriction(getPlacement(2), diceRoll) :computerOpponent(getPlacement(2), diceRoll);
         System.out.println("Got: " + place);
         for(int i = 0; i < place.length(); i+=5) {
 
@@ -749,7 +749,6 @@ public class Viewer extends Application {
     Label roundLabel = new Label("Round: " + round);
     Label playerLabel = new Label("Player: " + currentPlayer);
     Label specialLabel = new Label("Special tiles used: " + (currentPlayer == 1 ? specialCount1 : specialCount2));
-
 
     // Written by Jingfen Qiao
     // Open an new window to display the scores.
@@ -892,6 +891,12 @@ public class Viewer extends Application {
         playerLabel.setLayoutX(Tile_START_X / 5);
         playerLabel.setLayoutY(Tile_START_Y * 2.5);
 
+        Label modeLabel = new Label();
+        modeLabel.setFont(Font.font("Cambria", 15));
+        modeLabel.setText((smartGame? "Smart" : "Normal") + " Mode");
+        modeLabel.setLayoutX(Tile_START_X / 5);
+        modeLabel.setLayoutY(Tile_START_Y * 3);
+
         Button newGameButton = new Button("Restart Game");
         newGameButton.setOnAction(e -> {
             restartGame();
@@ -899,7 +904,7 @@ public class Viewer extends Application {
         newGameButton.setLayoutX(Tile_START_X / 5);
         newGameButton.setLayoutY(Tile_START_Y * 3.5);
 
-        controls.getChildren().addAll(label, roundLabel, specialLabel, playerLabel, nextRoundButton,newGameButton);
+        controls.getChildren().addAll(label, roundLabel, specialLabel, playerLabel, modeLabel,nextRoundButton,newGameButton);
 
         initGrids();
         initSpecialTiles();
@@ -934,11 +939,11 @@ public class Viewer extends Application {
         root.getChildren().add(diceRolls);
         root.getChildren().add(specialTiles);
 
-        makeControls();
 
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
 
+        makeControls();
 
         //choose mode
         Group modeChoosingGroup = new Group();
@@ -979,6 +984,7 @@ public class Viewer extends Application {
             if(ruleChoiceBox.getValue().equals("Smart")) {
                 smartGame = true;
             }
+            restartGame();
             primaryStage.show();
             modeChoosingWindow.close();
         });
@@ -989,6 +995,7 @@ public class Viewer extends Application {
             if(ruleChoiceBox.getValue().equals("Smart")) {
                 smartGame = true;
             }
+            restartGame();
             primaryStage.show();
             modeChoosingWindow.close();
         });
@@ -1000,6 +1007,7 @@ public class Viewer extends Application {
                 smartGame = true;
             }
             vsPC = true;
+            restartGame();
             primaryStage.show();
             modeChoosingWindow.close();
         });
@@ -1013,6 +1021,8 @@ public class Viewer extends Application {
         modeChoosingWindow.setResizable(false);
 
         modeChoosingWindow.show();
+
+
 
     }
 }

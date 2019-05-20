@@ -1091,7 +1091,6 @@ public class Board
     public Set generateMoveNoRestriction(String[] choices)
     {
         Set possibleMoves = new mySet();
-        Set completeMoves = new mySet();
         int specialtiles = this.countSpecialTiles();
         boolean specialFlag = true;
         if (specialtiles>=3)
@@ -1116,7 +1115,7 @@ public class Board
 
         // FIXME : Check why invalid moves are being generated
 
-        if (possibleMoves.size() > 10000)
+        if (possibleMoves.size() > 8000)
             return;
 
         if ((choices.length == 0) && (!specialFlag))

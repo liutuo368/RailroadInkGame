@@ -510,7 +510,7 @@ public class RailroadInk {
         int max = initial_score;
         String result_final = "";
 
-        Set result = board.generateMove(choices);
+        Set result = board.generateMoveNoRestriction(choices);
 
         for (Object first : result)
         {
