@@ -446,12 +446,18 @@ public class RailroadInk {
         int max = initial_score;
         String result_final = "";
 
-        mySet result = board.generateMove(choices);
+        Set result = board.generateMove(choices);
+
         for (Object first : result)
         {
-            max = getBasicScore(boardString+first.toString());
-            break;
+            if (isValidPlacementSequence(boardString+first.toString()))
+            {
+                max = getBasicScore(boardString + first.toString());
+                result_final=first.toString();
+                break;
+            }
         }
+
         for (Object x : result)
         {
             String newBoardString = boardString + x.toString();
@@ -473,6 +479,71 @@ public class RailroadInk {
 
 
     }
+
+    public static String computerOpponentNoRestriction(String boardString, String diceRoll) {
+
+        String[] choices = {"","","",""};
+        int tile_number = (boardString.length())/5;
+        Tile[] tile_array = new Tile[tile_number];      // Adjusting the length of tile_array to accomodate B2 piece copies
+        Board board = new Board();
+        int counter = 0;
+
+        for (int i=0;i<boardString.length();i=i+5)
+        {
+            String temp = boardString.substring(i,i+5);
+            tile_array[counter] = new Tile(temp.substring(0,2));
+            tile_array[counter].set_default();
+            tile_array[counter].translate(temp.substring(2,4));
+            tile_array[counter].rotate90(temp.charAt(4));
+            board.place_tile(tile_array[counter]);
+        }
+        int pieceCounter=0;
+        for (int i=0;i<diceRoll.length();i=i+2)
+        {
+            choices[pieceCounter] = diceRoll.substring(i,i+2);
+            pieceCounter++;
+
+        }
+
+        int initial_score = getBasicScore(boardString);
+
+        int max = initial_score;
+        String result_final = "";
+
+        Set result = board.generateMove(choices);
+
+        for (Object first : result)
+        {
+            if (isValidPlacementSequence(boardString+first.toString()))
+            {
+                max = getBasicScore(boardString + first.toString());
+                result_final=first.toString();
+                break;
+            }
+        }
+
+        for (Object x : result)
+        {
+            String newBoardString = boardString + x.toString();
+            if (!isValidPlacementSequence(newBoardString))
+                continue;
+            int currentScore = getBasicScore(newBoardString);
+            if ( currentScore > max)
+            {
+                result_final = x.toString();
+                max = currentScore;
+            }
+
+        }
+
+
+
+        return result_final;
+
+
+
+    }
+
 
     /**
      * Author : Jihirshu Narayan
@@ -589,8 +660,8 @@ public class RailroadInk {
 
     public static void main(String[] args)
     {
-        String diceRoll = "A2A4A5B2";
-        String boardString = "";
+        String diceRoll = "A5A2A4B2";
+        String boardString = "A3A10B0A23S3A31A1B30A1C30";
 //        String boardString = "";
         System.out.println(computerOpponent(boardString, diceRoll));
 

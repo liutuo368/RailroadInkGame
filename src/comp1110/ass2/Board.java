@@ -636,20 +636,23 @@ public class Board
     }
 
 
-    public void generateMovesRecursively(mySet possibleMoves, String[] choices, int specialTiles, String moveSoFar, int row, int col, boolean specialFlag)
+    public void generateMovesRecursively(Set completeMoves, Set possibleMoves, String[] choices, int specialTiles, String moveSoFar, int row, int col, boolean specialFlag)
     {
 
-        if (moveSoFar.equals("A4A10A2A30B2A40S0A51A5A63"))
-            System.out.println("good");
-
-        if (possibleMoves.size() > 10000)
-            return;
-
-        if ((choices.length == 0) && (specialTiles == 3))
+        // FIXME : Check why invalid moves are being generated
+        if (choices.length == 0)
         {
-            possibleMoves.add(moveSoFar);
-            return;
+            completeMoves.add(moveSoFar);
         }
+
+        if ((completeMoves.size() > 8000) || (possibleMoves.size() > 12000))
+            return;
+
+//        if ((choices.length == 0) && (!specialFlag))
+//        {
+//            possibleMoves.add(moveSoFar);
+//            return;
+//        }
 
         for (int i = 0;i<choices.length;i++)
         {
@@ -666,6 +669,8 @@ public class Board
                     continue;
 
                 x.rotate90(j);
+                if (this.checkInvalidConnection(x))
+                    continue;
                 try
                 {
                     boolean flag;
@@ -706,7 +711,7 @@ public class Board
                                     continue;
                                 if (board.board[m][n] == null)
                                 {
-                                    board.generateMovesRecursively(possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
+                                    board.generateMovesRecursively(completeMoves, possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
                                 }
                             }
                         }
@@ -754,7 +759,7 @@ public class Board
                                     continue;
                                 if (board.board[m][n] == null)
                                 {
-                                    board.generateMovesRecursively(possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
+                                    board.generateMovesRecursively(completeMoves, possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
                                 }
                             }
                         }
@@ -801,7 +806,7 @@ public class Board
                                     continue;
                                 if (board.board[m][n] == null)
                                 {
-                                    board.generateMovesRecursively(possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
+                                    board.generateMovesRecursively(completeMoves, possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
                                 }
                             }
                         }
@@ -848,7 +853,7 @@ public class Board
                                     continue;
                                 if (board.board[m][n] == null)
                                 {
-                                    board.generateMovesRecursively(possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
+                                    board.generateMovesRecursively(completeMoves, possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
                                 }
                             }
                         }
@@ -882,6 +887,8 @@ public class Board
                         continue;
 
                     x.rotate90(j);
+                    if (this.checkInvalidConnection(x))
+                        continue;
                     try
                     {
                         boolean flag;
@@ -912,7 +919,7 @@ public class Board
                                         continue;
                                     if (board.board[m][n] == null)
                                     {
-                                        board.generateMovesRecursively(possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
+                                        board.generateMovesRecursively(completeMoves, possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
                                     }
                                 }
                             }
@@ -955,7 +962,7 @@ public class Board
                                         continue;
                                     if (board.board[m][n] == null)
                                     {
-                                        board.generateMovesRecursively(possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
+                                        board.generateMovesRecursively(completeMoves, possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
                                     }
                                 }
                             }
@@ -996,7 +1003,7 @@ public class Board
                                         continue;
                                     if (board.board[m][n] == null)
                                     {
-                                        board.generateMovesRecursively(possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
+                                        board.generateMovesRecursively(completeMoves, possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
                                     }
                                 }
                             }
@@ -1037,7 +1044,7 @@ public class Board
                                         continue;
                                     if (board.board[m][n] == null)
                                     {
-                                        board.generateMovesRecursively(possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
+                                        board.generateMovesRecursively(completeMoves, possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
                                     }
                                 }
                             }
@@ -1056,21 +1063,475 @@ public class Board
 
     }
 
-    public mySet generateMove(String[] choices)
+    public Set generateMove(String[] choices)
     {
-        mySet possibleMoves = new mySet();
+        Set possibleMoves = new mySet();
+        Set completeMoves = new mySet();
         int specialtiles = this.countSpecialTiles();
+        boolean specialFlag = true;
+        if (specialtiles>=3)
+            specialFlag=false;
         for (int i = 0; i < 7; i++)
         {
             for (int j = 0; j < 7; j++)
             {
                 if (board[i][j] == null)
                 {
-                    this.generateMovesRecursively(possibleMoves, choices, specialtiles, "", i, j, true);
+                    this.generateMovesRecursively(completeMoves, possibleMoves, choices, specialtiles, "", i, j, specialFlag);
                 }
             }
         }
+
+        if (completeMoves.isEmpty())
+            return possibleMoves;
+        else
+            return completeMoves;
+    }
+
+    public Set generateMoveNoRestriction(String[] choices)
+    {
+        Set possibleMoves = new mySet();
+        Set completeMoves = new mySet();
+        int specialtiles = this.countSpecialTiles();
+        boolean specialFlag = true;
+        if (specialtiles>=3)
+            specialFlag=false;
+        for (int i = 0; i < 7; i++)
+        {
+            for (int j = 0; j < 7; j++)
+            {
+                if (board[i][j] == null)
+                {
+                    this.generateMovesRecursivelyNoRestriction(possibleMoves, choices, specialtiles, "", i, j, specialFlag);
+                }
+            }
+        }
+
         return possibleMoves;
+    }
+
+
+    public void generateMovesRecursivelyNoRestriction(Set possibleMoves, String[] choices, int specialTiles, String moveSoFar, int row, int col, boolean specialFlag)
+    {
+
+        // FIXME : Check why invalid moves are being generated
+
+        if (possibleMoves.size() > 10000)
+            return;
+
+        if ((choices.length == 0) && (!specialFlag))
+        {
+            possibleMoves.add(moveSoFar);
+            return;
+        }
+
+        for (int i = 0;i<choices.length;i++)
+        {
+            Tile x = new Tile(choices[i]);
+            x.set_default();
+            x.translate(row,col);
+
+            for (int j = 0;j<8;j++)
+            {
+                if (((choices[i].equals("A1")) || (choices[i].equals("A4"))) && (j>1))
+                    continue;
+
+                if ((!(choices[i].equals("B1"))) && (j > 3))
+                    continue;
+
+                x.rotate90(j);
+                if (this.checkInvalidConnection(x))
+                    continue;
+                try
+                {
+                    boolean flag;
+                    try
+                    {
+                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])));
+                    }
+                    catch (Exception E)
+                    {
+                        flag=false;
+                    }
+
+//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_exit_connection()))
+
+                    if (flag || x.check_exit_connection())
+
+                    {
+                        Board board =  new Board(this);
+                        board.place_tile(x);
+                        String[] new_choices = new String[choices.length-1];
+                        int counter=0;
+                        for (int k = 0;k<choices.length;k++)
+                        {
+                            if (i == k)
+                                continue;
+                            new_choices[counter] = choices[k];
+                            counter++;
+                        }
+                        String newMove = moveSoFar + x.toString();
+
+                        possibleMoves.add(newMove);
+
+                        for (int m = 0;m<7;m++)
+                        {
+                            for (int n=0;n<7;n++)
+                            {
+                                if ((m==row) && (n==col))
+                                    continue;
+                                if (board.board[m][n] == null)
+                                {
+                                    board.generateMovesRecursivelyNoRestriction(possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
+                                }
+                            }
+                        }
+
+                    }
+
+                }
+                catch (Exception E)
+                {
+
+                }
+                try
+                {
+                    boolean flag;
+                    try
+                    {
+                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])));
+                    }
+                    catch (Exception E)
+                    {
+                        flag=false;
+                    }
+//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_exit_connection()))
+                    if (flag || x.check_exit_connection())
+                    {
+                        Board board =  new Board(this);
+                        board.place_tile(x);
+                        String[] new_choices = new String[choices.length-1];
+                        int counter=0;
+                        for (int k = 0;k<choices.length;k++)
+                        {
+                            if (i == k)
+                                continue;
+                            new_choices[counter] = choices[k];
+                            counter++;
+                        }
+                        String newMove = moveSoFar + x.toString();
+                        possibleMoves.add(newMove);
+
+                        for (int m = 0;m<7;m++)
+                        {
+                            for (int n=0;n<7;n++)
+                            {
+                                if ((m==row) && (n==col))
+                                    continue;
+                                if (board.board[m][n] == null)
+                                {
+                                    board.generateMovesRecursivelyNoRestriction(possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
+                                }
+                            }
+                        }
+
+                    }
+                }
+                catch (Exception E)
+                {
+
+                }
+                try
+                {
+                    boolean flag;
+                    try
+                    {
+                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])));
+                    }
+                    catch (Exception E)
+                    {
+                        flag=false;
+                    }
+//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_exit_connection()))
+                    if (flag || x.check_exit_connection())
+                    {
+                        Board board =  new Board(this);
+                        board.place_tile(x);
+                        String[] new_choices = new String[choices.length-1];
+                        int counter=0;
+                        for (int k = 0;k<choices.length;k++)
+                        {
+                            if (i == k)
+                                continue;
+                            new_choices[counter] = choices[k];
+                            counter++;
+                        }
+                        String newMove = moveSoFar + x.toString();
+                        possibleMoves.add(newMove);
+
+                        for (int m = 0;m<7;m++)
+                        {
+                            for (int n=0;n<7;n++)
+                            {
+                                if ((m==row) && (n==col))
+                                    continue;
+                                if (board.board[m][n] == null)
+                                {
+                                    board.generateMovesRecursivelyNoRestriction(possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
+                                }
+                            }
+                        }
+
+                    }
+                }
+                catch (Exception E)
+                {
+
+                }
+                try
+                {
+                    boolean flag;
+                    try
+                    {
+                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])));
+                    }
+                    catch (Exception E)
+                    {
+                        flag=false;
+                    }
+//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_exit_connection()))
+                    if (flag || x.check_exit_connection())
+                    {
+                        Board board =  new Board(this);
+                        board.place_tile(x);
+                        String[] new_choices = new String[choices.length-1];
+                        int counter=0;
+                        for (int k = 0;k<choices.length;k++)
+                        {
+                            if (i == k)
+                                continue;
+                            new_choices[counter] = choices[k];
+                            counter++;
+                        }
+                        String newMove = moveSoFar + x.toString();
+                        possibleMoves.add(newMove);
+
+                        for (int m = 0;m<7;m++)
+                        {
+                            for (int n=0;n<7;n++)
+                            {
+                                if ((m==row) && (n==col))
+                                    continue;
+                                if (board.board[m][n] == null)
+                                {
+                                    board.generateMovesRecursivelyNoRestriction(possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
+                                }
+                            }
+                        }
+
+                    }
+
+                }
+                catch (Exception E)
+                {
+
+                }
+            }
+
+        }
+
+
+        if ((this.countSpecialTiles() < 3) && (specialFlag))
+        {
+
+            for (String special : this.specialTiles)
+            {
+                Tile x = new Tile(special);
+                x.set_default();
+                x.translate(row,col);
+
+                for (int j = 0;j<4;j++)
+                {
+                    if (((special.equals("S2")) || (special.equals("S3"))) && (j > 1))
+                        continue;
+                    if ((special.equals("S5")) && (j>1))
+                        continue;
+
+                    x.rotate90(j);
+                    if (this.checkInvalidConnection(x))
+                        continue;
+                    try
+                    {
+                        boolean flag;
+                        try
+                        {
+                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])));
+                        }
+                        catch (Exception E)
+                        {
+                            flag=false;
+                        }
+                        //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_exit_connection()))
+                        if (flag || x.check_exit_connection())
+                        {
+                            Board board =  new Board(this);
+                            board.place_tile(x);
+                            int newSpecialTiles = board.countSpecialTiles();
+                            String newMove = moveSoFar + x.toString();
+                            if (newMove.equals("A4A20B0A62S5D20S0C63"))
+                                System.out.println("good");
+                            possibleMoves.add(newMove);
+
+                            for (int m = 0;m<7;m++)
+                            {
+                                for (int n=0;n<7;n++)
+                                {
+                                    if ((m==row) && (n==col))
+                                        continue;
+                                    if (board.board[m][n] == null)
+                                    {
+                                        board.generateMovesRecursivelyNoRestriction(possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }
+                    catch (Exception E)
+                    {
+
+                    }
+                    try
+                    {
+                        boolean flag;
+                        try
+                        {
+                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])));
+                        }
+                        catch (Exception E)
+                        {
+                            flag=false;
+                        }
+                        //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_exit_connection()))
+
+                        if (flag || x.check_exit_connection())
+                        {
+                            Board board =  new Board(this);
+                            board.place_tile(x);
+                            int newSpecialTiles = board.countSpecialTiles();
+                            String newMove = moveSoFar + x.toString();
+                            if (newMove.equals("A4A20B0A62S5D20S0C63"))
+                                System.out.println("good");
+                            possibleMoves.add(newMove);
+
+                            for (int m = 0;m<7;m++)
+                            {
+                                for (int n=0;n<7;n++)
+                                {
+                                    if ((m==row) && (n==col))
+                                        continue;
+                                    if (board.board[m][n] == null)
+                                    {
+                                        board.generateMovesRecursivelyNoRestriction(possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    catch (Exception E)
+                    {
+
+                    }
+                    try
+                    {
+                        boolean flag;
+                        try
+                        {
+                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])));
+                        }
+                        catch (Exception E)
+                        {
+                            flag=false;
+                        }
+                        //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_exit_connection()))
+                        if (flag || x.check_exit_connection())
+                        {
+                            Board board =  new Board(this);
+                            board.place_tile(x);
+                            int newSpecialTiles = board.countSpecialTiles();
+                            String newMove = moveSoFar + x.toString();
+                            if (newMove.equals("A4A20B0A62S5D20S0C63"))
+                                System.out.println("good");
+                            possibleMoves.add(newMove);
+
+                            for (int m = 0;m<7;m++)
+                            {
+                                for (int n=0;n<7;n++)
+                                {
+                                    if ((m==row) && (n==col))
+                                        continue;
+                                    if (board.board[m][n] == null)
+                                    {
+                                        board.generateMovesRecursivelyNoRestriction(possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    catch (Exception E)
+                    {
+
+                    }
+                    try
+                    {
+                        boolean flag;
+                        try
+                        {
+                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])));
+                        }
+                        catch (Exception E)
+                        {
+                            flag=false;
+                        }
+                        //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_exit_connection()))
+                        if (flag || x.check_exit_connection())
+                        {
+                            Board board =  new Board(this);
+                            board.place_tile(x);
+                            int newSpecialTiles = board.countSpecialTiles();
+                            String newMove = moveSoFar + x.toString();
+                            if (newMove.equals("A4A20B0A62S5D20S0C63"))
+                                System.out.println("good");
+                            possibleMoves.add(newMove);
+
+                            for (int m = 0;m<7;m++)
+                            {
+                                for (int n=0;n<7;n++)
+                                {
+                                    if ((m==row) && (n==col))
+                                        continue;
+                                    if (board.board[m][n] == null)
+                                    {
+                                        board.generateMovesRecursivelyNoRestriction(possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }
+                    catch (Exception E)
+                    {
+
+                    }
+                }
+
+            }
+        }
+
     }
 
 
