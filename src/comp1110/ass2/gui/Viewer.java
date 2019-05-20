@@ -1,12 +1,15 @@
 package comp1110.ass2.gui;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
@@ -45,6 +48,7 @@ public class Viewer extends Application {
     private boolean gameOver = false; // If the game is over
     private boolean multiPlayer = false; // If the game is multiplayer mode
     private boolean vsPC = false;
+    private boolean smartGame = false;
     private int currentPlayer = 1; // The current player
     private static final String URI_BASE = "assets/"; // The URI base of image resources
 
@@ -77,7 +81,13 @@ public class Viewer extends Application {
         return str;
     }
 
-    private String rowtoString(int row) { // This method is just to convert the row numbers 1 - 7 to 'A' - 'G'
+    /**
+     * Created by Tuo Liu
+     * To convert the row numbers 1 - 7 to chars 'A' to 'G'
+     * @param row
+     * @return
+     */
+    private String rowtoString(int row) {
         String value = "";
         switch (row) {
             case 0: value = "A"; break;
@@ -314,9 +324,13 @@ public class Viewer extends Application {
 //                                gameOver();
 //                            }
 //                            */
-                                /*if(tilesLeft == 0) { // If there is no tiles left, go to next round
-                                    nextRound();
+                                /*if(!smartGame) {
+                                    if(tilesLeft == 0) { // If there is no tiles left, go to next round
+                                        nextRound();
+                                    }
                                 }*/
+
+
                                 return true;
                             }
                         }
@@ -614,8 +628,9 @@ public class Viewer extends Application {
         for(int i = 0; i < diceTiles.size(); i++) {
             diceRoll += diceTiles.get(i).name;
         }
+        tilesLeft = 4;
         System.out.println("BoardString: "+ getPlacement(2) + ", DiceRolls: " + diceRoll);
-        String place = computerOpponent(getPlacement(2), diceRoll);
+        String place = smartGame ? computerOpponent(getPlacement(2), diceRoll) :computerOpponent(getPlacement(2), diceRoll);
         System.out.println("Got: " + place);
         for(int i = 0; i < place.length(); i+=5) {
 
@@ -639,8 +654,10 @@ public class Viewer extends Application {
                         break;
                     }
                 }
+                tilesLeft--;
                 diceRoll = diceRoll.replaceFirst(tilePlacement.substring(0, 2), "");
             }
+            System.out.println(tilesLeft);
             makePlacement();
             makeDiceTiles();
             makeSpecialTiles();
@@ -655,51 +672,56 @@ public class Viewer extends Application {
      * To go to next round
      */
     private void nextRound() {
-        if(round <= 7) {
-            if(multiPlayer == true) { // If the game is in multiplayer mode
-                if(currentPlayer == 2) {
-                    if(round == 7) { // If the round is 7, finish the game
+        if((!smartGame && tilesLeft == 0) || smartGame) {
+            if(round <= 7) {
+                if(multiPlayer == true) { // If the game is in multiplayer mode
+                    if(currentPlayer == 2) {
+                        if(round == 7) { // If the round is 7, finish the game
+                            gameOver();
+                            return;
+                        }
+                        currentPlayer = 1;
+                        round ++;
+                        roundLabel.setText("Round: " + round);
+                        rollDice();
+
+                    } else {
+                        currentPlayer = 2;
+                        if(vsPC) {
+                            makePlacement();
+                            makeSpecialTiles();
+                            playerLabel.setText("Player: " + currentPlayer);
+                            pcGo();
+                        }
+                    }
+                    if(!(vsPC && currentPlayer == 2)) {
+                        makeDiceTiles();
+                        makeSpecialTiles();
+                    }
+                    makePlacement();
+                    makeSpecialTiles();
+                } else {
+                    if(round == 7) {
                         gameOver();
                         return;
                     }
-                    currentPlayer = 1;
                     round ++;
                     roundLabel.setText("Round: " + round);
-                    rollDice();
-
-                } else {
-                    currentPlayer = 2;
-                    if(vsPC) {
-                        makePlacement();
-                        makeSpecialTiles();
-                        playerLabel.setText("Player: " + currentPlayer);
-                        pcGo();
-                    }
-                }
-                if(!(vsPC && currentPlayer == 2)) {
+                    rollDice(); // Generate new tile rolls
                     makeDiceTiles();
-                    makeSpecialTiles();
+                    makePlacement();
                 }
-                makePlacement();
-                makeSpecialTiles();
-            } else {
-                if(round == 7) {
-                    gameOver();
-                    return;
-                }
-                round ++;
-                roundLabel.setText("Round: " + round);
-                rollDice(); // Generate new tile rolls
-                makeDiceTiles();
-                makePlacement();
-            }
 
-        } else {
-            gameOver();
+            } else {
+                gameOver();
+            }
+            playerLabel.setText("Player: " + currentPlayer);
+            roundSpecialUsed = false;
+            if(smartGame) {
+                tilesLeft = 4;
+            }
         }
-        playerLabel.setText("Player: " + currentPlayer);
-        roundSpecialUsed = false;
-        tilesLeft = 4;
+
     }
 
     /**
@@ -764,47 +786,30 @@ public class Viewer extends Application {
         label5.setLayoutY(130);
 
         // Generate the score of single player by invoking the function getPlacement
-        Label label2 = new Label("Your Score: " + getBasicScore(getPlacement(1)));
+        Label label2 = new Label("Your Score: " + getAdvancedScore(getPlacement(1)));
         label2.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
         label2.setLayoutX(250);
         label2.setLayoutY(170);
 
         // Generate the score of first player between two players by invoking the function getPlacement
-        Label label3 = new Label("First player's score: " + getBasicScore(getPlacement(1)));
+        Label label3 = new Label("First player's score: " + getAdvancedScore(getPlacement(1)));
         label3.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
         label3.setLayoutX(220);
         label3.setLayoutY(170);
 
-        // Get the advanced score
-        Label label6 = new Label("Advanced score: " + getAdvancedScore(getPlacement(1)));
-        label6.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
-        label6.setLayoutX(220);
-        label6.setLayoutY(200);
-
         // Generate the score of second player between two players by invoking the function getPlacement as well
-        Label label4 = new Label("Second player's score: " + getBasicScore(getPlacement(2)));
+        Label label4 = new Label("Second player's score: " + getAdvancedScore(getPlacement(2)));
         label4.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
         label4.setLayoutX(220);
         label4.setLayoutY(230);
 
-        Label label8 = new Label("Advanced score: " + getAdvancedScore(getPlacement(2)));
-        label8.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
-        label8.setLayoutX(220);
-        label8.setLayoutY(260);
-
-        // Advanced score for first player
-        Label label7 = new Label("Advanced score: " + getAdvancedScore(getPlacement(1)));
-        label7.setFont(Font.font("family", FontWeight.BLACK.BOLD, FontPosture.ITALIC,20));
-        label7.setLayoutX(220);
-        label7.setLayoutY(230);
-
         // Group label1, label2 and image together for the window of single player
         Group rootOne = new Group();
-        rootOne.getChildren().addAll(label1,label2,label7,imageview);
+        rootOne.getChildren().addAll(label1,label2,imageview);
 
         // Group label5,label4, imageview2 together for the window of multi-players
         Group rootMulti = new Group();
-        rootMulti.getChildren().addAll(label5,label3,label4,label6,label8,imageview2);
+        rootMulti.getChildren().addAll(label5,label3,label4,imageview2);
 
         // Show the window of single player if they select the singe player, otherwise, show the window of multi-players
         Scene scene;
@@ -894,21 +899,7 @@ public class Viewer extends Application {
         newGameButton.setLayoutX(Tile_START_X / 5);
         newGameButton.setLayoutY(Tile_START_Y * 3.5);
 
-        /*TextField textField = new TextField();
-        Button testButton = new Button("Refresh");
-        testButton.setOnAction(e -> {
-                    testPlacement(textField.getText());
-                }
-
-        );
-        HBox hBox = new HBox();
-        hBox.setLayoutX(20);
-        hBox.setLayoutY(700);
-        hBox.getChildren().addAll(textField, testButton);*/
-
-
-
-        controls.getChildren().addAll(label, roundLabel, specialLabel, playerLabel, nextRoundButton, newGameButton);
+        controls.getChildren().addAll(label, roundLabel, specialLabel, playerLabel, nextRoundButton,newGameButton);
 
         initGrids();
         initSpecialTiles();
@@ -951,7 +942,7 @@ public class Viewer extends Application {
 
         //choose mode
         Group modeChoosingGroup = new Group();
-        Scene modeChoosingScene = new Scene(modeChoosingGroup, 400, 150);
+        Scene modeChoosingScene = new Scene(modeChoosingGroup, 400, 200);
 
         Label label1 = new Label("Please choose game mode: ");
         label1.setFont(Font.font("family", FontWeight.BLACK.EXTRA_BOLD, FontPosture.REGULAR,20));
@@ -959,35 +950,64 @@ public class Viewer extends Application {
         label1.setLayoutY(30);
 
         Stage modeChoosingWindow = new Stage();
+
+        HBox hBox1 = new HBox();
+        HBox hBox2 = new HBox();
+
+        hBox1.setLayoutX(50);
+        hBox1.setLayoutY(80);
+
+        hBox2.setLayoutX(50);
+        hBox2.setLayoutY(130);
+
+
+
+        Label ruleLabel = new Label("Select Rule: ");
+        ruleLabel.setFont(Font.font("family", FontWeight.BLACK.EXTRA_BOLD, FontPosture.REGULAR,15));
+
+        ChoiceBox ruleChoiceBox = new ChoiceBox();
+        ruleChoiceBox.setItems(FXCollections.observableArrayList(
+                "Normal", "Smart"
+        ));
+        ruleChoiceBox.setValue("Normal");
+
+        hBox2.getChildren().addAll(ruleLabel, ruleChoiceBox);
+
         Button singleButton = new Button("Single player");
         singleButton.setOnAction(e -> {
             multiPlayer = false;
+            if(ruleChoiceBox.getValue().equals("Smart")) {
+                smartGame = true;
+            }
             primaryStage.show();
             modeChoosingWindow.close();
         });
-        singleButton.setLayoutX(50);
-        singleButton.setLayoutY(80);
 
         Button multiButton = new Button("Multi player");
         multiButton.setOnAction(e -> {
             multiPlayer = true;
+            if(ruleChoiceBox.getValue().equals("Smart")) {
+                smartGame = true;
+            }
             primaryStage.show();
             modeChoosingWindow.close();
         });
-        multiButton.setLayoutX(155);
-        multiButton.setLayoutY(80);
 
         Button pcButton = new Button("PVE");
         pcButton.setOnAction(e -> {
             multiPlayer = true;
+            if(ruleChoiceBox.getValue().equals("Smart")) {
+                smartGame = true;
+            }
             vsPC = true;
             primaryStage.show();
             modeChoosingWindow.close();
         });
-        pcButton.setLayoutX(250);
-        pcButton.setLayoutY(80);
 
-        modeChoosingGroup.getChildren().addAll(label1, singleButton, multiButton, pcButton);
+        hBox1.getChildren().addAll(singleButton, multiButton, pcButton);
+
+        //modeChoosingGroup.getChildren().addAll(label1, singleButton, multiButton, pcButton, ruleLabel);
+        modeChoosingGroup.getChildren().addAll(label1, hBox1, hBox2);
         modeChoosingWindow.setTitle("Mode Choosing");
         modeChoosingWindow.setScene(modeChoosingScene);
         modeChoosingWindow.setResizable(false);
