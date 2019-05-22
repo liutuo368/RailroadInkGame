@@ -636,7 +636,7 @@ public class Board
     }
 
 
-    public void generateMovesRecursively(Set completeMoves, Set possibleMoves, String[] choices, int specialTiles, String moveSoFar, int row, int col, boolean specialFlag)
+    public void generateMovesRecursively(Set completeMoves, Set possibleMoves, String[] choices, int specialTiles, String moveSoFar, int row, int col, boolean specialFlag, int numberOfMoves)
     {
 
         // FIXME : Check why invalid moves are being generated
@@ -645,7 +645,7 @@ public class Board
             completeMoves.add(moveSoFar);
         }
 
-        if ((completeMoves.size() > 8000) || (possibleMoves.size() > 12000))
+        if ((completeMoves.size() > (numberOfMoves/2)) || (possibleMoves.size() > numberOfMoves))
             return;
 
 //        if ((choices.length == 0) && (!specialFlag))
@@ -711,7 +711,7 @@ public class Board
                                     continue;
                                 if (board.board[m][n] == null)
                                 {
-                                    board.generateMovesRecursively(completeMoves, possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
+                                    board.generateMovesRecursively(completeMoves, possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag, numberOfMoves);
                                 }
                             }
                         }
@@ -759,7 +759,7 @@ public class Board
                                     continue;
                                 if (board.board[m][n] == null)
                                 {
-                                    board.generateMovesRecursively(completeMoves, possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
+                                    board.generateMovesRecursively(completeMoves, possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag, numberOfMoves);
                                 }
                             }
                         }
@@ -806,7 +806,7 @@ public class Board
                                     continue;
                                 if (board.board[m][n] == null)
                                 {
-                                    board.generateMovesRecursively(completeMoves, possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
+                                    board.generateMovesRecursively(completeMoves, possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag, numberOfMoves);
                                 }
                             }
                         }
@@ -853,7 +853,7 @@ public class Board
                                     continue;
                                 if (board.board[m][n] == null)
                                 {
-                                    board.generateMovesRecursively(completeMoves, possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
+                                    board.generateMovesRecursively(completeMoves, possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag, numberOfMoves);
                                 }
                             }
                         }
@@ -919,7 +919,7 @@ public class Board
                                         continue;
                                     if (board.board[m][n] == null)
                                     {
-                                        board.generateMovesRecursively(completeMoves, possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
+                                        board.generateMovesRecursively(completeMoves, possibleMoves, choices, newSpecialTiles, newMove, m,n, false, numberOfMoves);
                                     }
                                 }
                             }
@@ -962,7 +962,7 @@ public class Board
                                         continue;
                                     if (board.board[m][n] == null)
                                     {
-                                        board.generateMovesRecursively(completeMoves, possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
+                                        board.generateMovesRecursively(completeMoves, possibleMoves, choices, newSpecialTiles, newMove, m,n, false, numberOfMoves);
                                     }
                                 }
                             }
@@ -1003,7 +1003,7 @@ public class Board
                                         continue;
                                     if (board.board[m][n] == null)
                                     {
-                                        board.generateMovesRecursively(completeMoves, possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
+                                        board.generateMovesRecursively(completeMoves, possibleMoves, choices, newSpecialTiles, newMove, m,n, false, numberOfMoves);
                                     }
                                 }
                             }
@@ -1044,7 +1044,7 @@ public class Board
                                         continue;
                                     if (board.board[m][n] == null)
                                     {
-                                        board.generateMovesRecursively(completeMoves, possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
+                                        board.generateMovesRecursively(completeMoves, possibleMoves, choices, newSpecialTiles, newMove, m,n, false, numberOfMoves);
                                     }
                                 }
                             }
@@ -1063,7 +1063,7 @@ public class Board
 
     }
 
-    public Set generateMove(String[] choices)
+    public Set generateMove(String[] choices, int round)
     {
         Set possibleMoves = new mySet();
         Set completeMoves = new mySet();
@@ -1071,13 +1071,23 @@ public class Board
         boolean specialFlag = true;
         if (specialtiles>=3)
             specialFlag=false;
+
+        int numberOfMoves = 0;
+
+        if (round == 1)
+            numberOfMoves=1000;
+        else if (round<4)
+            numberOfMoves = 6000;
+        else
+            numberOfMoves = 10000;
+
         for (int i = 0; i < 7; i++)
         {
             for (int j = 0; j < 7; j++)
             {
                 if (board[i][j] == null)
                 {
-                    this.generateMovesRecursively(completeMoves, possibleMoves, choices, specialtiles, "", i, j, specialFlag);
+                    this.generateMovesRecursively(completeMoves, possibleMoves, choices, specialtiles, "", i, j, specialFlag, numberOfMoves);
                 }
             }
         }
@@ -1088,11 +1098,20 @@ public class Board
             return completeMoves;
     }
 
-    public Set generateMoveNoRestriction(String[] choices)
+    public Set generateMoveNoRestriction(String[] choices, int round)
     {
         Set possibleMoves = new mySet();
         Set completeMoves = new mySet();
         int specialtiles = this.countSpecialTiles();
+
+        int numberOfMoves;
+        if (round == 1)
+            numberOfMoves = 2000;
+        else if (round < 4)
+            numberOfMoves = 6000;
+        else
+            numberOfMoves = 10000;
+
         boolean specialFlag = true;
         if (specialtiles>=3)
             specialFlag=false;
@@ -1102,7 +1121,7 @@ public class Board
             {
                 if (board[i][j] == null)
                 {
-                    this.generateMovesRecursivelyNoRestriction(possibleMoves, choices, specialtiles, "", i, j, specialFlag);
+                    this.generateMovesRecursivelyNoRestriction(possibleMoves, choices, specialtiles, "", i, j, specialFlag, numberOfMoves);
                 }
             }
         }
@@ -1111,12 +1130,12 @@ public class Board
     }
 
 
-    public void generateMovesRecursivelyNoRestriction(Set possibleMoves, String[] choices, int specialTiles, String moveSoFar, int row, int col, boolean specialFlag)
+    public void generateMovesRecursivelyNoRestriction(Set possibleMoves, String[] choices, int specialTiles, String moveSoFar, int row, int col, boolean specialFlag, int numberOfMoves)
     {
 
         // FIXME : Check why invalid moves are being generated
 
-        if (possibleMoves.size() > 10000)
+        if (possibleMoves.size() > numberOfMoves)
             return;
 
         if ((choices.length == 0) && (!specialFlag))
@@ -1182,7 +1201,7 @@ public class Board
                                     continue;
                                 if (board.board[m][n] == null)
                                 {
-                                    board.generateMovesRecursivelyNoRestriction(possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
+                                    board.generateMovesRecursivelyNoRestriction(possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag, numberOfMoves);
                                 }
                             }
                         }
@@ -1230,7 +1249,7 @@ public class Board
                                     continue;
                                 if (board.board[m][n] == null)
                                 {
-                                    board.generateMovesRecursivelyNoRestriction(possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
+                                    board.generateMovesRecursivelyNoRestriction(possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag, numberOfMoves);
                                 }
                             }
                         }
@@ -1277,7 +1296,7 @@ public class Board
                                     continue;
                                 if (board.board[m][n] == null)
                                 {
-                                    board.generateMovesRecursivelyNoRestriction(possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
+                                    board.generateMovesRecursivelyNoRestriction(possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag, numberOfMoves);
                                 }
                             }
                         }
@@ -1324,7 +1343,7 @@ public class Board
                                     continue;
                                 if (board.board[m][n] == null)
                                 {
-                                    board.generateMovesRecursivelyNoRestriction(possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag);
+                                    board.generateMovesRecursivelyNoRestriction(possibleMoves, new_choices, specialTiles, newMove, m,n, specialFlag, numberOfMoves);
                                 }
                             }
                         }
@@ -1390,7 +1409,7 @@ public class Board
                                         continue;
                                     if (board.board[m][n] == null)
                                     {
-                                        board.generateMovesRecursivelyNoRestriction(possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
+                                        board.generateMovesRecursivelyNoRestriction(possibleMoves, choices, newSpecialTiles, newMove, m,n, false, numberOfMoves);
                                     }
                                 }
                             }
@@ -1433,7 +1452,7 @@ public class Board
                                         continue;
                                     if (board.board[m][n] == null)
                                     {
-                                        board.generateMovesRecursivelyNoRestriction(possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
+                                        board.generateMovesRecursivelyNoRestriction(possibleMoves, choices, newSpecialTiles, newMove, m,n, false, numberOfMoves);
                                     }
                                 }
                             }
@@ -1474,7 +1493,7 @@ public class Board
                                         continue;
                                     if (board.board[m][n] == null)
                                     {
-                                        board.generateMovesRecursivelyNoRestriction(possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
+                                        board.generateMovesRecursivelyNoRestriction(possibleMoves, choices, newSpecialTiles, newMove, m,n, false, numberOfMoves);
                                     }
                                 }
                             }
@@ -1515,7 +1534,7 @@ public class Board
                                         continue;
                                     if (board.board[m][n] == null)
                                     {
-                                        board.generateMovesRecursivelyNoRestriction(possibleMoves, choices, newSpecialTiles, newMove, m,n, false);
+                                        board.generateMovesRecursivelyNoRestriction(possibleMoves, choices, newSpecialTiles, newMove, m,n, false, numberOfMoves);
                                     }
                                 }
                             }

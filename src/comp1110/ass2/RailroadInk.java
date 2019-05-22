@@ -416,7 +416,7 @@ public class RailroadInk {
 
     }
 
-    public static String computerOpponent(String boardString, String diceRoll) {
+    public static String computerOpponent(String boardString, String diceRoll, int round) {
 
         String[] choices = {"","","",""};
         int tile_number = (boardString.length())/5;
@@ -446,7 +446,7 @@ public class RailroadInk {
         int max = initial_score;
         String result_final = "";
 
-        Set result = board.generateMove(choices);
+        Set result = board.generateMove(choices, round);
 
         for (Object first : result)
         {
@@ -480,7 +480,7 @@ public class RailroadInk {
 
     }
 
-    public static String computerOpponentNoRestriction(String boardString, String diceRoll) {
+    public static String computerOpponentNoRestriction(String boardString, String diceRoll, int round) {
 
         String[] choices = {"","","",""};
         int tile_number = (boardString.length())/5;
@@ -510,7 +510,7 @@ public class RailroadInk {
         int max = initial_score;
         String result_final = "";
 
-        Set result = board.generateMove(choices);
+        Set result = board.generateMoveNoRestriction(choices, round);
 
         for (Object first : result)
         {
@@ -539,8 +539,6 @@ public class RailroadInk {
 
 
         return result_final;
-
-
 
     }
 
@@ -660,10 +658,10 @@ public class RailroadInk {
 
     public static void main(String[] args)
     {
-        String diceRoll = "A5A2A4B2";
-        String boardString = "A3A10B0A23S3A31A1B30A1C30";
+//        String diceRoll = "A5A2A4B2";
+//        String boardString = "A3A10B0A23S3A31A1B30A1C30";
 //        String boardString = "";
-        System.out.println(computerOpponent(boardString, diceRoll));
+//        System.out.println(computerOpponent(boardString, diceRoll));
 
 
     }
