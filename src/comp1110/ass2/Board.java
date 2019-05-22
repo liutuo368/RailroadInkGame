@@ -1101,7 +1101,6 @@ public class Board
     public Set generateMoveNoRestriction(String[] choices, int round)
     {
         Set possibleMoves = new mySet();
-        Set completeMoves = new mySet();
         int specialtiles = this.countSpecialTiles();
 
         int numberOfMoves;
