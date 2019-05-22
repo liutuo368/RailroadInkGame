@@ -630,7 +630,7 @@ public class Viewer extends Application {
         }
         tilesLeft = 4;
         System.out.println("BoardString: "+ getPlacement(2) + ", DiceRolls: " + diceRoll);
-        String place = smartGame ? computerOpponentNoRestriction(getPlacement(2), diceRoll) :computerOpponent(getPlacement(2), diceRoll);
+        String place = smartGame ? computerOpponentNoRestriction(getPlacement(2), diceRoll, round) :computerOpponent(getPlacement(2), diceRoll, round);
         System.out.println("Got: " + place);
         for(int i = 0; i < place.length(); i+=5) {
 
