@@ -947,7 +947,7 @@ public class Viewer extends Application {
 
         //choose mode
         Group modeChoosingGroup = new Group();
-        Scene modeChoosingScene = new Scene(modeChoosingGroup, 400, 200);
+        Scene modeChoosingScene = new Scene(modeChoosingGroup, 350, 250);
 
         Label label1 = new Label("Please choose game mode: ");
         label1.setFont(Font.font("family", FontWeight.BLACK.EXTRA_BOLD, FontPosture.REGULAR,20));
@@ -1014,8 +1014,13 @@ public class Viewer extends Application {
 
         hBox1.getChildren().addAll(singleButton, multiButton, pcButton);
 
+        Label rulesLabel = new Label ("Normal - Use all 4 tiles if possible\n" +
+                "Smart - You can skip tile placements");
+        rulesLabel.setLayoutY(180);
+        rulesLabel.setLayoutX(50);
+
         //modeChoosingGroup.getChildren().addAll(label1, singleButton, multiButton, pcButton, ruleLabel);
-        modeChoosingGroup.getChildren().addAll(label1, hBox1, hBox2);
+        modeChoosingGroup.getChildren().addAll(label1, hBox1, hBox2, rulesLabel);
         modeChoosingWindow.setTitle("Mode Choosing");
         modeChoosingWindow.setScene(modeChoosingScene);
         modeChoosingWindow.setResizable(false);
