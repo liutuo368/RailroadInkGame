@@ -985,8 +985,7 @@ public class Viewer extends Application {
                 "Smart - You can skip tile placements");
         rulesLabel.setLayoutY(180);
         rulesLabel.setLayoutX(50);
-
-        //modeChoosingGroup.getChildren().addAll(label1, singleButton, multiButton, pcButton, ruleLabel);
+        
         modeChoosingGroup.getChildren().addAll(label1, hBox1, hBox2, rulesLabel);
         modeChoosingWindow.setTitle("Mode Choosing");
         modeChoosingWindow.setScene(modeChoosingScene);
