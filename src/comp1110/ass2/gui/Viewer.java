@@ -1,5 +1,6 @@
 package comp1110.ass2.gui;
 
+import comp1110.ass2.Board;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.scene.Group;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static comp1110.ass2.RailroadInk.*;
+import static comp1110.ass2.Board.*;
 
 
 /**
@@ -79,6 +81,10 @@ public class Viewer extends Application {
         } while (!isValidPlacementSequence(getPlacement(2) + str));
 
         return str;
+    }
+
+    boolean test(String boardString, String diceroll) {
+        return true;
     }
 
     /**
@@ -319,17 +325,6 @@ public class Viewer extends Application {
                                     placement2.add(tile); // ADd the tile to placement list for player 2
                                     grids[i][j].isEmpty2 = false;
                                 }
-//                            /*
-//                            if(generateMove(CURRENT_PLACEMENT, ROLL_MEMBERS) == "") {
-//                                gameOver();
-//                            }
-//                            */
-                                /*if(!smartGame) {
-                                    if(tilesLeft == 0) { // If there is no tiles left, go to next round
-                                        nextRound();
-                                    }
-                                }*/
-
 
                                 return true;
                             }
@@ -360,7 +355,7 @@ public class Viewer extends Application {
     }
 
 
-    /*void testPlacement(String placement) {
+  /*  void testPlacement(String placement) {
             tiles.getChildren().clear();
             for(int i = 0; i < placement.length(); i+=5) {
                 String img = placement.substring(i, i + 2);
@@ -672,7 +667,12 @@ public class Viewer extends Application {
      * To go to next round
      */
     private void nextRound() {
-        if((!smartGame && tilesLeft == 0) || smartGame) {
+        String diceRoll = "";
+        for(int i = 0; i < diceTiles.size(); i++) {
+            diceRoll += diceTiles.get(i).name;
+        }
+        Board board = new Board(getPlacement(currentPlayer));
+        if((!smartGame && (tilesLeft == 0 || !board.checkIfMovePossible(getPlacement(currentPlayer), diceRoll))) || smartGame) {
             if(round <= 7) {
                 if(multiPlayer == true) { // If the game is in multiplayer mode
                     if(currentPlayer == 2) {
