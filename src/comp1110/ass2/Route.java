@@ -30,6 +30,12 @@ public class Route
         this.route = x;
     }
 
+    /**
+     * Author : Jihirshu Narayan
+     * @param x, instance of Tile
+     * Description : Adds a tile to the route
+     */
+
     public void addRoute(Tile x)
     {
         Tile[] temp = new Tile[this.route.length+1];
@@ -43,6 +49,13 @@ public class Route
 
         this.route = temp;
     }
+
+    /**
+     * Author : Jihirshu Narayan
+     * @param x
+     * @return
+     * Description : Checks if a tile is connected to a route or not
+     */
 
     public boolean connectedToRoute(Tile x)
     {
@@ -59,6 +72,12 @@ public class Route
         return false;
     }
 
+    /**
+     * Author : Jihirshu Narayan
+     * @return integer value
+     * Description : Calculates the number of exits to which a route is connected
+     */
+
     public int numberOfExitsConnected()
     {
         int count = 0;
@@ -70,6 +89,13 @@ public class Route
 
         return count;
     }
+
+    /**
+     * Author : Jihirshu Narayan
+     * @param x
+     * @return boolean value
+     * Description : Checks if two routes are connected through any of its tiles
+     */
 
     public boolean checkRoutesConnected(Route x)
     {
@@ -88,6 +114,12 @@ public class Route
 
         return false;
     }
+
+    /**
+     * Author : Jihirshu Narayan
+     * @param x
+     * Description : merges two routes
+     */
 
     public void mergeRoutes(Route x)
     {
