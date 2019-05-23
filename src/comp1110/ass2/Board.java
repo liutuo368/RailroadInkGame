@@ -219,14 +219,10 @@ public class Board
 
     /**
      * Author : Jihirshu Narayan
-     * @param choices, string array of tile names available for the move
-     * @return result, an array of moves
-     *
-     * Description : The function goes to every empty board location and checks if any of the available tiles or special tiles can be placed.
-     * All orientations are tried, and if any tile fits, that move is added to result array and the function calls itself with the updated choices.
-     * Number of moves is limited to make the function time efficient.
+     * @param choices
+     * @return array of moves
+     * This is a backup move generator. Not used in the game currently, but is capable of solving task 10.
      */
-
 
     public String[] generateMoves(String[] choices)
     {
@@ -381,7 +377,12 @@ public class Board
         return result;
     }
 
-
+    /**
+     * Author : Jihirshu Narayan
+     * @param x, an instance of Tile
+     * @return true if there is a highway connection, otherwise false
+     * Description : For the parameter Tile x, we check if it has a highway connection with any of its neighbours
+     */
 
     public boolean checkHighwayConnection(Tile x)
     {
@@ -426,7 +427,12 @@ public class Board
         return false;
     }
 
-
+    /**
+     * Author : Jihirshu Narayan
+     * @param x, an instance of Tile
+     * @return true if there is a railway connection, otherwise false
+     * Description : For the parameter Tile x, we check if it has a railway connection with any of its neighbours
+     */
     public boolean checkRailwayConnection(Tile x)
     {
         if (x.checkRailwayExit())
@@ -470,6 +476,12 @@ public class Board
         return false;
     }
 
+
+    /**
+     * Author : Jihirshu Narayan
+     * Description : Populates highway and railway connection maps. Setting highwayConnections and railwayConnections 1 in appropriate places.
+     */
+
     public void generateConnections()
     {
         for (int i=0;i<7;i++)
@@ -487,6 +499,11 @@ public class Board
             }
         }
     }
+
+    /**
+     * Author : Jihirshu Narayan
+     * Gets Longest Railway conenction count
+     */
 
     public void getLongestRailwayCount()
     {
@@ -514,6 +531,15 @@ public class Board
             }
         }
     }
+
+    /**
+     * Author : Jihirshu Narayan
+     * @param x, current instance of Tile,
+     * @param count, integer which keeps count of railway connections so far
+     * @param map, 2d integer array carrying map of railways
+     * Description : The function checks for railway connection of Tile x with its neighbours and recursively branches off
+     *             in each direction where it finds a connection, with its count incremented and its railway map updated
+     */
 
     public void findRailwayNeighboursRecursively(Tile x, int count, int[][] map)
     {
@@ -585,6 +611,10 @@ public class Board
 
     }
 
+    /**
+     * Author : Jihirshu Narayan
+     * Gets Longest Highway conenction count
+     */
 
     public void getLongestHighwayCount()
     {
@@ -612,6 +642,15 @@ public class Board
             }
         }
     }
+
+    /**
+     * Author : Jihirshu Narayan
+     * @param x, current instance of Tile,
+     * @param count, integer which keeps count of highway connections so far
+     * @param map, 2d integer array carrying map of railways
+     * Description : The function checks for highway connection of Tile x with its neighbours and recursively branches off
+     *             in each direction where it finds a connection, with its count incremented and its highway map updated
+     */
 
 
     public void findHighwayNeighboursRecursively(Tile x, int count, int[][] map)
@@ -679,11 +718,28 @@ public class Board
 
     }
 
+    /**
+     * Author : Jihirshu Narayan
+     * @param completeMoves Set which will contain all the complete moves (All tiles were used)
+     * @param possibleMoves Set which keeps list of all possible moves (Not mandatory that all tiles are used)
+     * @param choices, array of tiles available for play
+     * @param specialTiles, count of specialtiles on board
+     * @param moveSoFar, the move constructed so far
+     * @param row, current row number
+     * @param col, current col number
+     * @param specialFlag, specialFlag indicates if specialTile can be used or not
+     * @param numberOfMoves, limit factor to save time
+     *
+     * Description : The function goes to every empty board location and checks if any of the available tiles or special tiles can be placed.
+     *      All orientations are tried, and if any tile fits, that move is added to result array and the function calls itself with the updated choices.
+     *       Number of moves is limited to make the function time efficient. This function captures moves only if all tiles are used. Meanwhile, it keeps adding,
+     *       incomplete moves to possible moves. In the parent function it is checked if completeMoves is empty then possibleMoves is returned.
+     */
+
 
     public void generateMovesRecursively(Set completeMoves, Set possibleMoves, String[] choices, int specialTiles, String moveSoFar, int row, int col, boolean specialFlag, int numberOfMoves)
     {
 
-        // FIXME : Check why invalid moves are being generated
         if (choices.length == 0)
         {
             completeMoves.add(moveSoFar);
@@ -692,11 +748,6 @@ public class Board
         if ((completeMoves.size() > (numberOfMoves/2)) || (possibleMoves.size() > numberOfMoves))
             return;
 
-//        if ((choices.length == 0) && (!specialFlag))
-//        {
-//            possibleMoves.add(moveSoFar);
-//            return;
-//        }
 
         for (int i = 0;i<choices.length;i++)
         {
@@ -914,7 +965,7 @@ public class Board
         }
 
 
-        if ((this.countSpecialTiles() < 3) && (specialFlag))
+        if ((specialTiles < 3) && (specialFlag))
         {
 
             for (String special : this.specialTiles)
@@ -1107,6 +1158,14 @@ public class Board
 
     }
 
+    /**
+     * Author : Jihishu Narayan
+     * @param choices
+     * @param round
+     * @return
+     * Description : Parent function for GenerateMovesRecursively
+     */
+
     public Set generateMove(String[] choices, int round)
     {
         Set possibleMoves = new mySet();
@@ -1142,6 +1201,14 @@ public class Board
             return completeMoves;
     }
 
+    /**
+     * Author : Jihishu Narayan
+     * @param choices
+     * @param round
+     * @return
+     * Description : Parent function for GenerateMovesRecursivelyNoRestriction
+     */
+
     public Set generateMoveNoRestriction(String[] choices, int round)
     {
         Set possibleMoves = new mySet();
@@ -1172,6 +1239,21 @@ public class Board
         return possibleMoves;
     }
 
+    /**
+     * Author : Jihirshu Narayan
+     * @param possibleMoves Set which keeps list of all possible moves (Not mandatory that all tiles are used)
+     * @param choices, array of tiles available for play
+     * @param specialTiles, count of specialtiles on board
+     * @param moveSoFar, the move constructed so far
+     * @param row, current row number
+     * @param col, current col number
+     * @param specialFlag, specialFlag indicates if specialTile can be used or not
+     * @param numberOfMoves, limit factor to save time
+     *
+     * Description : The function goes to every empty board location and checks if any of the available tiles or special tiles can be placed.
+     *      All orientations are tried, and if any tile fits, that move is added to result array and the function calls itself with the updated choices.
+     *       Number of moves is limited to make the function time efficient. This function captures all moves irrespective of the number of choices left.
+     */
 
     public void generateMovesRecursivelyNoRestriction(Set possibleMoves, String[] choices, int specialTiles, String moveSoFar, int row, int col, boolean specialFlag, int numberOfMoves)
     {
@@ -1403,7 +1485,7 @@ public class Board
         }
 
 
-        if ((this.countSpecialTiles() < 3) && (specialFlag))
+        if ((specialTiles < 3) && (specialFlag))
         {
 
             for (String special : this.specialTiles)
@@ -1596,6 +1678,12 @@ public class Board
 
     }
 
+    /**
+     * Author : Jihirshu Narayan
+     * @param diceRoll
+     * @return
+     * Description : Parent function for checkAllPiecesUsed
+     */
 
     public boolean checkIfMovePossible(String diceRoll)
     {
@@ -1629,6 +1717,18 @@ public class Board
         return returnFlag;
 
     }
+
+    /**
+     * Author : Jihirshu Narayan
+     * @param choices
+     * @param specialTiles
+     * @param row
+     * @param col
+     * @param specialFlag
+     * @return
+     * Description : Very similar to GenerateMovesRecursively but this one does not capture moves. It just checks if there is a valid move possible
+     * on the current board with the available choices.
+     */
 
     public boolean checkAllPiecesUsed( String[] choices, int specialTiles, int row, int col, boolean specialFlag)
     {
@@ -1846,7 +1946,7 @@ public class Board
         }
 
 
-        if ((this.countSpecialTiles() < 3) && (specialFlag))
+        if ((specialTiles < 3) && (specialFlag))
         {
 
             for (String special : this.specialTiles)
