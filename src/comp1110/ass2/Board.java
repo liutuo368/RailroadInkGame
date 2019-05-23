@@ -50,6 +50,23 @@ public class Board
     }
 
 
+    public Board(String boardString)
+    {
+        int tile_number = (boardString.length())/5;
+        Tile[] tile_array = new Tile[tile_number];
+        this.board = new Object[7][7];
+        int counter = 0;
+
+        for (int i=0;i<boardString.length();i=i+5)
+        {
+            String temp = boardString.substring(i,i+5);
+            Tile x = new Tile(temp.substring(0,2));
+            x.set_default();
+            x.translate(temp.substring(2,4));
+            x.rotate90(temp.charAt(4));
+            place_tile(x);
+        }
+    }
 
 
     public void place_tile(Tile x)
@@ -1549,6 +1566,435 @@ public class Board
 
             }
         }
+
+    }
+
+
+    public boolean checkIfMovePossible(String BoardString, String diceRoll)
+    {
+        boolean returnFlag = false;
+        String[] choices = {"","","",""};
+        int pieceCounter=0;
+        for (int i=0;i<diceRoll.length();i=i+2)
+        {
+            choices[pieceCounter] = diceRoll.substring(i,i+2);
+            pieceCounter++;
+
+        }
+        boolean specialFlag=true;
+        int specialtiles = this.countSpecialTiles();
+        outer:
+        for (int i = 0; i < 7; i++)
+        {
+            for (int j = 0; j < 7; j++)
+            {
+                if (board[i][j] == null)
+                {
+                    if (this.checkAllPiecesUsed(choices, specialtiles, i, j, specialFlag))
+                    {
+                        returnFlag = true;
+                        break outer;
+                    }
+                }
+            }
+        }
+
+        return returnFlag;
+
+    }
+
+    public boolean checkAllPiecesUsed( String[] choices, int specialTiles, int row, int col, boolean specialFlag)
+    {
+        boolean returnFlag = false;
+
+        if (choices.length == 0)
+            return true;
+
+        for (int i = 0;i<choices.length;i++)
+        {
+            Tile x = new Tile(choices[i]);
+            x.set_default();
+            x.translate(row,col);
+
+            for (int j = 0;j<8;j++)
+            {
+                if (((choices[i].equals("A1")) || (choices[i].equals("A4"))) && (j>1))
+                    continue;
+
+                if ((!(choices[i].equals("B1"))) && (j > 3))
+                    continue;
+
+                x.rotate90(j);
+                if (this.checkInvalidConnection(x))
+                    continue;
+                try
+                {
+                    boolean flag;
+                    try
+                    {
+                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])));
+                    }
+                    catch (Exception E)
+                    {
+                        flag=false;
+                    }
+
+//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_exit_connection()))
+
+                    if (flag || x.check_exit_connection())
+
+                    {
+                        Board board =  new Board(this);
+                        board.place_tile(x);
+                        String[] new_choices = new String[choices.length-1];
+                        int counter=0;
+                        for (int k = 0;k<choices.length;k++)
+                        {
+                            if (i == k)
+                                continue;
+                            new_choices[counter] = choices[k];
+                            counter++;
+                        }
+
+
+                        for (int m = 0;m<7;m++)
+                        {
+                            for (int n=0;n<7;n++)
+                            {
+                                if ((m==row) && (n==col))
+                                    continue;
+                                if (board.board[m][n] == null)
+                                {
+                                    returnFlag = returnFlag || board.checkAllPiecesUsed(new_choices, specialTiles, m,n, specialFlag);
+                                }
+                            }
+                        }
+
+                    }
+
+                }
+                catch (Exception E)
+                {
+
+                }
+                try
+                {
+                    boolean flag;
+                    try
+                    {
+                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])));
+                    }
+                    catch (Exception E)
+                    {
+                        flag=false;
+                    }
+//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_exit_connection()))
+                    if (flag || x.check_exit_connection())
+                    {
+                        Board board =  new Board(this);
+                        board.place_tile(x);
+                        String[] new_choices = new String[choices.length-1];
+                        int counter=0;
+                        for (int k = 0;k<choices.length;k++)
+                        {
+                            if (i == k)
+                                continue;
+                            new_choices[counter] = choices[k];
+                            counter++;
+                        }
+
+                        for (int m = 0;m<7;m++)
+                        {
+                            for (int n=0;n<7;n++)
+                            {
+                                if ((m==row) && (n==col))
+                                    continue;
+                                if (board.board[m][n] == null)
+                                {
+                                   returnFlag = returnFlag || board.checkAllPiecesUsed(new_choices, specialTiles, m,n, specialFlag);
+                                }
+                            }
+                        }
+
+                    }
+                }
+                catch (Exception E)
+                {
+
+                }
+                try
+                {
+                    boolean flag;
+                    try
+                    {
+                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])));
+                    }
+                    catch (Exception E)
+                    {
+                        flag=false;
+                    }
+//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_exit_connection()))
+                    if (flag || x.check_exit_connection())
+                    {
+                        Board board =  new Board(this);
+                        board.place_tile(x);
+                        String[] new_choices = new String[choices.length-1];
+                        int counter=0;
+                        for (int k = 0;k<choices.length;k++)
+                        {
+                            if (i == k)
+                                continue;
+                            new_choices[counter] = choices[k];
+                            counter++;
+                        }
+
+
+                        for (int m = 0;m<7;m++)
+                        {
+                            for (int n=0;n<7;n++)
+                            {
+                                if ((m==row) && (n==col))
+                                    continue;
+                                if (board.board[m][n] == null)
+                                {
+                                    returnFlag = returnFlag || board.checkAllPiecesUsed(new_choices, specialTiles, m,n, specialFlag);
+                                }
+                            }
+                        }
+
+                    }
+                }
+                catch (Exception E)
+                {
+
+                }
+                try
+                {
+                    boolean flag;
+                    try
+                    {
+                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])));
+                    }
+                    catch (Exception E)
+                    {
+                        flag=false;
+                    }
+//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_exit_connection()))
+                    if (flag || x.check_exit_connection())
+                    {
+                        Board board =  new Board(this);
+                        board.place_tile(x);
+                        String[] new_choices = new String[choices.length-1];
+                        int counter=0;
+                        for (int k = 0;k<choices.length;k++)
+                        {
+                            if (i == k)
+                                continue;
+                            new_choices[counter] = choices[k];
+                            counter++;
+                        }
+
+                        for (int m = 0;m<7;m++)
+                        {
+                            for (int n=0;n<7;n++)
+                            {
+                                if ((m==row) && (n==col))
+                                    continue;
+                                if (board.board[m][n] == null)
+                                {
+                                    returnFlag = returnFlag || board.checkAllPiecesUsed(new_choices, specialTiles, m,n, specialFlag);
+                                }
+                            }
+                        }
+
+                    }
+
+                }
+                catch (Exception E)
+                {
+
+                }
+            }
+
+        }
+
+
+        if ((this.countSpecialTiles() < 3) && (specialFlag))
+        {
+
+            for (String special : this.specialTiles)
+            {
+                Tile x = new Tile(special);
+                x.set_default();
+                x.translate(row,col);
+
+                for (int j = 0;j<4;j++)
+                {
+                    if (((special.equals("S2")) || (special.equals("S3"))) && (j > 1))
+                        continue;
+                    if ((special.equals("S5")) && (j>1))
+                        continue;
+
+                    x.rotate90(j);
+                    if (this.checkInvalidConnection(x))
+                        continue;
+                    try
+                    {
+                        boolean flag;
+                        try
+                        {
+                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])));
+                        }
+                        catch (Exception E)
+                        {
+                            flag=false;
+                        }
+                        //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_exit_connection()))
+                        if (flag || x.check_exit_connection())
+                        {
+                            Board board =  new Board(this);
+                            board.place_tile(x);
+                            int newSpecialTiles = board.countSpecialTiles();
+
+                            for (int m = 0;m<7;m++)
+                            {
+                                for (int n=0;n<7;n++)
+                                {
+                                    if ((m==row) && (n==col))
+                                        continue;
+                                    if (board.board[m][n] == null)
+                                    {
+                                        returnFlag = returnFlag || board.checkAllPiecesUsed(choices, newSpecialTiles, m,n, false);
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }
+                    catch (Exception E)
+                    {
+
+                    }
+                    try
+                    {
+                        boolean flag;
+                        try
+                        {
+                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])));
+                        }
+                        catch (Exception E)
+                        {
+                            flag=false;
+                        }
+                        //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_exit_connection()))
+
+                        if (flag || x.check_exit_connection())
+                        {
+                            Board board =  new Board(this);
+                            board.place_tile(x);
+                            int newSpecialTiles = board.countSpecialTiles();
+
+                            for (int m = 0;m<7;m++)
+                            {
+                                for (int n=0;n<7;n++)
+                                {
+                                    if ((m==row) && (n==col))
+                                        continue;
+                                    if (board.board[m][n] == null)
+                                    {
+                                        returnFlag = returnFlag || board.checkAllPiecesUsed( choices, newSpecialTiles, m,n, false);
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    catch (Exception E)
+                    {
+
+                    }
+                    try
+                    {
+                        boolean flag;
+                        try
+                        {
+                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])));
+                        }
+                        catch (Exception E)
+                        {
+                            flag=false;
+                        }
+                        //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_exit_connection()))
+                        if (flag || x.check_exit_connection())
+                        {
+                            Board board =  new Board(this);
+                            board.place_tile(x);
+                            int newSpecialTiles = board.countSpecialTiles();
+
+                            for (int m = 0;m<7;m++)
+                            {
+                                for (int n=0;n<7;n++)
+                                {
+                                    if ((m==row) && (n==col))
+                                        continue;
+                                    if (board.board[m][n] == null)
+                                    {
+                                        returnFlag = returnFlag || board.checkAllPiecesUsed( choices, newSpecialTiles, m,n, false);
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    catch (Exception E)
+                    {
+
+                    }
+                    try
+                    {
+                        boolean flag;
+                        try
+                        {
+                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])));
+                        }
+                        catch (Exception E)
+                        {
+                            flag=false;
+                        }
+                        //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_exit_connection()))
+                        if (flag || x.check_exit_connection())
+                        {
+                            Board board =  new Board(this);
+                            board.place_tile(x);
+                            int newSpecialTiles = board.countSpecialTiles();
+
+                            for (int m = 0;m<7;m++)
+                            {
+                                for (int n=0;n<7;n++)
+                                {
+                                    if ((m==row) && (n==col))
+                                        continue;
+                                    if (board.board[m][n] == null)
+                                    {
+                                        returnFlag = returnFlag || board.checkAllPiecesUsed( choices, newSpecialTiles, m,n, false);
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }
+                    catch (Exception E)
+                    {
+
+                    }
+                }
+
+            }
+        }
+
+        return returnFlag;
 
     }
 
