@@ -655,15 +655,6 @@ public class RailroadInk {
 
 
     }
-
-    public static void main(String[] args)
-    {
-//        String diceRoll = "A5A2A4B2";
-        String boardString = "A3A10B0A23S3A31A1B30A1C30";
-//        String boardString = "";
-//        System.out.println(computerOpponent(boardString, diceRoll));
-        Board board = new Board(boardString);
-        System.out.println("good");
-    }
+    
 
 }
