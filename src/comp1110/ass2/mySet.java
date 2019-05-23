@@ -4,6 +4,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 
+/**
+ * Author : Jihirhsu Narayan
+ * Description : This class was created for additional feature wherein the count of moves beginning with each tile was maintained
+ */
+
 public class mySet extends HashSet<String>
 {
     public HashMap<String, Integer> count = new HashMap<>();

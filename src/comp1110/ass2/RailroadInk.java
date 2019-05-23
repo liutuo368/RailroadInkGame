@@ -394,14 +394,16 @@ public class RailroadInk {
         int max = initial_score;
         String result_final = "";
 
-        String[] result = board.generateMoves(choices);
-        for (int i=0;i<result.length;i++)
+
+        Set results = board.generateMove(choices, 6);
+
+        for (Object result : results)
         {
-            String newBoardString = boardString + result[i];
+            String newBoardString = boardString + result;
             int currentScore = getBasicScore(newBoardString);
             if ( currentScore > max)
             {
-                result_final = result[i].toString();
+                result_final = result.toString();
                 max = currentScore;
             }
 

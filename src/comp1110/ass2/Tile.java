@@ -19,7 +19,7 @@ public class Tile {
     {
         String[] names = {" ","S0","S1","S2","S3","S4","S5","A0","A1","A2","A3","A4","A5","B0","B1","B2"};
         this.name = names[x];
-        this.shape = new int[]{0,0,0,0,0,0,0};
+        this.shape = new int[]{0,0,0,0,0,0};
     }
 
     public Tile (String name, int[] shape)
@@ -60,7 +60,7 @@ public class Tile {
         this.shape[1] = 0;
         this.shape[2] = 0;
         this.shape[3] = 0;
-        this.shape[6] = 1;
+
 
         if (this.name.equals("S0"))
         {
@@ -151,7 +151,7 @@ public class Tile {
             this.shape[0] = 15;
             this.shape[4] = 5;
             this.shape[5] = 6;
-            this.shape[6] = 0;
+            
         }
 
 

@@ -105,10 +105,9 @@ public class Route
             temp_counter++;
         }
 
-//        Route mergedRoute = new Route(temp);
+
         this.route = temp;
 
-//        return mergedRoute;
     }
 
     @Override
@@ -122,109 +121,6 @@ public class Route
 
         return output;
     }
-//
-//    public void highWayRoutes()
-//    {
-//        this.highwayRoute = new int[this.route.length];
-//
-//        for (int i = 0;i < this.route.length;i++)
-//        {
-//            for (int j = 0; j<this.route.length;j++)
-//            {
-//                if (this.highwayRoute[i] == 1)
-//                    continue;
-//                if (i!=j)
-//                {
-//                    if (this.route[i].checkHighwayConnection(this.route[j]))
-//                        this.highwayRoute[i] = 1;
-//                }
-//            }
-//        }
-//
-//    }
-//
-//    public void railwayRoutes()
-//    {
-//        this.railwayRoute = new int[this.route.length];
-//
-//        for (int i = 0;i < this.route.length;i++)
-//        {
-//            for (int j = 0; j<this.route.length;j++)
-//            {
-//                if (this.railwayRoute[i] == 1)
-//                    continue;
-//                if (i!=j)
-//                {
-//                    if (this.route[i].checkRailwayConnection(this.route[j]))
-//                        this.railwayRoute[i] = 1;
-//                }
-//            }
-//        }
-//
-//    }
-//
-//    public void countLongestHighway()
-//    {
-//
-//        int[] clone = new int[this.highwayRoute.length];
-//
-//        while (!(Arrays.equals(clone, this.highwayRoute)))
-//        {
-//            for (int k = 0; k<this.highwayRoute.length;k++)
-//                clone[k] = this.highwayRoute[k];
-//
-//            int counter = 1;
-//            int currentTileCounter = 0;
-//            for (int i = 1; i < this.route.length; i++) {
-//                if (this.highwayRoute[i] == 1)
-//                {
-//                    if ((this.route[currentTileCounter].checkHighwayConnection(this.route[i])))
-//                    {
-//                        counter++;
-//                    }
-//                    else
-//                    {
-//                        this.highwayRoute[currentTileCounter] = 0;
-//                        counter = 1;
-//                    }
-//                    currentTileCounter = i;
-//                }
-//            }
-//
-//            if (counter > longesthighway)
-//                longesthighway = counter;
-//        }
-//    }
-//
-//    public void countLongestRailway()
-//    {
-//        int[] clone = new int[this.railwayRoute.length];
-//
-//        while (!(Arrays.equals(clone, this.railwayRoute)))
-//        {
-//            for (int k = 0;k<this.railwayRoute.length;k++)
-//                clone[k] = this.railwayRoute[k];
-//            int counter = 1;
-//            int currentTileCounter = 0;
-//            for (int i = 1; i < this.route.length; i++) {
-//                if (this.railwayRoute[i] == 1) {
-//                    if ((this.route[currentTileCounter].checkRailwayConnection(this.route[i])))
-//                    {
-//                        counter++;
-//                    }
-//                    else
-//                    {
-//                        this.railwayRoute[currentTileCounter] = 0;
-//                        counter = 1;
-//                    }
-//                    currentTileCounter = i;
-//                }
-//            }
-//
-//            if (counter > longestrailway)
-//                longestrailway = counter;
-//        }
-//    }
 
 
 

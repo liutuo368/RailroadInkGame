@@ -72,7 +72,11 @@ public class Board
     }
 
 
-
+    /**
+     * Author : Jihirshu Narayan
+     * @param : x, which is the tile for which we check if there is any invalid connection
+     * @return : returns true if there is an invalid connection of tile x with any of its neighbouring tile
+     */
 
     public boolean checkInvalidConnection(Tile x)
     {
@@ -115,6 +119,11 @@ public class Board
         return false;
     }
 
+    /**
+     * Author : Jihirshu Narayan
+     * @return : returns the count of number of tiles placed in the centre region of board. Used for calculating basic score.
+     */
+
     public int centreTileScore()
     {
         int centerTilesCount = 0;
@@ -130,6 +139,13 @@ public class Board
         return centerTilesCount;
 
     }
+
+    /**
+     * Author : Jihirshu Narayan
+     * @return : counts number of erros on a board
+     * Description : Iterates over every board location and if a tile is placed on that location,
+     * makes sure that all of its highways and railways are connected. If not, then count of errors is incremented.
+     */
 
     public int countErrors()
     {
@@ -173,6 +189,11 @@ public class Board
         return errors;
     }
 
+    /**
+     * Author : Jihirshu Narayan
+     * @return : count of special tiles placed on the board
+     */
+
     public int countSpecialTiles()
     {
         int countSpecialTiles = 0;
@@ -196,7 +217,15 @@ public class Board
 
     }
 
-
+    /**
+     * Author : Jihirshu Narayan
+     * @param choices, string array of tile names available for the move
+     * @return result, an array of moves
+     *
+     * Description : The function goes to every empty board location and checks if any of the available tiles or special tiles can be placed.
+     * All orientations are tried, and if any tile fits, that move is added to result array and the function calls itself with the updated choices.
+     * Number of moves is limited to make the function time efficient.
+     */
 
 
     public String[] generateMoves(String[] choices)
