@@ -21,7 +21,7 @@ public class classTileTest
             y.translate(pair[1].substring(2,4));
             x.rotate90(pair[0].charAt(4));
             y.rotate90(pair[1].charAt(4));
-            assertTrue("Tiles are connected via highway but test returned false " + pair[0] + " " + pair[1], x.check_highway_connection(y));
+            assertTrue("Tiles are connected via highway but test returned false " + pair[0] + " " + pair[1], x.checkHighwayConnection(y));
 
         }
 
@@ -37,7 +37,7 @@ public class classTileTest
             y.translate(pair[1].substring(2,4));
             x.rotate90(pair[0].charAt(4));
             y.rotate90(pair[1].charAt(4));
-            assertFalse("Tiles are not connected via highway but test returned true " + pair[0] + " " + pair[1], x.check_highway_connection(y));
+            assertFalse("Tiles are not connected via highway but test returned true " + pair[0] + " " + pair[1], x.checkHighwayConnection(y));
         }
 
 
@@ -58,7 +58,7 @@ public class classTileTest
             y.translate(pair[1].substring(2,4));
             x.rotate90(pair[0].charAt(4));
             y.rotate90(pair[1].charAt(4));
-            assertTrue("Tiles are connected via railway but test returned false " + pair[0] + " " + pair[1], x.check_railway_connection(y));
+            assertTrue("Tiles are connected via railway but test returned false " + pair[0] + " " + pair[1], x.checkRailwayConnection(y));
 
         }
 
@@ -73,7 +73,7 @@ public class classTileTest
             y.translate(pair[1].substring(2,4));
             x.rotate90(pair[0].charAt(4));
             y.rotate90(pair[1].charAt(4));
-            assertFalse("Tiles are not connected via railway but test returned true " + pair[0] + " " + pair[1], x.check_railway_connection(y));
+            assertFalse("Tiles are not connected via railway but test returned true " + pair[0] + " " + pair[1], x.checkRailwayConnection(y));
         }
 
 

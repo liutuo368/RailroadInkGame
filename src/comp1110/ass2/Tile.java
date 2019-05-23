@@ -297,7 +297,7 @@ public class Tile {
 
     }
 
-    public boolean check_railway_connection(Tile x)
+    public boolean checkRailwayConnection(Tile x)
     {
         Integer[] left = {4,6,10,7,12,13,14,15};
         Integer[] right = {2,6,8,9,11,12,14,15};
@@ -350,7 +350,7 @@ public class Tile {
     }
 
 
-    public boolean check_highway_connection(Tile x)
+    public boolean checkHighwayConnection(Tile x)
     {
         Integer[] left = {4,6,10,7,12,13,14,15};
         Integer[] right = {2,6,8,9,11,12,14,15};
@@ -419,10 +419,6 @@ public class Tile {
         boolean result = false, result_railway=false, result_highway=false;
         if ((this.shape[4] * x.shape[4] == 0) && (this.shape[5] * x.shape[5] == 0))
             result = false;
-//        else if ((Math.abs(this.shape[1] - x.shape[1]) > 1) || (Math.abs(this.shape[2] - x.shape[2]) > 1))
-//            result = false;
-//        else if ((Math.abs(this.shape[1] - x.shape[1]) == 1) && (Math.abs(this.shape[2] - x.shape[2]) == 1))
-//            result = false;
         else if (!areNeighbours(x))
         {
             result = false;
@@ -432,12 +428,12 @@ public class Tile {
             if ((this.shape[4] * x.shape[4] != 0))
             //highway
             {
-                result_highway = this.check_highway_connection(x);
+                result_highway = this.checkHighwayConnection(x);
             }
             if ((this.shape[5] * x.shape[5]) != 0)
             //railway
             {
-                result_railway = this.check_railway_connection(x);
+                result_railway = this.checkRailwayConnection(x);
             }
         }
         result = result_highway || result_railway;
@@ -458,7 +454,7 @@ public class Tile {
         this.shape[2] = y;
     }
 
-    public boolean check_highway_exit()
+    public boolean checkHighwayExit()
     {
         int x = this.shape[1];
         int y = this.shape[2];
@@ -491,7 +487,7 @@ public class Tile {
     }
 
 
-    public boolean check_railway_exit()
+    public boolean checkRailwayExit()
     {
         int x = this.shape[1];
         int y = this.shape[2];
@@ -525,7 +521,7 @@ public class Tile {
 
 
 
-    public boolean check_exit_connection()
+    public boolean checkExitConnection()
     {
         int x = this.shape[1];
         int y = this.shape[2];
@@ -533,12 +529,12 @@ public class Tile {
         if (((x == 0) && (y == 1)) || ((x == 0) && (y == 5)) || ((x == 3) && (y == 0)) || ((x == 3) && (y == 6)) || ((x == 6) && (y == 1)) || ((x == 6) && (y == 5)))
         {
             //check highway exit
-            return check_highway_exit();
+            return checkHighwayExit();
         }
         else if ((((x == 0) && (y == 3)) || ((x == 1) && (y == 0)) || ((x == 1) && (y == 6)) || ((x == 5) && (y == 0)) || ((x == 5) && (y == 6)) || ((x == 6) && (y == 3))))
         {
             //check railway exit
-            return check_railway_exit();
+            return checkRailwayExit();
         }
         else
         {

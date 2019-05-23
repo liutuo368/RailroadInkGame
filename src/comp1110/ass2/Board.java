@@ -10,10 +10,8 @@ package comp1110.ass2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
-import comp1110.ass2.Tile;
 
 
 public class Board
@@ -53,9 +51,7 @@ public class Board
     public Board(String boardString)
     {
         int tile_number = (boardString.length())/5;
-        Tile[] tile_array = new Tile[tile_number];
         this.board = new Object[7][7];
-        int counter = 0;
 
         for (int i=0;i<boardString.length();i=i+5)
         {
@@ -247,7 +243,7 @@ public class Board
                                                  continue ;
                                              if (!(this.checkInvalidConnection(currentTile)))
                                              {
-                                                 if (((neighbour.isConnected(currentTile)) || (currentTile.check_exit_connection())) && (!currentTile.checkInvalidExitConnection()))
+                                                 if (((neighbour.isConnected(currentTile)) || (currentTile.checkExitConnection())) && (!currentTile.checkInvalidExitConnection()))
                                                  {
                                                      ArrayList<String> temp_list = new ArrayList<>(Arrays.asList(choices));
                                                      String[] new_choice = temp_list.toArray(new String[temp_list.size()]);
@@ -273,7 +269,7 @@ public class Board
                                                      result_string = "";
                                                  }
 //                                                 if ((i == 0) || (i == 6) || (j == 0) || (j == 6))
-//                                                     if (currentTile.check_exit_connection())
+//                                                     if (currentTile.checkExitConnection())
 //                                                         results.add(currentTile.toString());
                                              }
 
@@ -299,7 +295,7 @@ public class Board
                                                  continue ;
                                              if (!(this.checkInvalidConnection(currentTile)))
                                              {
-                                                 if (((neighbour.isConnected(currentTile)) || (currentTile.check_exit_connection())) && (!currentTile.checkInvalidExitConnection()))
+                                                 if (((neighbour.isConnected(currentTile)) || (currentTile.checkExitConnection())) && (!currentTile.checkInvalidExitConnection()))
 
                                                  {
                                                      ArrayList<String> temp_list = new ArrayList<>(Arrays.asList(choices));
@@ -324,7 +320,7 @@ public class Board
 
                                                  }
 //                                                 if ((i == 0) || (i == 6) || (j == 0) || (j == 6))
-//                                                     if (currentTile.check_exit_connection())
+//                                                     if (currentTile.checkExitConnection())
 //                                                         results.add(currentTile.toString());
                                              }
 
@@ -360,11 +356,11 @@ public class Board
 
     public boolean checkHighwayConnection(Tile x)
     {
-        if (x.check_highway_exit())
+        if (x.checkHighwayExit())
             return true;
         try
         {
-            if (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]]))
+            if (x.checkHighwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]]))
                 return true;
         }
         catch (Exception e)
@@ -373,7 +369,7 @@ public class Board
         }
         try
         {
-            if (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]]))
+            if (x.checkHighwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]]))
                 return true;
         }
         catch (Exception e)
@@ -382,7 +378,7 @@ public class Board
         }
         try
         {
-            if (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1]))
+            if (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1]))
                 return true;
         }
         catch (Exception e)
@@ -391,7 +387,7 @@ public class Board
         }
         try
         {
-            if (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1]))
+            if (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1]))
                 return true;
         }
         catch (Exception e)
@@ -404,11 +400,11 @@ public class Board
 
     public boolean checkRailwayConnection(Tile x)
     {
-        if (x.check_railway_exit())
+        if (x.checkRailwayExit())
             return true;
         try
         {
-            if (x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]]))
+            if (x.checkRailwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]]))
                 return true;
         }
         catch (Exception e)
@@ -417,7 +413,7 @@ public class Board
         }
         try
         {
-            if (x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]]))
+            if (x.checkRailwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]]))
                 return true;
         }
         catch (Exception e)
@@ -426,7 +422,7 @@ public class Board
         }
         try
         {
-            if (x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1]))
+            if (x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1]))
                 return true;
         }
         catch (Exception e)
@@ -435,7 +431,7 @@ public class Board
         }
         try
         {
-            if (x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1]))
+            if (x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1]))
                 return true;
         }
         catch (Exception e)
@@ -509,7 +505,7 @@ public class Board
 
         try
         {
-            if ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) && (map[x.shape[1]-1][x.shape[2]] == 1))
+            if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) && (map[x.shape[1]-1][x.shape[2]] == 1))
             {
 
                 findRailwayNeighboursRecursively((Tile) this.board[x.shape[1]-1][x.shape[2]], count+1,clone);
@@ -522,7 +518,7 @@ public class Board
         }
         try
         {
-            if ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) && (map[x.shape[1]+1][x.shape[2]] == 1))
+            if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) && (map[x.shape[1]+1][x.shape[2]] == 1))
             {
 
                 findRailwayNeighboursRecursively((Tile) this.board[x.shape[1]+1][x.shape[2]], count+1, clone);
@@ -534,7 +530,7 @@ public class Board
         }
         try
         {
-            if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) && (map[x.shape[1]][x.shape[2]-1] == 1))
+            if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) && (map[x.shape[1]][x.shape[2]-1] == 1))
             {
 
                 findRailwayNeighboursRecursively((Tile)this.board[x.shape[1]][x.shape[2]-1], count+1, clone);
@@ -546,7 +542,7 @@ public class Board
         }
         try
         {
-            if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) && (map[x.shape[1]][x.shape[2]+1] == 1))
+            if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) && (map[x.shape[1]][x.shape[2]+1] == 1))
             {
 
                 findRailwayNeighboursRecursively((Tile)this.board[x.shape[1]][x.shape[2]+1], count+1, clone);
@@ -588,6 +584,7 @@ public class Board
         }
     }
 
+
     public void findHighwayNeighboursRecursively(Tile x, int count, int[][] map)
     {
         if (count > longestHighway)
@@ -607,7 +604,7 @@ public class Board
 
         try
         {
-            if ((x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) && (map[x.shape[1]-1][x.shape[2]] == 1))
+            if ((x.checkHighwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) && (map[x.shape[1]-1][x.shape[2]] == 1))
             {
                 findHighwayNeighboursRecursively((Tile) this.board[x.shape[1]-1][x.shape[2]], count+1, clone);
             }
@@ -618,7 +615,7 @@ public class Board
         }
         try
         {
-            if ((x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) && (map[x.shape[1]+1][x.shape[2]] == 1))
+            if ((x.checkHighwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) && (map[x.shape[1]+1][x.shape[2]] == 1))
             {
                 findHighwayNeighboursRecursively((Tile) this.board[x.shape[1]+1][x.shape[2]], count+1, clone);
             }
@@ -627,9 +624,10 @@ public class Board
         {
 
         }
+
         try
         {
-            if ((x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) && (map[x.shape[1]][x.shape[2]-1] == 1))
+            if ((x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) && (map[x.shape[1]][x.shape[2]-1] == 1))
             {
                 findHighwayNeighboursRecursively((Tile)this.board[x.shape[1]][x.shape[2]-1], count+1, clone);
             }
@@ -640,7 +638,7 @@ public class Board
         }
         try
         {
-            if ((x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) && (map[x.shape[1]][x.shape[2]+1] == 1))
+            if ((x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) && (map[x.shape[1]][x.shape[2]+1] == 1))
             {
                 findHighwayNeighboursRecursively((Tile)this.board[x.shape[1]][x.shape[2]+1], count+1, clone);
             }
@@ -693,16 +691,16 @@ public class Board
                     boolean flag;
                     try
                     {
-                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])));
+                        flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])));
                     }
                     catch (Exception E)
                     {
                         flag=false;
                     }
 
-//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_exit_connection()))
+//                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkExitConnection()))
 
-                    if (flag || x.check_exit_connection())
+                    if (flag || x.checkExitConnection())
 
                     {
                         Board board =  new Board(this);
@@ -745,14 +743,14 @@ public class Board
                     boolean flag;
                     try
                     {
-                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])));
+                        flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])));
                     }
                     catch (Exception E)
                     {
                         flag=false;
                     }
-//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_exit_connection()))
-                    if (flag || x.check_exit_connection())
+//                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkExitConnection()))
+                    if (flag || x.checkExitConnection())
                     {
                         Board board =  new Board(this);
                         board.place_tile(x);
@@ -792,14 +790,14 @@ public class Board
                     boolean flag;
                     try
                     {
-                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])));
+                        flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])));
                     }
                     catch (Exception E)
                     {
                         flag=false;
                     }
-//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_exit_connection()))
-                    if (flag || x.check_exit_connection())
+//                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkExitConnection()))
+                    if (flag || x.checkExitConnection())
                     {
                         Board board =  new Board(this);
                         board.place_tile(x);
@@ -839,14 +837,14 @@ public class Board
                     boolean flag;
                     try
                     {
-                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])));
+                        flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])));
                     }
                     catch (Exception E)
                     {
                         flag=false;
                     }
-//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_exit_connection()))
-                    if (flag || x.check_exit_connection())
+//                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkExitConnection()))
+                    if (flag || x.checkExitConnection())
                     {
                         Board board =  new Board(this);
                         board.place_tile(x);
@@ -911,14 +909,14 @@ public class Board
                         boolean flag;
                         try
                         {
-                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])));
+                            flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])));
                         }
                         catch (Exception E)
                         {
                             flag=false;
                         }
-    //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_exit_connection()))
-                        if (flag || x.check_exit_connection())
+    //                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkExitConnection()))
+                        if (flag || x.checkExitConnection())
                         {
                             Board board =  new Board(this);
                             board.place_tile(x);
@@ -953,15 +951,15 @@ public class Board
                         boolean flag;
                         try
                         {
-                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])));
+                            flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])));
                         }
                         catch (Exception E)
                         {
                             flag=false;
                         }
-    //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_exit_connection()))
+    //                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkExitConnection()))
 
-                        if (flag || x.check_exit_connection())
+                        if (flag || x.checkExitConnection())
                         {
                             Board board =  new Board(this);
                             board.place_tile(x);
@@ -995,14 +993,14 @@ public class Board
                         boolean flag;
                         try
                         {
-                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])));
+                            flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])));
                         }
                         catch (Exception E)
                         {
                             flag=false;
                         }
-    //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_exit_connection()))
-                        if (flag || x.check_exit_connection())
+    //                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkExitConnection()))
+                        if (flag || x.checkExitConnection())
                         {
                             Board board =  new Board(this);
                             board.place_tile(x);
@@ -1036,14 +1034,14 @@ public class Board
                         boolean flag;
                         try
                         {
-                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])));
+                            flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])));
                         }
                         catch (Exception E)
                         {
                             flag=false;
                         }
-    //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_exit_connection()))
-                        if (flag || x.check_exit_connection())
+    //                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkExitConnection()))
+                        if (flag || x.checkExitConnection())
                         {
                             Board board =  new Board(this);
                             board.place_tile(x);
@@ -1182,16 +1180,16 @@ public class Board
                     boolean flag;
                     try
                     {
-                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])));
+                        flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])));
                     }
                     catch (Exception E)
                     {
                         flag=false;
                     }
 
-//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_exit_connection()))
+//                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkExitConnection()))
 
-                    if (flag || x.check_exit_connection())
+                    if (flag || x.checkExitConnection())
 
                     {
                         Board board =  new Board(this);
@@ -1234,14 +1232,14 @@ public class Board
                     boolean flag;
                     try
                     {
-                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])));
+                        flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])));
                     }
                     catch (Exception E)
                     {
                         flag=false;
                     }
-//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_exit_connection()))
-                    if (flag || x.check_exit_connection())
+//                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkExitConnection()))
+                    if (flag || x.checkExitConnection())
                     {
                         Board board =  new Board(this);
                         board.place_tile(x);
@@ -1281,14 +1279,14 @@ public class Board
                     boolean flag;
                     try
                     {
-                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])));
+                        flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])));
                     }
                     catch (Exception E)
                     {
                         flag=false;
                     }
-//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_exit_connection()))
-                    if (flag || x.check_exit_connection())
+//                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkExitConnection()))
+                    if (flag || x.checkExitConnection())
                     {
                         Board board =  new Board(this);
                         board.place_tile(x);
@@ -1328,14 +1326,14 @@ public class Board
                     boolean flag;
                     try
                     {
-                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])));
+                        flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])));
                     }
                     catch (Exception E)
                     {
                         flag=false;
                     }
-//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_exit_connection()))
-                    if (flag || x.check_exit_connection())
+//                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkExitConnection()))
+                    if (flag || x.checkExitConnection())
                     {
                         Board board =  new Board(this);
                         board.place_tile(x);
@@ -1400,14 +1398,14 @@ public class Board
                         boolean flag;
                         try
                         {
-                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])));
+                            flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])));
                         }
                         catch (Exception E)
                         {
                             flag=false;
                         }
-                        //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_exit_connection()))
-                        if (flag || x.check_exit_connection())
+                        //                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkExitConnection()))
+                        if (flag || x.checkExitConnection())
                         {
                             Board board =  new Board(this);
                             board.place_tile(x);
@@ -1442,15 +1440,15 @@ public class Board
                         boolean flag;
                         try
                         {
-                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])));
+                            flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])));
                         }
                         catch (Exception E)
                         {
                             flag=false;
                         }
-                        //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_exit_connection()))
+                        //                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkExitConnection()))
 
-                        if (flag || x.check_exit_connection())
+                        if (flag || x.checkExitConnection())
                         {
                             Board board =  new Board(this);
                             board.place_tile(x);
@@ -1484,14 +1482,14 @@ public class Board
                         boolean flag;
                         try
                         {
-                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])));
+                            flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])));
                         }
                         catch (Exception E)
                         {
                             flag=false;
                         }
-                        //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_exit_connection()))
-                        if (flag || x.check_exit_connection())
+                        //                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkExitConnection()))
+                        if (flag || x.checkExitConnection())
                         {
                             Board board =  new Board(this);
                             board.place_tile(x);
@@ -1525,14 +1523,14 @@ public class Board
                         boolean flag;
                         try
                         {
-                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])));
+                            flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])));
                         }
                         catch (Exception E)
                         {
                             flag=false;
                         }
-                        //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_exit_connection()))
-                        if (flag || x.check_exit_connection())
+                        //                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkExitConnection()))
+                        if (flag || x.checkExitConnection())
                         {
                             Board board =  new Board(this);
                             board.place_tile(x);
@@ -1632,16 +1630,16 @@ public class Board
                     boolean flag;
                     try
                     {
-                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])));
+                        flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])));
                     }
                     catch (Exception E)
                     {
                         flag=false;
                     }
 
-//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_exit_connection()))
+//                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkExitConnection()))
 
-                    if (flag || x.check_exit_connection())
+                    if (flag || x.checkExitConnection())
 
                     {
                         Board board =  new Board(this);
@@ -1682,14 +1680,14 @@ public class Board
                     boolean flag;
                     try
                     {
-                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])));
+                        flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])));
                     }
                     catch (Exception E)
                     {
                         flag=false;
                     }
-//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_exit_connection()))
-                    if (flag || x.check_exit_connection())
+//                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkExitConnection()))
+                    if (flag || x.checkExitConnection())
                     {
                         Board board =  new Board(this);
                         board.place_tile(x);
@@ -1727,14 +1725,14 @@ public class Board
                     boolean flag;
                     try
                     {
-                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])));
+                        flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])));
                     }
                     catch (Exception E)
                     {
                         flag=false;
                     }
-//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_exit_connection()))
-                    if (flag || x.check_exit_connection())
+//                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkExitConnection()))
+                    if (flag || x.checkExitConnection())
                     {
                         Board board =  new Board(this);
                         board.place_tile(x);
@@ -1773,14 +1771,14 @@ public class Board
                     boolean flag;
                     try
                     {
-                        flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])));
+                        flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])));
                     }
                     catch (Exception E)
                     {
                         flag=false;
                     }
-//                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_exit_connection()))
-                    if (flag || x.check_exit_connection())
+//                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkExitConnection()))
+                    if (flag || x.checkExitConnection())
                     {
                         Board board =  new Board(this);
                         board.place_tile(x);
@@ -1843,14 +1841,14 @@ public class Board
                         boolean flag;
                         try
                         {
-                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])));
+                            flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])));
                         }
                         catch (Exception E)
                         {
                             flag=false;
                         }
-                        //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.check_exit_connection()))
-                        if (flag || x.check_exit_connection())
+                        //                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkExitConnection()))
+                        if (flag || x.checkExitConnection())
                         {
                             Board board =  new Board(this);
                             board.place_tile(x);
@@ -1881,15 +1879,15 @@ public class Board
                         boolean flag;
                         try
                         {
-                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])));
+                            flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])));
                         }
                         catch (Exception E)
                         {
                             flag=false;
                         }
-                        //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_highway_connection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.check_exit_connection()))
+                        //                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkExitConnection()))
 
-                        if (flag || x.check_exit_connection())
+                        if (flag || x.checkExitConnection())
                         {
                             Board board =  new Board(this);
                             board.place_tile(x);
@@ -1919,14 +1917,14 @@ public class Board
                         boolean flag;
                         try
                         {
-                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])));
+                            flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])));
                         }
                         catch (Exception E)
                         {
                             flag=false;
                         }
-                        //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.check_exit_connection()))
-                        if (flag || x.check_exit_connection())
+                        //                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkExitConnection()))
+                        if (flag || x.checkExitConnection())
                         {
                             Board board =  new Board(this);
                             board.place_tile(x);
@@ -1956,14 +1954,14 @@ public class Board
                         boolean flag;
                         try
                         {
-                            flag = ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])));
+                            flag = ((x.checkRailwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])));
                         }
                         catch (Exception E)
                         {
                             flag=false;
                         }
-                        //                    if ((x.check_railway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_highway_connection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.check_exit_connection()))
-                        if (flag || x.check_exit_connection())
+                        //                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkExitConnection()))
+                        if (flag || x.checkExitConnection())
                         {
                             Board board =  new Board(this);
                             board.place_tile(x);

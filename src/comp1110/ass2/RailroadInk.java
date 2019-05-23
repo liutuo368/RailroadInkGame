@@ -1,7 +1,6 @@
 package comp1110.ass2;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.Set;
 public class RailroadInk {
@@ -154,9 +153,9 @@ public class RailroadInk {
         {
             if (tile_array[i].checkInvalidExitConnection())
                 return false;
-            if ((i==0) && (!tile_array[i].check_exit_connection()))
+            if ((i==0) && (!tile_array[i].checkExitConnection()))
                 return false;
-            if (tile_array[i].check_exit_connection())
+            if (tile_array[i].checkExitConnection())
                 tile_result[i] = true;
 
             for (int j = 0;j<numberOfTiles;j++)
@@ -297,7 +296,7 @@ public class RailroadInk {
             inner:
             for (Route x : routes)
             {
-                if (x.connected_to_route(tile_array[i]))
+                if (x.connectedToRoute(tile_array[i]))
                     continue outer;
             }
             routes.add(new Route(tile_array[i]));
@@ -608,7 +607,7 @@ public class RailroadInk {
             inner:
             for (Route x : routes)
             {
-                if (x.connected_to_route(tile_array[i]))
+                if (x.connectedToRoute(tile_array[i]))
                     continue outer;
             }
             routes.add(new Route(tile_array[i]));
@@ -655,6 +654,6 @@ public class RailroadInk {
 
 
     }
-    
+
 
 }
