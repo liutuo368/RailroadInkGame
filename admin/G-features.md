@@ -1,7 +1,6 @@
 In addition to the features that are auto-graded, the graphical user interface
 of our project implements the following features:
 
-*(Remove those that are unimplemented)*
 
  - A simple placement viewer (Task 4)
  - A basic playable game
@@ -13,6 +12,4 @@ of our project implements the following features:
  - Implemented Player vs Environment mode where the computer opponent takes place of player 2
  - Implemented the game in 2 modes - normal and smart. In normal mode it is compulsory for players to use all 4 tiles if possible. In smart mode there is no such restriction.
  
- 
 
-additional features...
