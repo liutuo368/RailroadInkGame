@@ -81,6 +81,10 @@ public class Viewer extends Application {
         return str;
     }
 
+    boolean test(String boardString, String diceroll) {
+        return true;
+    }
+
     /**
      * Created by Tuo Liu
      * To convert the row numbers 1 - 7 to chars 'A' to 'G'
@@ -319,17 +323,6 @@ public class Viewer extends Application {
                                     placement2.add(tile); // ADd the tile to placement list for player 2
                                     grids[i][j].isEmpty2 = false;
                                 }
-//                            /*
-//                            if(generateMove(CURRENT_PLACEMENT, ROLL_MEMBERS) == "") {
-//                                gameOver();
-//                            }
-//                            */
-                                /*if(!smartGame) {
-                                    if(tilesLeft == 0) { // If there is no tiles left, go to next round
-                                        nextRound();
-                                    }
-                                }*/
-
 
                                 return true;
                             }
@@ -360,7 +353,7 @@ public class Viewer extends Application {
     }
 
 
-    /*void testPlacement(String placement) {
+  /*  void testPlacement(String placement) {
             tiles.getChildren().clear();
             for(int i = 0; i < placement.length(); i+=5) {
                 String img = placement.substring(i, i + 2);
@@ -672,7 +665,11 @@ public class Viewer extends Application {
      * To go to next round
      */
     private void nextRound() {
-        if((!smartGame && tilesLeft == 0) || smartGame) {
+        String diceRoll = "";
+        for(int i = 0; i < diceTiles.size(); i++) {
+            diceRoll += diceTiles.get(i).name;
+        }
+        if((!smartGame && (tilesLeft == 0 || !test(getPlacement(currentPlayer), diceRoll))) || smartGame) {
             if(round <= 7) {
                 if(multiPlayer == true) { // If the game is in multiplayer mode
                     if(currentPlayer == 2) {
