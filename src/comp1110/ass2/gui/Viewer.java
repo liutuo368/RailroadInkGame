@@ -631,7 +631,7 @@ public class Viewer extends Application {
             diceRoll += diceTiles.get(i).name;
         }
         Board board = new Board(getPlacement(currentPlayer));
-        if((!smartGame && (tilesLeft == 0 || !board.checkIfMovePossible(getPlacement(currentPlayer), diceRoll))) || smartGame) {
+        if((!smartGame && (tilesLeft == 0 || !board.checkIfMovePossible(diceRoll))) || smartGame) {
             if(round <= 7) {
                 if(multiPlayer == true) { // If the game is in multiplayer mode
                     if(currentPlayer == 2) {
@@ -985,15 +985,13 @@ public class Viewer extends Application {
                 "Smart - You can skip tile placements");
         rulesLabel.setLayoutY(180);
         rulesLabel.setLayoutX(50);
-        
+
         modeChoosingGroup.getChildren().addAll(label1, hBox1, hBox2, rulesLabel);
         modeChoosingWindow.setTitle("Mode Choosing");
         modeChoosingWindow.setScene(modeChoosingScene);
         modeChoosingWindow.setResizable(false);
 
         modeChoosingWindow.show();
-
-
 
     }
 }

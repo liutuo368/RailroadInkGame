@@ -1570,7 +1570,7 @@ public class Board
     }
 
 
-    public boolean checkIfMovePossible(String BoardString, String diceRoll)
+    public boolean checkIfMovePossible(String diceRoll)
     {
         boolean returnFlag = false;
         String[] choices = {"","","",""};
