@@ -1,5 +1,6 @@
 package comp1110.ass2.gui;
 
+import comp1110.ass2.Board;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.scene.Group;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static comp1110.ass2.RailroadInk.*;
+import static comp1110.ass2.Board.*;
 
 
 /**
@@ -669,7 +671,8 @@ public class Viewer extends Application {
         for(int i = 0; i < diceTiles.size(); i++) {
             diceRoll += diceTiles.get(i).name;
         }
-        if((!smartGame && (tilesLeft == 0 || !test(getPlacement(currentPlayer), diceRoll))) || smartGame) {
+        Board board = new Board(getPlacement(currentPlayer));
+        if((!smartGame && (tilesLeft == 0 || !board.checkIfMovePossible(getPlacement(currentPlayer), diceRoll))) || smartGame) {
             if(round <= 7) {
                 if(multiPlayer == true) { // If the game is in multiplayer mode
                     if(currentPlayer == 2) {
