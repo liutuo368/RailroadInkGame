@@ -293,9 +293,7 @@ public class Board
 
                                                      result_string = "";
                                                  }
-//                                                 if ((i == 0) || (i == 6) || (j == 0) || (j == 6))
-//                                                     if (currentTile.checkExitConnection())
-//                                                         results.add(currentTile.toString());
+
                                              }
 
                                          }
@@ -309,11 +307,7 @@ public class Board
                                          currentTile.set_default();
                                          currentTile.translate(i, j);
                                          for (int orientation = 0; orientation < 8; orientation++) {
-//                                             if (((z.equals("A1")) || (z.equals("A4"))) && (j>1))
-//                                                 continue;
-//
-//                                             if ((!(z.equals("B1"))) && (j > 3))
-//                                                 continue;
+
 
                                              currentTile.rotate90(orientation);
                                              if (results.contains(currentTile.toString()))
@@ -344,9 +338,7 @@ public class Board
                                                      result_string = "";
 
                                                  }
-//                                                 if ((i == 0) || (i == 6) || (j == 0) || (j == 6))
-//                                                     if (currentTile.checkExitConnection())
-//                                                         results.add(currentTile.toString());
+
                                              }
 
 
@@ -558,7 +550,7 @@ public class Board
         }
         clone[x.shape[1]][x.shape[2]] = 0;
 
-        try
+        try     //Branch upward
         {
             if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) && (map[x.shape[1]-1][x.shape[2]] == 1))
             {
@@ -571,7 +563,7 @@ public class Board
         {
 
         }
-        try
+        try         //Branch downward
         {
             if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) && (map[x.shape[1]+1][x.shape[2]] == 1))
             {
@@ -583,7 +575,7 @@ public class Board
         {
 
         }
-        try
+        try         //Branch left
         {
             if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) && (map[x.shape[1]][x.shape[2]-1] == 1))
             {
@@ -595,7 +587,7 @@ public class Board
         {
 
         }
-        try
+        try         //Branch right
         {
             if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) && (map[x.shape[1]][x.shape[2]+1] == 1))
             {
@@ -670,7 +662,7 @@ public class Board
 
         clone[x.shape[1]][x.shape[2]] = 0;
 
-        try
+        try         //Branch upwards
         {
             if ((x.checkHighwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) && (map[x.shape[1]-1][x.shape[2]] == 1))
             {
@@ -681,7 +673,7 @@ public class Board
         {
 
         }
-        try
+        try         //Branch downwards
         {
             if ((x.checkHighwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) && (map[x.shape[1]+1][x.shape[2]] == 1))
             {
@@ -693,7 +685,7 @@ public class Board
 
         }
 
-        try
+        try         //Branch left
         {
             if ((x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) && (map[x.shape[1]][x.shape[2]-1] == 1))
             {
@@ -704,7 +696,7 @@ public class Board
         {
 
         }
-        try
+        try         //Branch right
         {
             if ((x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) && (map[x.shape[1]][x.shape[2]+1] == 1))
             {
@@ -778,7 +770,7 @@ public class Board
                         flag=false;
                     }
 
-//                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkExitConnection()))
+
 
                     if (flag || x.checkExitConnection())
 
@@ -829,7 +821,7 @@ public class Board
                     {
                         flag=false;
                     }
-//                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkExitConnection()))
+
                     if (flag || x.checkExitConnection())
                     {
                         Board board =  new Board(this);
@@ -876,7 +868,7 @@ public class Board
                     {
                         flag=false;
                     }
-//                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkExitConnection()))
+
                     if (flag || x.checkExitConnection())
                     {
                         Board board =  new Board(this);
@@ -923,7 +915,7 @@ public class Board
                     {
                         flag=false;
                     }
-//                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkExitConnection()))
+
                     if (flag || x.checkExitConnection())
                     {
                         Board board =  new Board(this);
@@ -995,7 +987,7 @@ public class Board
                         {
                             flag=false;
                         }
-    //                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]-1])) || (x.checkExitConnection()))
+
                         if (flag || x.checkExitConnection())
                         {
                             Board board =  new Board(this);
@@ -1037,7 +1029,7 @@ public class Board
                         {
                             flag=false;
                         }
-    //                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]][x.shape[2]+1])) || (x.checkExitConnection()))
+
 
                         if (flag || x.checkExitConnection())
                         {
@@ -1079,7 +1071,7 @@ public class Board
                         {
                             flag=false;
                         }
-    //                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]-1][x.shape[2]])) || (x.checkExitConnection()))
+
                         if (flag || x.checkExitConnection())
                         {
                             Board board =  new Board(this);
@@ -1120,7 +1112,7 @@ public class Board
                         {
                             flag=false;
                         }
-    //                    if ((x.checkRailwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkHighwayConnection((Tile)this.board[x.shape[1]+1][x.shape[2]])) || (x.checkExitConnection()))
+
                         if (flag || x.checkExitConnection())
                         {
                             Board board =  new Board(this);
@@ -1182,7 +1174,7 @@ public class Board
         else if (round<4)
             numberOfMoves = 6000;
         else
-            numberOfMoves = 10000;
+            numberOfMoves = 8000;
 
         for (int i = 0; i < 7; i++)
         {

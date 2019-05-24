@@ -8,7 +8,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Written by Tuo Liu
  */
-public class checkIfMovePossibleTest {
+public class classBoardTest {
 
     @Test
     public void testPossibleMove() {

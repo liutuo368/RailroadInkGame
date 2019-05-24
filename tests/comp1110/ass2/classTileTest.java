@@ -79,5 +79,41 @@ public class classTileTest
 
     }
 
+    @Test
+    public void testCheckNeighbours()
+    {
+        String[][] Neighbours = {{"S1C31","S0B34"},{"A0D31", "S4D42"},{"B2E32","B1E44"}};
+
+        for (String[] pair : Neighbours)
+        {
+            Tile x = new Tile(pair[0].substring(0,2));
+            Tile y = new Tile(pair[1].substring(0,2));
+            x.set_default();
+            y.set_default();
+            x.translate(pair[0].substring(2,4));
+            y.translate(pair[1].substring(2,4));
+            x.rotate90(pair[0].charAt(4));
+            y.rotate90(pair[1].charAt(4));
+            assertTrue("Tiles are connected via railway but test returned false " + pair[0] + " " + pair[1], x.areNeighbours(y));
+
+        }
+
+        String[][] notNeighbours = {{"S2C32","A3B42"},{"A5D32", "B1A43"},{"A4E33","S5D43"}};
+        for (String[] pair : notNeighbours)
+        {
+            Tile x = new Tile(pair[0].substring(0,2));
+            Tile y = new Tile(pair[1].substring(0,2));
+            x.set_default();
+            y.set_default();
+            x.translate(pair[0].substring(2,4));
+            y.translate(pair[1].substring(2,4));
+            x.rotate90(pair[0].charAt(4));
+            y.rotate90(pair[1].charAt(4));
+            assertFalse("Tiles are not connected via railway but test returned true " + pair[0] + " " + pair[1], x.areNeighbours(y));
+        }
+
+
+    }
+
 
 }
